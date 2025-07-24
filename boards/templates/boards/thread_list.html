@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block body %}
+	<a href="/boards/board/{{board}}/new">Начать тред</a>
+
+	{% for thread in threads %}
+		<p>
+			<div class="thread">
+				{% if thread.files %}
+					<div class="media-container">
+						{% for file in thread.files %}
+							{% if file.fclass == "photo" %}
+								<img src="{{file.file.url}}"></img>
+							{% elif file.fclass == "video" %}
+								<video src="{{file.file.url}}"><source src="{{file.file.path}}" type="video/{{file.type}}">Your browser does not support this tag.</video>
+							{% else %}
+								<a src="{{file.file.url}}">{{file.file.name}}</a>
+							{% endif %}
+					{% endfor %}
+					</div>
+				{% endif %}
+				<h2>{{thread.title}}</h2>
+				<h3>{{thread.text}}</h3>
+
+				{% if thread.comments %}
+					{% for comment in thread.comments %}
+						<div class="comment">
+							{% if comment.files %}
+								<div class="media-container">
+									{% for file in comment.files %}
+										{% if file.fclass == "photo" %}
+											<img src="{{file.file.url}}"></img>
+										{% elif file.fclass == "video" %}
+											<video src="{{file.file.url}}"><source src="{{file.file.path}}" type="video/{{file.type}}">Your browser does not support this tag.</video>
+										{% else %}
+											<a src="{{file.file.url}}">{{file.file.name}}</a>
+										{% endif %}
+									{% endfor %}
+								</div>
+							{% endif %}
+
+							<h3>#{{comment.id}}</h3>
+							<h4>{{comment.text}}</h4>
+						</div>	
+					{% endfor %}
+				{% endif %}
+				<div class="comment">
+					<a
+							href="/boards/board/{{board}}/thread/{{thread.id}}/comment">Написать комментарий</a>
+				</div>
+			</div>
+		</p>
+	{% endfor %}
+{% endblock %}

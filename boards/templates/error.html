@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block body %}
+	<div class="thread">
+		{% if error %}
+			<h1>{{error}}</h1>
+		{% else %}
+			<h1>Произошла ошибка!</h1>
+		{% endif %}
+	</div>
+{% endblock %}
