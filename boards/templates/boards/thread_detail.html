@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}<title>НДФНБ - #{{thread.id}}</title>{% endblock %}
+
+{% block body %}
+    <div class="thread-container">
+        <div class="thread-item">
+            <div class="thread-file" id="thread-file">
+                {% for file in thread.threadfile_set.all %}
+                    {% if file.fclass == "photo" %}
+                        <img src="{{file.file.url}}" class="thread-image" id="img_thread_{{thread.id}}_{{forloop.counter}}" onclick="createImageFloatingDiv('img_thread_{{thread.id}}_{{forloop.counter}}')"></img>
+                    {% else %}
+                        <a src="{{file.file.url}}">{{file.file.name}}</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="thread-header">
+                <h1>{{thread.title}}</h1>
+                    {% if not thread.anon %}
+                        <h3>{{thread.author.username}}</h3>
+                    {% else %}
+                        <h3>Аноним</h3>
+                    {% endif %}
+                    <h3>{{thread.comment_set.all.count }} СМС</h3>
+                    <h3>{{thread.creation_date}}</h3>
+            </div>
+
+
+            <div class="thread-description">
+                <h2>{{thread.text}}</h2>
+            </div>
+        </div>
+            <div id="posts" class="posts-container">
+            {% for comment in thread.comment_set.all %}
+                <div class="post">
+                    {% for file in comment.commentfile_set.all %}
+                        {% if file.fclass == "photo" %}
+                            <img src="{{file.file.url}}" class="post-image" id="img_comment_{{comment.id}}_{{forloop.counter}}" onclick="createImageFloatingDiv('img_comment_{{comment.id}}_{{forloop.counter}}')"></img>
+                        {% else %}
+                            <a src="{{file.file.url}}">{{file.file.name}}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    <div class="post-header" id="comment_{{comment.id}}">
+                        <h4>#{{comment.id}}
+
+                        {% if not comment.anon %}
+                            {{comment.author}}
+                        {% else %}
+                            Аноним
+                        {% endif %}
+                        {{comment.creation_date}}
+                        </h4>
+
+                        <div class="post-message"><h3>{{comment.formatted | safe}}</h3></div>
+                    </div>
+                </div>
+            {% endfor %}
+            <a href="/boards/board/{{thread.board.code}}/thread/{{thread.id}}/comment">Написать комментарий</a>
+    </div>
+
+    {% load static %}
+    <script src={% static 'js/draggable.js' %}></script>
+{% endblock %}
