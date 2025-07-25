@@ -1,3 +1,4 @@
+from captcha.fields import CaptchaField
 from django import forms
 
 class MultipleFileInput(forms.ClearableFileInput):
@@ -19,10 +20,16 @@ class MultipleFileField(forms.FileField):
         return result
 
 class NewThreadForm(forms.Form):
-    title = forms.CharField(min_length=1, max_length=20)
-    text = forms.CharField()
+    captcha = CaptchaField()
+    title = forms.CharField(min_length=1, max_length=64)
+    text = forms.CharField(widget=forms.Textarea, max_length=16384)
     files = MultipleFileField(required=False)
 
+    remain_anonymous = forms.BooleanField(required=False, label="Скрыть ник от пользователей борда? (не от админов!!!)")
+
 class ThreadCommentForm(forms.Form):
-    text = forms.CharField()
+    captcha = CaptchaField()
+    text = forms.CharField(widget=forms.Textarea, max_length=16384)
     files = MultipleFileField(required=False)
+
+    remain_anonymous = forms.BooleanField(required=False, label="Скрыть ник от пользователей борда? (не от админов!!!)")

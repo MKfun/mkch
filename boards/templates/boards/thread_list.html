@@ -1,54 +1,71 @@
 {% extends "base.html" %}
 
+{% block title %}<title>НДФНБ - {{board.code}}</title>{% endblock %}
+
+{% block head %}
+	<a href="/">На главную</a>
+	<a href="/boards/board/{{board.code}}/new">Начать тред</a>
+{% endblock %}
+
 {% block body %}
-	<a href="/boards/board/{{board}}/new">Начать тред</a>
-
-	{% for thread in threads %}
-		<p>
-			<div class="thread">
-				{% if thread.files %}
-					<div class="media-container">
-						{% for file in thread.files %}
-							{% if file.fclass == "photo" %}
-								<img src="{{file.file.url}}"></img>
-							{% elif file.fclass == "video" %}
-								<video src="{{file.file.url}}"><source src="{{file.file.path}}" type="video/{{file.type}}">Your browser does not support this tag.</video>
-							{% else %}
-								<a src="{{file.file.url}}">{{file.file.name}}</a>
-							{% endif %}
-					{% endfor %}
-					</div>
-				{% endif %}
-				<h2>{{thread.title}}</h2>
-				<h3>{{thread.text}}</h3>
-
-				{% if thread.comments %}
-					{% for comment in thread.comments %}
-						<div class="comment">
-							{% if comment.files %}
-								<div class="media-container">
-									{% for file in comment.files %}
-										{% if file.fclass == "photo" %}
-											<img src="{{file.file.url}}"></img>
-										{% elif file.fclass == "video" %}
-											<video src="{{file.file.url}}"><source src="{{file.file.path}}" type="video/{{file.type}}">Your browser does not support this tag.</video>
-										{% else %}
-											<a src="{{file.file.url}}">{{file.file.name}}</a>
-										{% endif %}
-									{% endfor %}
-								</div>
-							{% endif %}
-
-							<h3>#{{comment.id}}</h3>
-							<h4>{{comment.text}}</h4>
-						</div>	
-					{% endfor %}
-				{% endif %}
-				<div class="comment">
-					<a
-							href="/boards/board/{{board}}/thread/{{thread.id}}/comment">Написать комментарий</a>
-				</div>
+	<div class="board-container">
+		{% if board.banner %}
+			<div class="board-banner">
+				<img src="{{board.banner.url}}" class="banner-image"></img>
 			</div>
-		</p>
-	{% endfor %}
+		{% endif %}
+
+		<div id="thread-list">
+			{% for thread in board.thread_set.all %}
+				<div class="thread-container" onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'">
+					<div class="thread-item">
+						<div class="thread-file">
+						{% for file in thread.threadfile_set.all %}
+								{% if file.fclass == "photo" %}
+									<img src="{{file.file.url}}" id={{file.file.url}} class="thread-image" onclick="createImageFloatingDiv('{{file.file.url}}')"></img>
+								{% else %}
+									<a src="{{file.file.url}}">{{file.file.name}}</a>
+								{% endif %}
+						{% endfor %}
+						</div>
+
+						<div class="thread-header">
+							<h1>{{thread.title}}</h1>
+							{% if not thread.anon %}
+								<h3>{{thread.author.username}}</h3>
+							{% else %}
+								<h3>Аноним</h3>
+							{% endif %}
+							<h3>{{thread.comment_set.all.count }} СМС</h3>
+							<h3>{{thread.creation_date}}</h3>
+						</div>
+
+						<div class="thread-description">
+							<h2>{{thread.text}}</h2>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+
+	<script>
+		function updateThreadList() {
+			fetch(window.location.href)
+				.then(response => response.text())
+				.then(text => {
+					console.log(text);
+					const parser = new DOMParser();
+					const list = parser.parseFromString(text, 'text/html');
+
+					const container = list.getElementById("thread-container");
+
+					if(container) {
+						document.getElementById("thread-list").innerHTML = container.innerHTML;
+					}
+				});
+		}
+
+		setInterval(updateThreadList, 10000);
+	</script>
 {% endblock %}

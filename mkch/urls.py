@@ -26,5 +26,6 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('boards/', include('boards.urls')),
     path('api/', include('api.urls')),
-    path('', RedirectView.as_view(url='/boards/', permanent=True))
+    path('', RedirectView.as_view(url='/boards/', permanent=True)),
+    path('captcha/', include('captcha.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

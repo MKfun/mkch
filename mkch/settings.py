@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-sp_2+@2jxsk$vy)&$@b@vrp28j3_y8zlvi3c&i65d8h&wn^1t2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['46.98.9.75']
+CSRF_TRUSTED_ORIGINS = ['http://46.98.9.75']
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -43,18 +44,26 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'boards.apps.BoardsConfig',
-    'api.apps.ApiConfig'
+    'api.apps.ApiConfig',
+    'captcha',
+    'django_user_agents.middleware.UserAgentMiddleware'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',<F9>
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+MIDDLEWARE_CLASSES = [
+    'django_user_agents.middleware.UserAgentMiddleware'
+]
+
+USER_AGENTS_CACHE = 'None'
 
 ROOT_URLCONF = 'mkch.urls'
 
@@ -122,6 +131,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = 'static/'
+STATICFILE_DIRS = ['boards/static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

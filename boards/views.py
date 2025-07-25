@@ -1,33 +1,27 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required, permission_required
+from django.views import generic
+from django.urls import reverse
 
 from .models import Board, Thread, Comment, ThreadFile, CommentFile
 from .forms import NewThreadForm, ThreadCommentForm
 
 def index(request):
-    boards_o = Board.objects.all()
-    boards = boards_o.count()
-    threads = Thread.objects.all().count()
-    comments = Comment.objects.all().count()
+    boards = Board.objects.all()
+    return render(request, 'index.html', context={'boards': boards})
 
-    return render(request, 'index.html', context={'boards': boards_o, 'n_boards': boards, 'n_threads': threads, 'n_comments': comments})
+class ThreadListView(generic.ListView):
+    model = Thread
+    paginate_by = 10
 
-@login_required
-def threads(request, pk):
+    def get_context_data(self, **kwargs):
+        context = super(ThreadListView, self).get_context_data(**kwargs)
+        context["board"] = get_object_or_404(Board, code=self.kwargs['pk'])
+        return context
 
-    threads = Thread.objects.filter(board__code=pk)
-
-    for t in threads:
-        t.files = ThreadFile.objects.filter(thread__id=t.id)
-        print(t.files)
-
-        t.comments = Comment.objects.filter(thread__id=t.id)
-        for comment in t.comments:
-            comment.files = CommentFile.objects.filter(comment__id=comment.id)
-            print(comment.files)
-
-    return render(request, 'boards/thread_list.html', context={'board': pk, 'threads': threads})
+class ThreadDetailView(generic.DetailView):
+    model = Thread
 
 @login_required
 @permission_required("boards.create_new_threads")
@@ -40,7 +34,14 @@ def create_new_thread(request, pk):
         if form.is_valid():
             data = form.cleaned_data
 
-            nt = Thread(board=board, title=data['title'], text=data['text'], author=request.user)
+            nt = Thread(board=board, title=data['title'], text=data['text'], author=request.user, anon=data['remain_anonymous'])
+
+            threads = Thread.objects.filter(board__code=board.code)
+            if not board.thread_limit == 0 and threads.count() > board.thread_limit:
+                earliest = threads.earliest('id')
+                earliest.delete()
+                earliest.save()
+
             nt.save()
 
             if request.FILES is not None and len(request.FILES.getlist('files')) > 0:
@@ -51,7 +52,7 @@ def create_new_thread(request, pk):
                     f = ThreadFile(thread=nt, file=file)
                     f.save()
 
-            return HttpResponseRedirect('/') # todo: переброс в тред
+            return HttpResponseRedirect(reverse("board", kwargs={"pk": pk}))
         else:
             return render(request, 'error.html', {'error': 'Неправильно введены данные!'})
     else:
@@ -75,7 +76,7 @@ def add_comment_to_thread(request, pk, tpk):
         if form.is_valid():
             data = form.cleaned_data
 
-            nc = Comment(thread=thread, text=data['text'], author=request.user)
+            nc = Comment(thread=thread, text=data['text'], author=request.user, anon=data['remain_anonymous'])
             nc.save()
 
             if request.FILES is not None and len(request.FILES.getlist('files')) > 0:
@@ -86,6 +87,8 @@ def add_comment_to_thread(request, pk, tpk):
                     f = CommentFile(comment=nc, file=file)
                     f.save()
 
-            return HttpResponseRedirect('/') # todo: переброс в тред
+            return HttpResponseRedirect(reverse("thread_detail_view", kwargs={"bpk": pk, "pk": tpk}))
+        else:
+            return render(request, 'error.html', {'error': "Неправильно введена капча!"})
     else:
         return render(request, 'boards/add_comment_to_thread.html', {'form': e_form})
