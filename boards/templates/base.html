@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-	{% block title %}<title>НДФНБ</title>{% endblock %}
+	{% block title %}<title>MKch</title>{% endblock %}
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -15,11 +15,11 @@
 		<div class="header">
 			{% block head %}{% endblock %}
 
-			<a href="/">MKCH</a>
+			<a href="/">MKch</a>
 
 			<div class="header-buttons">
 				{% if user.is_authenticated %}
-					<h3>{{user.username}}</h3>
+					<a>{{user.username}}</a>
 				{% endif %}
 				<br/>
 			</div>

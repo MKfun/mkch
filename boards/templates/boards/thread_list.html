@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}<title>НДФНБ - {{board.code}}</title>{% endblock %}
-
-{% block head %}
-	<a href="/">На главную</a>
-{% endblock %}
+{% block title %}<title>MKch - {{board.code}}</title>{% endblock %}
 
 {% block body %}
 	<div class="container">
@@ -30,10 +26,7 @@
 							</div>
 
 							<div class="thread-header">
-								<h1>{{thread.title}}</h1>
-								<h3>Аноним</h3>
-								<h3>{{thread.comment_set.all.count }} СМС</h3>
-								<h3>{{thread.creation_date}}</h3>
+								<h1>{{thread.title}} </h1>  <h3> Постов: {{thread.comment_set.all.count }} | {{thread.creation_date}}</h3>
 							</div>
 
 							<div class="thread-description">

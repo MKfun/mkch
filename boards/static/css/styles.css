@@ -217,7 +217,10 @@ body {
 	max-height: 50vh;
 	border: 1px solid #d9bfb7;
 }
-
+.captcha {
+	min-width: 200px;
+	min-height: 100px;
+}
 .thread-description {
 	color: #800000;
 	margin-top: 10px;

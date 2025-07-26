@@ -20,12 +20,13 @@ class MultipleFileField(forms.FileField):
         return result
 
 class NewThreadForm(forms.Form):
-    captcha = CaptchaField()
     title = forms.CharField(min_length=1, max_length=64)
     text = forms.CharField(widget=forms.Textarea, max_length=16384)
     files = MultipleFileField(required=False)
+    captcha = CaptchaField()
+
 
 class ThreadCommentForm(forms.Form):
-    captcha = CaptchaField()
     text = forms.CharField(widget=forms.Textarea, max_length=16384)
     files = MultipleFileField(required=False)
+    captcha = CaptchaField()

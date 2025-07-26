@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}<title>НДФНБ - #{{thread.id}}</title>{% endblock %}
+{% block title %}<title>MKch - #{{thread.id}}</title>{% endblock %}
 
 {% block body %}
     <div class="container">
@@ -17,10 +17,7 @@
                 </div>
 
                 <div class="thread-header">
-                    <h1>{{thread.title}}</h1>
-                        <h3>Аноним</h3>
-                        <h3>{{thread.comment_set.all.count }} СМС</h3>
-                        <h3>{{thread.creation_date}}</h3>
+                    <h1>{{thread.title}}</h1> <h2>Постов: {{thread.comment_set.all.count }} | {{thread.creation_date}}</h2>
                 </div>
 
 
@@ -31,17 +28,17 @@
                 <div id="posts" class="posts-container">
                 {% for comment in thread.comment_set.all %}
                     <div class="post">
-                        {% for file in comment.commentfile_set.all %}
-                            {% if file.fclass == "photo" %}
-                                <img src="{{file.file.url}}" class="post-image" id="img_comment_{{comment.id}}_{{forloop.counter}}" onclick="createImageFloatingDiv('img_comment_{{comment.id}}_{{forloop.counter}}')"></img>
-                            {% else %}
-                                <a src="{{file.file.url}}">{{file.file.name}}</a>
-                            {% endif %}
-                        {% endfor %}
+                        
 
                         <div class="post-header" id="comment_{{comment.id}}">
                             <h4>#{{comment.id}} Аноним {{comment.creation_date}}</h4>
-
+								{% for file in comment.commentfile_set.all %}
+								                            {% if file.fclass == "photo" %}
+								                                <img src="{{file.file.url}}" class="post-image" id="img_comment_{{comment.id}}_{{forloop.counter}}" onclick="createImageFloatingDiv('img_comment_{{comment.id}}_{{forloop.counter}}')"></img>
+								                            {% else %}
+								                                <a src="{{file.file.url}}">{{file.file.name}}</a>
+								                            {% endif %}
+								                        {% endfor %}
                             <div class="post-message"><h3>{{comment.formatted | safe}}</h3></div>
                         </div>
                     </div>
