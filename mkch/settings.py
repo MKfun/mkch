@@ -21,12 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-sp_2+@2jxsk$vy)&$@b@vrp28j3_y8zlvi3c&i65d8h&wn^1t2'
+SECRET_KEY = 'key'
+
+AUTH_KEY = "key"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['46.98.9.75']
+ALLOWED_HOSTS = ['127.0.0.1', '46.98.9.75']
 CSRF_TRUSTED_ORIGINS = ['http://46.98.9.75']
 
 LOGIN_REDIRECT_URL = '/'
@@ -43,27 +45,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'boards.apps.BoardsConfig',
-    'api.apps.ApiConfig',
     'captcha',
-    'django_user_agents.middleware.UserAgentMiddleware'
+    'boards.apps.BoardsConfig',
+    'keyauth.apps.KeyauthConfig'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',<F9>
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-MIDDLEWARE_CLASSES = [
-    'django_user_agents.middleware.UserAgentMiddleware'
-]
-
-USER_AGENTS_CACHE = 'None'
 
 ROOT_URLCONF = 'mkch.urls'
 

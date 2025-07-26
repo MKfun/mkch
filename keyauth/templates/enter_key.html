@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block static_extra %}
+    <link rel="stylesheet" href="{% static 'css/matrix.css' %}" />
+{% endblock %}
+
+{% block body %}
+    <div>
+		<form enctype="multipart/form-data" action="" method="post">
+			{% csrf_token %}
+			<table>
+				{{form}}
+			</table>
+			<input type="submit" value="Создать" />
+		</form>
+    </div>
+{% endblock %}

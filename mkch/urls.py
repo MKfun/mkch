@@ -23,9 +23,8 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')),
     path('boards/', include('boards.urls')),
-    path('api/', include('api.urls')),
-    path('', RedirectView.as_view(url='/boards/', permanent=True)),
-    path('captcha/', include('captcha.urls'))
+    path('captcha/', include('captcha.urls')),
+    path('key/', include('keyauth.urls')),
+    path('', RedirectView.as_view(url='/boards/', permanent=True))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

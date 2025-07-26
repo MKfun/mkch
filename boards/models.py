@@ -1,6 +1,9 @@
-from django.contrib.auth.models import User
 from django.utils.html import escape
 from django.db import models
+
+class Anon(models.Model):
+    ip = models.GenericIPAddressField(primary_key=True)
+    banned = models.BooleanField(default=False)
 
 class Board(models.Model):
     class Meta:
@@ -27,8 +30,7 @@ class Thread(models.Model):
 
     creation = models.DateTimeField(help_text="Дата и время создания", auto_now=True)
 
-    anon = models.BooleanField(help_text="Скрыть имя от отсальных участников (админы всё ещё могут увидеть ник)", default=False)
-    author = models.ForeignKey(User, help_text="Создатель треда", on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey(Anon, help_text="Создатель треда", on_delete=models.SET_NULL, null=True)
 
     board = models.ForeignKey(Board, help_text="Доска треда", on_delete=models.SET_NULL, null=True)
 
@@ -46,8 +48,7 @@ class Comment(models.Model):
 
     thread = models.ForeignKey(Thread, help_text="Тред, к которому пишется комментарий", on_delete=models.SET_NULL, null=True)
 
-    anon = models.BooleanField(help_text="Скрыть имя от отсальных участников (админы всё ещё могут увидеть ник)", default=False)
-    author = models.ForeignKey(User, help_text="Создатель треда", on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey(Anon, help_text="Создатель треда", on_delete=models.SET_NULL, null=True)
 
     text = models.TextField(help_text="Текст")
 

@@ -482,6 +482,7 @@ body {
 }
 
 .send-btn {
+	align-content: center;
 	background: #d6daf0;
 	border: 1px solid #b7c5d9;
 	padding: 8px 15px;
@@ -535,6 +536,81 @@ body {
 	background-color: #2196F3;
 	color: #fff;
 }
+
+form {
+	background: #efefef;
+	border: 1px solid #b7c5d9;
+	padding: 20px;
+	margin-bottom: 20px;
+	border-radius: 4px;
+}
+
+form table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+form table tr {
+	margin-bottom: 10px;
+}
+
+form table th,
+	form table td {
+		text-align: left;
+		padding: 8px 10px;
+		vertical-align: top;
+		font-size: 14px;
+		color: #800000;
+	}
+
+	form table th {
+		width: 25%;
+	}
+
+	form input[type="text"],
+		form input[type="email"],
+			form input[type="password"],
+				form input[type="file"],
+					form select,
+						form textarea {
+							width: 100%;
+							border: 1px solid #b7c5d9;
+							padding: 8px;
+							font-family: inherit;
+							font-size: 14px;
+							background: #f0e0d6;
+							color: #800000;
+							box-sizing: border-box;
+							border-radius: 3px;
+						}
+
+						form input[type="text"]:focus,
+							form input[type="email"]:focus,
+								form input[type="password"]:focus,
+									form input[type="file"]:focus,
+										form select:focus,
+											form textarea:focus {
+												outline: none;
+												border-color: #ff6b6b;
+												background: #f8e6db;
+											}
+
+											form input[type="submit"] {
+												background: #ff6b6b;
+												border: 1px solid #ff6b6b;
+												padding: 10px 20px;
+												color: #fff;
+												font-size: 14px;
+												font-weight: bold;
+												cursor: pointer;
+												border-radius: 4px;
+												transition: background 0.2s;
+												margin-top: 10px;
+											}
+
+											form input[type="submit"]:hover {
+												background: #ff5252;
+											}
 
 ::-webkit-scrollbar {
 	width: 8px;

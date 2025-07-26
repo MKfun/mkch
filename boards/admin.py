@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Board, Thread, Comment, ThreadFile, CommentFile
+from .models import Board, Thread, Comment, Anon, ThreadFile, CommentFile
 
 @admin.register(Board)
 class BoardAdmin(admin.ModelAdmin):
@@ -12,6 +12,10 @@ class ThreadAdmin(admin.ModelAdmin):
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('id', 'creation')
+
+@admin.register(Anon)
+class AnonAdmin(admin.ModelAdmin):
+    list_display = ('ip', 'banned')
 
 # raskommentiruyte esli hotite imet vozmoshnost cherez adminku dobavlat / udalyat fayli v tredi / commenti
 

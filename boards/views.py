@@ -4,14 +4,19 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.views import generic
 from django.urls import reverse
 
-from .models import Board, Thread, Comment, ThreadFile, CommentFile
+from .models import Board, Thread, Comment, ThreadFile, CommentFile, Anon
 from .forms import NewThreadForm, ThreadCommentForm
 
+from .tools import get_client_ip
+
+from keyauth.decorators import key_required, KeyRequiredMixin
+
+@key_required
 def index(request):
     boards = Board.objects.all()
     return render(request, 'index.html', context={'boards': boards})
 
-class ThreadListView(generic.ListView):
+class ThreadListView(KeyRequiredMixin, generic.ListView):
     model = Thread
     paginate_by = 10
 
@@ -20,21 +25,25 @@ class ThreadListView(generic.ListView):
         context["board"] = get_object_or_404(Board, code=self.kwargs['pk'])
         return context
 
-class ThreadDetailView(generic.DetailView):
+class ThreadDetailView(KeyRequiredMixin, generic.DetailView):
     model = Thread
 
-@login_required
-@permission_required("boards.create_new_threads")
+@key_required
 def create_new_thread(request, pk):
     board = get_object_or_404(Board, code=pk)
 
     if request.method == 'POST':
+        ip = get_client_ip(request)
+        anon, _ = Anon.objects.get_or_create(ip=ip, defaults={'ip': ip, 'banned': False})
+        if anon.banned:
+            return render(request, 'error.html', {'error': 'Ваш IP-адрес был заблокирован. Только попробуй впн включить сука.'})
+
         form = NewThreadForm(request.POST)
 
         if form.is_valid():
             data = form.cleaned_data
 
-            nt = Thread(board=board, title=data['title'], text=data['text'], author=request.user, anon=data['remain_anonymous'])
+            nt = Thread(board=board, title=data['title'], text=data['text'], author=anon)
 
             threads = Thread.objects.filter(board__code=board.code)
             if not board.thread_limit == 0 and threads.count() > board.thread_limit:
@@ -59,8 +68,7 @@ def create_new_thread(request, pk):
         form = NewThreadForm(initial={'title': "Заголовок", 'text': "Текст"})
         return render(request, 'boards/create_new_thread.html', {'form': form})
 
-@login_required
-@permission_required("boards.comment_threads")
+@key_required
 def add_comment_to_thread(request, pk, tpk):
     board = get_object_or_404(Board, code=pk)
     thread = get_object_or_404(Thread, id=tpk)
@@ -71,12 +79,17 @@ def add_comment_to_thread(request, pk, tpk):
         return render(request, 'boards/add_comment_to_thread.html', {'form': e_form, 'error': 'Тред не найден на борде.'})
 
     if request.method == 'POST':
+        ip = get_client_ip(request)
+        anon, _ = Anon.objects.get_or_create(ip=ip, defaults={'ip': ip, 'banned': False})
+        if anon.banned:
+            return render(request, 'error.html', {'error': 'Ваш IP-адрес был заблокирован. Только попробуй впн включить сука.'})
+
         form = ThreadCommentForm(request.POST)
         
         if form.is_valid():
             data = form.cleaned_data
 
-            nc = Comment(thread=thread, text=data['text'], author=request.user, anon=data['remain_anonymous'])
+            nc = Comment(thread=thread, text=data['text'], author=anon)
             nc.save()
 
             if request.FILES is not None and len(request.FILES.getlist('files')) > 0:

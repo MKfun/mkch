@@ -4,48 +4,49 @@
 
 {% block head %}
 	<a href="/">На главную</a>
-	<a href="/boards/board/{{board.code}}/new">Начать тред</a>
 {% endblock %}
 
 {% block body %}
-	<div class="board-container">
-		{% if board.banner %}
-			<div class="board-banner">
-				<img src="{{board.banner.url}}" class="banner-image"></img>
-			</div>
-		{% endif %}
+	<div class="container">
+		<div class="board-container">
+			{% if board.banner %}
+				<div class="board-banner">
+					<img src="{{board.banner.url}}" class="banner-image"></img>
+				</div>
+			{% endif %}
 
-		<div id="thread-list">
-			{% for thread in board.thread_set.all %}
-				<div class="thread-container" onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'">
-					<div class="thread-item">
-						<div class="thread-file">
-						{% for file in thread.threadfile_set.all %}
-								{% if file.fclass == "photo" %}
-									<img src="{{file.file.url}}" id={{file.file.url}} class="thread-image" onclick="createImageFloatingDiv('{{file.file.url}}')"></img>
-								{% else %}
-									<a src="{{file.file.url}}">{{file.file.name}}</a>
-								{% endif %}
-						{% endfor %}
-						</div>
+			<div id="thread-list">
+				{% for thread in board.thread_set.all %}
+					<div class="thread-container" onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'">
+						<div class="thread-item">
+							<div class="thread-file">
+							{% for file in thread.threadfile_set.all %}
+									{% if file.fclass == "photo" %}
+										<img src="{{file.file.url}}" id={{file.file.url}} class="thread-image" onclick="createImageFloatingDiv('{{file.file.url}}')"></img>
+									{% else %}
+										<a src="{{file.file.url}}">{{file.file.name}}</a>
+									{% endif %}
+							{% endfor %}
+							</div>
 
-						<div class="thread-header">
-							<h1>{{thread.title}}</h1>
-							{% if not thread.anon %}
-								<h3>{{thread.author.username}}</h3>
-							{% else %}
+							<div class="thread-header">
+								<h1>{{thread.title}}</h1>
 								<h3>Аноним</h3>
-							{% endif %}
-							<h3>{{thread.comment_set.all.count }} СМС</h3>
-							<h3>{{thread.creation_date}}</h3>
-						</div>
+								<h3>{{thread.comment_set.all.count }} СМС</h3>
+								<h3>{{thread.creation_date}}</h3>
+							</div>
 
-						<div class="thread-description">
-							<h2>{{thread.text}}</h2>
+							<div class="thread-description">
+								<h2>{{thread.text}}</h2>
+							</div>
 						</div>
 					</div>
-				</div>
-			{% endfor %}
+				{% endfor %}
+			</div>
+		</div>
+
+		<div class="new-thread-button">
+			<a class="new-thread-btn" href="/boards/board/{{board.code}}/new">Начать тред</a>
 		</div>
 	</div>
 

@@ -25,11 +25,7 @@ class NewThreadForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea, max_length=16384)
     files = MultipleFileField(required=False)
 
-    remain_anonymous = forms.BooleanField(required=False, label="Скрыть ник от пользователей борда? (не от админов!!!)")
-
 class ThreadCommentForm(forms.Form):
     captcha = CaptchaField()
     text = forms.CharField(widget=forms.Textarea, max_length=16384)
     files = MultipleFileField(required=False)
-
-    remain_anonymous = forms.BooleanField(required=False, label="Скрыть ник от пользователей борда? (не от админов!!!)")

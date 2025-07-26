@@ -4,8 +4,12 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 
+	{% block static %}
 	{% load static %}
 	<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+	{% endblock %}
+
+	{% block static_extra %}{% endblock %}
 
 	<head>
 		<div class="header">
@@ -16,8 +20,6 @@
 			<div class="header-buttons">
 				{% if user.is_authenticated %}
 					<h3>{{user.username}}</h3>
-				{% else %}
-					<a href="/accounts/login">Войти</a>
 				{% endif %}
 				<br/>
 			</div>

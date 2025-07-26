@@ -3,20 +3,22 @@
 {% block title %}<title>НДФНБ - Главная</title>{% endblock %}
 
 {% block body %}
-	<div class="motd-container">
-		<div class="motd">
-			Добро пожаловать на НДФНБ.
+	<div class="container">
+		<div class="motd-container">
+			<div class="motd">
+				Добро пожаловать на НДФНБ.
+			</div>
 		</div>
-	</div>
 
-	<div class="boards-container">
-		<h1>Список открытых досок</h1>
-		<div class="boards-list">
-			{% for board in boards %}
-				<div class="board-item">
-					<a href="/boards/board/{{board}}">{{board}} --- {{board.description}}</a>
-				</div>
-			{% endfor %}
+		<div class="boards-container">
+			<h1>Список открытых досок</h1>
+			<div class="boards-list">
+				{% for board in boards %}
+					<div class="board-item">
+						<a href="/boards/board/{{board}}">{{board}} --- {{board.description}}</a>
+					</div>
+				{% endfor %}
+			</div>
 		</div>
 	</div>
 
