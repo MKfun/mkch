@@ -217,6 +217,7 @@ body {
 	max-height: 50vh;
 	border: 1px solid #d9bfb7;
 }
+
 .captcha {
 	min-width: 200px;
 	min-height: 100px;
@@ -365,6 +366,17 @@ body {
 	margin-bottom: 10px;
 	padding: 10px;
 	border-left: 3px solid #ff6b6b;
+}
+
+div:target {
+	animation-name: highlight;
+	animation-duration: 1s;
+}
+
+@keyframes highlight {
+	0% { background-color: #f0e0d6; }
+	50% { background-color: orange; }
+	100% { background-color: #f0e0d6; }
 }
 
 .post-header {
@@ -540,6 +552,16 @@ body {
 	color: #fff;
 }
 
+.replies {
+	background: #d6c8bf
+}
+
+.small-icon {
+	display: block;
+	max-width: 4vw;
+	max-height: 4vh;
+}
+
 form {
 	background: #efefef;
 	border: 1px solid #b7c5d9;
@@ -614,6 +636,482 @@ form table th,
 											form input[type="submit"]:hover {
 												background: #ff5252;
 											}
+
+											.dark-theme {
+												background: #1a1a1a;
+												color: #e0e0e0;
+											}
+
+											.dark-theme .header {
+												background: #2d2d2d;
+												border-bottom: 2px solid #444;
+											}
+
+											.dark-theme .header h1 {
+												color: #f4d03f;
+											}
+
+											.dark-theme .header a {
+												color: #f39c12;
+											}
+
+											.dark-theme .header a:hover {
+												color: #e67e22;
+											}
+
+											.dark-theme .container {
+												background: #2d2d2d;
+												border: 2px solid #444;
+											}
+
+											.dark-theme .board-list {
+												background: #333;
+												border: 1px solid #555;
+											}
+
+											.dark-theme .board-item {
+												background: #444;
+												border: 1px solid #666;
+											}
+
+											.dark-theme .board-item:hover {
+												background: #555;
+											}
+
+											.dark-theme .board-item a {
+												color: #f4d03f;
+											}
+
+											.dark-theme .threads-table {
+												background: #333;
+												border: 1px solid #555;
+											}
+
+											.dark-theme .threads-table th {
+												background: #444;
+												color: #f4d03f;
+												border-bottom: 2px solid #666;
+											}
+
+											.dark-theme .threads-table td {
+												border-bottom: 1px solid #555;
+											}
+
+											.dark-theme .thread-id {
+												color: #f39c12;
+											}
+
+											.dark-theme .thread-title {
+												color: #e0e0e0;
+											}
+
+											.dark-theme .thread-title a {
+												color: #f4d03f;
+											}
+
+											.dark-theme .thread-title a:hover {
+												color: #f39c12;
+											}
+
+											.dark-theme .posts-container {
+												background: #333;
+												border: 1px solid #555;
+											}
+
+											.dark-theme .post {
+												background: #444;
+												border: 1px solid #666;
+											}
+
+											.dark-theme .post-header {
+												background: #555;
+												border-bottom: 1px solid #777;
+											}
+
+											.dark-theme .post-id {
+												color: #f39c12;
+											}
+
+											.dark-theme .post-time {
+												color: #aaa;
+											}
+
+											.dark-theme .post-content {
+												color: #e0e0e0;
+											}
+
+											.dark-theme .post-image {
+												border: 1px solid #666;
+											}
+
+											.dark-theme .form-container {
+												background: #333;
+												border: 1px solid #555;
+											}
+
+											.dark-theme .form-row {
+												border-bottom: 1px solid #555;
+											}
+
+											.dark-theme .form-row:last-child {
+												border-bottom: none;
+											}
+
+											.dark-theme input[type="text"],
+.dark-theme input[type="password"],
+.dark-theme textarea {
+	background: #444;
+	border: 1px solid #666;
+	color: #e0e0e0;
+}
+
+.dark-theme input[type="text"]:focus,
+.dark-theme input[type="password"]:focus,
+.dark-theme textarea:focus {
+	border-color: #f39c12;
+	outline: none;
+}
+
+.dark-theme .btn {
+	background: #f4d03f;
+	border: 2px solid #e67e22;
+	color: #8b4513;
+}
+
+.dark-theme .btn:hover {
+	background: #f39c12;
+}
+
+.dark-theme .board-banner {
+	background: #333;
+	margin: auto;
+	display: flex;
+	justify-content: center;
+}
+
+.dark-theme .new-thread-btn {
+	background: #f4d03f;
+	border: 2px solid #e67e22;
+	color: #8b4513;
+}
+
+.dark-theme .new-thread-btn:hover {
+	background: #f39c12;
+}
+
+.dark-theme .error {
+	background: #4a2c2c;
+	border: 1px solid #8b4513;
+	color: #ff6b6b;
+}
+
+.dark-theme .success {
+	background: #2c4a2c;
+	border: 1px solid #4a8b4a;
+	color: #6bff6b;
+}
+
+.dark-theme .motd {
+	background: #333;
+	border: 1px solid #555;
+	color: #f4d03f;
+}
+
+.dark-theme .admin-panel {
+	background: #333;
+	border: 1px solid #555;
+}
+
+.dark-theme .admin-panel h1,
+.dark-theme .admin-panel h2 {
+	color: #f4d03f;
+}
+
+.dark-theme .delete-btn {
+	background: #8b4513;
+	border: 2px solid #a0522d;
+	color: #fff;
+}
+
+.dark-theme .delete-btn:hover {
+	background: #a0522d;
+}
+
+.dark-theme .theme-toggle {
+	background: #f4d03f;
+	border: 2px solid #e67e22;
+	color: #8b4513;
+}
+
+.dark-theme .theme-toggle:hover {
+	background: #f39c12;
+}
+
+.dark-theme .boards-container {
+	background: #333;
+	border: 1px solid #555;
+}
+
+.dark-theme .boards-container h2 {
+	color: #f4d03f;
+}
+
+.dark-theme .board-item {
+	background: #444;
+	border: 1px solid #666;
+}
+
+.dark-theme .board-item:hover {
+	background: #555;
+}
+
+.dark-theme .board-link {
+	color: #e0e0e0;
+}
+
+.dark-theme .board-id {
+	color: #f39c12;
+}
+
+.dark-theme .board-name {
+	color: #f4d03f;
+}
+
+.dark-theme .board-desc {
+	color: #aaa;
+}
+
+.dark-theme .motd-container {
+	background: #333;
+	border: 1px solid #555;
+}
+
+.dark-theme .thread-container {
+	background: #333;
+	border: 1px solid #555;
+}
+
+.dark-theme .thread-header {
+	background: #444;
+	border-bottom: 1px solid #666;
+}
+
+.dark-theme .thread-header h2 {
+	color: #f4d03f;
+}
+
+.dark-theme .back-link {
+	color: #f39c12;
+}
+
+.dark-theme .back-link:hover {
+	color: #e67e22;
+}
+
+.dark-theme .threads-container {
+	background: #333;
+	border: 1px solid #555;
+}
+
+.dark-theme .threads-list {
+	background: #333;
+}
+
+.dark-theme .thread-item {
+	background: #444;
+	border: 1px solid #666;
+}
+
+.dark-theme .thread-item:hover {
+	background: #555;
+}
+
+.dark-theme .thread-link {
+	color: #f4d03f;
+}
+
+.dark-theme .thread-title {
+	color: #e0e0e0;
+}
+
+.dark-theme .thread-info {
+	color: #aaa;
+}
+
+.dark-theme .thread-file {
+	border: 1px solid #666;
+}
+
+.dark-theme .thread-image {
+	border: 1px solid #666;
+}
+
+.dark-theme .thread-description {
+	color: #e0e0e0;
+	background: #444;
+	border: 1px solid #666;
+	padding: 8px;
+	margin: 5px 0;
+}
+
+.dark-theme .anonymous-id {
+	color: #f39c12;
+}
+
+.dark-theme .new-thread-container {
+	background: #333;
+	border: 1px solid #555;
+}
+
+.dark-theme .thread-form {
+	background: #333;
+	border: 1px solid #555;
+}
+
+.dark-theme .thread-form h2 {
+	color: #f4d03f;
+}
+
+.dark-theme .markdown-help {
+	background: #444;
+	border: 1px solid #666;
+}
+
+.dark-theme .markdown-help h3 {
+	color: #f4d03f;
+}
+
+.dark-theme .markdown-help ul {
+	color: #e0e0e0;
+}
+
+.dark-theme .markdown-help li {
+	color: #e0e0e0;
+}
+
+.dark-theme .markdown-help code {
+	background: #555;
+	color: #f39c12;
+}
+
+.dark-theme .cancel-btn {
+	background: #8b4513;
+	border: 2px solid #a0522d;
+	color: #fff;
+}
+
+.dark-theme .cancel-btn:hover {
+	background: #a0522d;
+}
+
+.dark-theme .post-message strong {
+	color: #f4d03f;
+}
+
+.dark-theme .post-message em {
+	color: #f39c12;
+}
+
+.dark-theme .post-message u {
+	color: #e67e22;
+}
+
+.dark-theme .post-message del {
+	color: #ff6b6b;
+}
+
+.dark-theme .post-message code {
+	background: #555;
+	color: #f39c12;
+}
+
+.dark-theme .post-message ul {
+	color: #e0e0e0;
+}
+
+.dark-theme .post-message li {
+	color: #e0e0e0;
+}
+
+.dark-theme .post-form {
+	background: #333;
+	border: 1px solid #555;
+}
+
+.dark-theme .form-row {
+	border-bottom: 1px solid #555;
+}
+
+.dark-theme .form-row:last-child {
+	border-bottom: none;
+}
+
+.dark-theme .title-input,
+.dark-theme .description-input,
+.dark-theme .message-input,
+.dark-theme .file-input {
+	background: #444;
+	border: 1px solid #666;
+	color: #e0e0e0;
+}
+
+.dark-theme .title-input:focus,
+.dark-theme .description-input:focus,
+.dark-theme .message-input:focus,
+.dark-theme .file-input:focus {
+	border-color: #f39c12;
+	outline: none;
+}
+
+.dark-theme .description-input {
+	background: #444 !important;
+	border: 1px solid #666 !important;
+	color: #e0e0e0 !important;
+}
+
+.dark-theme .description-input:focus {
+	border-color: #f39c12 !important;
+	outline: none !important;
+}
+
+.dark-theme .send-btn {
+	background: #f4d03f;
+	border: 2px solid #e67e22;
+	color: #8b4513;
+}
+
+.dark-theme .send-btn:hover {
+	background: #f39c12;
+}
+
+.dark-theme .file-info {
+	color: #aaa;
+}
+
+.dark-theme .reply-link {
+	color: #f39c12;
+}
+
+.dark-theme .reply-link:hover {
+	color: #e67e22;
+}
+
+.dark-theme ::-webkit-scrollbar {
+	width: 8px;
+}
+
+.dark-theme ::-webkit-scrollbar-track {
+	background: #333;
+}
+
+.dark-theme ::-webkit-scrollbar-thumb {
+	background: #666;
+	border-radius: 4px;
+}
+
+.dark-theme ::-webkit-scrollbar-thumb:hover {
+	background: #888;
+}
 
 ::-webkit-scrollbar {
 	width: 8px;

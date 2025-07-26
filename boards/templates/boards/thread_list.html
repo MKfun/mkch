@@ -12,7 +12,7 @@
 			{% endif %}
 
 			<div id="thread-list">
-				{% for thread in board.thread_set.all %}
+				{% for thread in thread_list %}
 					<div class="thread-container" onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'">
 						<div class="thread-item">
 							<div class="thread-file">
@@ -20,13 +20,13 @@
 									{% if file.fclass == "photo" %}
 										<img src="{{file.file.url}}" id={{file.file.url}} class="thread-image" onclick="createImageFloatingDiv('{{file.file.url}}')"></img>
 									{% else %}
-										<a src="{{file.file.url}}">{{file.file.name}}</a>
+										<a href="{{file.file.url}}">{{file.file.name}}</a>
 									{% endif %}
 							{% endfor %}
 							</div>
 
 							<div class="thread-header">
-								<h1>{{thread.title}} </h1>  <h3> Постов: {{thread.comment_set.all.count }} | {{thread.creation_date}}</h3>
+								<h1>{{thread.title}} </h1> <h2>{{thread.author.code}}</h2> <h3>{{thread.creation | date}}</h3>
 							</div>
 
 							<div class="thread-description">

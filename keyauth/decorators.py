@@ -20,7 +20,6 @@ def key_required(function):
   return wrap
 
 class KeyRequiredMixin:
-
     def dispatch(self, request, *args, **kwargs):
         if not 'auth_key' in request.session:
             return HttpResponseRedirect(reverse('key_enter_form'))

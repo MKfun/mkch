@@ -23,6 +23,9 @@
 				{% endif %}
 				<br/>
 			</div>
+
+			{% load static %}
+			<img id="theme-toggle" class="small-icon" src="{% static 'media/sun.svg'%}" onclick="toggleTheme()"></img>
 		</div>
 	</head>
 	<body id="body">{% block body %}{% endblock %}</body>
@@ -41,4 +44,7 @@
 			</div>
 		{% endif %}
 	{% endblock %}
+
+	{% load static %}
+	<script src="{% static 'js/theme.js' %}"></script>
 </html>

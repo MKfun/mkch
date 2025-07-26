@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'captcha',
     'boards.apps.BoardsConfig',
-    'keyauth.apps.KeyauthConfig'
+    'keyauth.apps.KeyauthConfig',
 ]
 
 MIDDLEWARE = [

@@ -3,6 +3,8 @@ from django.db import models
 
 class Anon(models.Model):
     ip = models.GenericIPAddressField(primary_key=True)
+
+    code = models.TextField(default="anon")
     banned = models.BooleanField(default=False)
 
 class Board(models.Model):
@@ -40,9 +42,6 @@ class Thread(models.Model):
     def __str__(self):
         return str(self.id)
 
-    def creation_date(self):
-        return str(self.creation)
-
 class Comment(models.Model):
     creation = models.DateTimeField(help_text="Дата и время создания", auto_now=True)
 
@@ -61,11 +60,11 @@ class Comment(models.Model):
                 words[i] = f"<a href='#comment_{word}'> >> {word}</a>"
         return " ".join(words)
 
+    def replies(self):
+        return Comment.objects.filter(thread=self.thread).filter(text__contains="#"+str(self.id))
+
     def __str__(self):
         return str(self.thread.id) + ", " + str(self.id)
-
-    def creation_date(self):
-        return str(self.creation)
 
 class ThreadFile(models.Model):
     thread = models.ForeignKey(Thread, help_text="Тред, которому принадлежит файл", on_delete=models.SET_NULL, null=True)

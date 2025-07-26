@@ -1,3 +1,5 @@
+import hashlib
+
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required, permission_required
@@ -20,6 +22,9 @@ class ThreadListView(KeyRequiredMixin, generic.ListView):
     model = Thread
     paginate_by = 10
 
+    def get_queryset(self):
+        return super().get_queryset().filter(board__code=self.kwargs['pk'])
+
     def get_context_data(self, **kwargs):
         context = super(ThreadListView, self).get_context_data(**kwargs)
         context["board"] = get_object_or_404(Board, code=self.kwargs['pk'])
@@ -34,7 +39,7 @@ def create_new_thread(request, pk):
 
     if request.method == 'POST':
         ip = get_client_ip(request)
-        anon, _ = Anon.objects.get_or_create(ip=ip, defaults={'ip': ip, 'banned': False})
+        anon, _ = Anon.objects.get_or_create(ip=ip, defaults={'ip': ip, 'code': hashlib.sha256(ip.encode("utf-8")).hexdigest()[:6], 'banned': False})
         if anon.banned:
             return render(request, 'error.html', {'error': 'Ваш IP-адрес был заблокирован. Только попробуй впн включить сука.'})
 
@@ -76,11 +81,11 @@ def add_comment_to_thread(request, pk, tpk):
     e_form = ThreadCommentForm({'text': 'Введите текст...'})
 
     if not thread.board.code == board.code:
-        return render(request, 'boards/add_comment_to_thread.html', {'form': e_form, 'error': 'Тред не найден на борде.'})
+        return render(request, 'error.html', {'error': 'Тред не найден на борде.'})
 
     if request.method == 'POST':
         ip = get_client_ip(request)
-        anon, _ = Anon.objects.get_or_create(ip=ip, defaults={'ip': ip, 'banned': False})
+        anon, _ = Anon.objects.get_or_create(ip=ip, defaults={'ip': ip, 'code': hashlib.sha256(ip.encode("utf-8")).hexdigest()[:6], 'banned': False})
         if anon.banned:
             return render(request, 'error.html', {'error': 'Ваш IP-адрес был заблокирован. Только попробуй впн включить сука.'})
 
