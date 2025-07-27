@@ -20,8 +20,7 @@ body {
 
 .header {
 	background: #efefef;
-	border: 1px solid #b7c5d9;
-	padding: 10px;
+	padding: 6px;
 	margin-bottom: 10px;
 	display: flex;
 	justify-content: space-between;
@@ -124,7 +123,7 @@ body {
 
 .board-container {
 	background: #efefef;
-	border: 1px solid #b7c5d9;
+	border: 1px solid #444;
 	margin-bottom: 10px;
 }
 
@@ -644,9 +643,14 @@ form table th,
 
 											.dark-theme .header {
 												background: #2d2d2d;
-												border-bottom: 2px solid #444;
+											}
+											.dark-theme form input {
+												background: #444;
 											}
 
+											.dark-theme form input:focus {
+												background: #443
+											}
 											.dark-theme .header h1 {
 												color: #f4d03f;
 											}
@@ -658,10 +662,8 @@ form table th,
 											.dark-theme .header a:hover {
 												color: #e67e22;
 											}
-
-											.dark-theme .container {
-												background: #2d2d2d;
-												border: 2px solid #444;
+										
+											.dark-theme .container {											
 											}
 
 											.dark-theme .board-list {
@@ -700,7 +702,10 @@ form table th,
 											.dark-theme .thread-id {
 												color: #f39c12;
 											}
-
+											.dark-theme form {
+												background: #2d2d2d;
+												border: 2px solid #444;
+											}
 											.dark-theme .thread-title {
 												color: #e0e0e0;
 											}
@@ -715,9 +720,19 @@ form table th,
 
 											.dark-theme .posts-container {
 												background: #333;
-												border: 1px solid #555;
+												padding: 8px;
+											}
+											.dark-theme .post-message {
+												color: #e0e0e0;
 											}
 
+											.dark-theme .replies {
+												background: #555
+											}
+
+											.dark-theme .reply {
+												color: #FFFFFF
+											}
 											.dark-theme .post {
 												background: #444;
 												border: 1px solid #666;
@@ -757,8 +772,10 @@ form table th,
 												border-bottom: none;
 											}
 
-											.dark-theme input[type="text"],
+											
 .dark-theme input[type="password"],
+.dark-theme input[type="text"],
+.dark-theme input[type="file"],
 .dark-theme textarea {
 	background: #444;
 	border: 1px solid #666;
@@ -770,6 +787,8 @@ form table th,
 .dark-theme textarea:focus {
 	border-color: #f39c12;
 	outline: none;
+	background: #444;
+	color: #e0e0e0;
 }
 
 .dark-theme .btn {
@@ -813,7 +832,6 @@ form table th,
 
 .dark-theme .motd {
 	background: #333;
-	border: 1px solid #555;
 	color: #f4d03f;
 }
 
@@ -888,12 +906,11 @@ form table th,
 
 .dark-theme .thread-container {
 	background: #333;
-	border: 1px solid #555;
 }
 
 .dark-theme .thread-header {
 	background: #444;
-	border-bottom: 1px solid #666;
+	border: 1px solid #666;
 }
 
 .dark-theme .thread-header h2 {
@@ -938,8 +955,8 @@ form table th,
 	color: #aaa;
 }
 
-.dark-theme .thread-file {
-	border: 1px solid #666;
+.dark-theme .thread-header {
+	
 }
 
 .dark-theme .thread-image {
