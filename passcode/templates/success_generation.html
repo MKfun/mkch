@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}<title>MKch - Новый пасскод</title>{% endblock %}
+{% block body %}
+    <h3 style="text-align: center;">Успешно! Ваш новый пасскод - {{passcode}}</h3>
+    <div class="board-banner">
+        {% load static %}
+        <img class="banner-image" src="{% static 'new_passcode.png' %}">
+    </div>
+{% endblock %}

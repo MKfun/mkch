@@ -7,6 +7,8 @@ from django.views import generic
 from django.urls import reverse
 
 from .models import Board, Thread, Comment, ThreadFile, CommentFile, Anon
+from passcode.models import Passcode
+
 from .forms import *
 
 from .tools import get_client_ip
@@ -20,7 +22,7 @@ from passcode.models import Passcode
 @key_required
 def index(request):
     boards = Board.objects.all()
-    return render(request, 'index.html', context={'boards': boards})
+    return render(request, 'index.html', context={'boards': boards, 'passcode': Passcode.objects.validate(hex_code=request.session.get('passcode'))})
 
 class ThreadListView(KeyRequiredMixin, generic.ListView):
     model = Thread

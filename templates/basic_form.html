@@ -7,7 +7,7 @@
 			<table>
 				{{form}}
 			</table>
-			<input type="submit" value="Войти" />
+			<input type="submit" value={% if button_text %}{{button_text}}{% else %}"Ввод"{% endif %} />
 		</form>
     </div>
 {% endblock %}

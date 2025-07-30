@@ -1,11 +1,13 @@
 import hashlib
+import time
 
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
 from .models import Passcode
-from .forms import PasscodeEnterForm
+from .forms import PasscodeEnterForm, PasscodeGenerateForm
 
 def index(request):
     return render(request, 'passcode_index.html')
@@ -26,7 +28,7 @@ def passcode_enter(request):
             return HttpResponseRedirect('/')
     else:
         form = PasscodeEnterForm(initial={'passcode': 'Пасскод'})
-        return render(request, 'enter_key.html', {'form': form})
+        return render(request, 'basic_form.html', {'form': form})
 
 def passcode_reset(request):
     if 'passcode' in request.session:
@@ -34,3 +36,13 @@ def passcode_reset(request):
         return render(request, 'passcode_reset.html')
     else:
         return HttpResponseRedirect(reverse('passcode_enter_form'))
+
+@staff_member_required
+def passcode_generate(request):
+    if request.method == "POST":
+        code = hashlib.sha256(str(time.time()).encode("utf-8")).hexdigest()
+        c = Passcode(code=code)
+        c.save()
+        return render(request, "success_generation.html", {'passcode': code})
+    else:
+        return render(request, "basic_form.html", {'form': PasscodeGenerateForm(), 'button_text': 'Сгенерировать'})

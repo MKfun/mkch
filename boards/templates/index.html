@@ -10,7 +10,9 @@
 			</div>
 
 			<div class="button-group">
-				<a class="group-button" href="/passcode">Купить пасскод</a>
+				{% if not passcode %}
+					<a class="group-button" href="/passcode">Купить пасскод</a>
+				{% endif %}
 			</div>
 		</div>
 
