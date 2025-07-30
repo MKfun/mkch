@@ -48,6 +48,9 @@ INSTALLED_APPS = [
     'captcha',
     'boards.apps.BoardsConfig',
     'keyauth.apps.KeyauthConfig',
+    'api.apps.ApiConfig',
+    'passcode.apps.PasscodeConfig',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

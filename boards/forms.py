@@ -19,14 +19,24 @@ class MultipleFileField(forms.FileField):
 
         return result
 
+# Хуёво реализованы формы, в интернете DRY-решения не нашёл. Если кто знает - кидайте PR
+
 class NewThreadForm(forms.Form):
     title = forms.CharField(min_length=1, max_length=64)
     text = forms.CharField(widget=forms.Textarea, max_length=16384)
     files = MultipleFileField(required=False)
     captcha = CaptchaField()
 
-
 class ThreadCommentForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea, max_length=16384)
     files = MultipleFileField(required=False)
     captcha = CaptchaField()
+
+class NewThreadFormP(forms.Form):
+    title = forms.CharField(min_length=1, max_length=64)
+    text = forms.CharField(widget=forms.Textarea, max_length=16384)
+    files = MultipleFileField(required=False)
+
+class ThreadCommentFormP(forms.Form):
+    text = forms.CharField(widget=forms.Textarea, max_length=16384)
+    files = MultipleFileField(required=False)

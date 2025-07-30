@@ -7,11 +7,15 @@ from django.views import generic
 from django.urls import reverse
 
 from .models import Board, Thread, Comment, ThreadFile, CommentFile, Anon
-from .forms import NewThreadForm, ThreadCommentForm
+from .forms import *
 
 from .tools import get_client_ip
 
 from keyauth.decorators import key_required, KeyRequiredMixin
+
+from passcode.models import Passcode
+
+# Хуёво реализована проверка пасскодов, в интернете DRY-решения не нашёл. Если кто знает - кидайте PR
 
 @key_required
 def index(request):
@@ -37,13 +41,21 @@ class ThreadDetailView(KeyRequiredMixin, generic.DetailView):
 def create_new_thread(request, pk):
     board = get_object_or_404(Board, code=pk)
 
+    if 'passcode' in request.session:
+        passcode = Passcode.objects.validate(hex_code=request.session['passcode'])
+    else:
+        passcode = False
+
     if request.method == 'POST':
         ip = get_client_ip(request)
         anon, _ = Anon.objects.get_or_create(ip=ip, defaults={'ip': ip, 'code': hashlib.sha256(ip.encode("utf-8")).hexdigest()[:6], 'banned': False})
         if anon.banned:
             return render(request, 'error.html', {'error': 'Ваш IP-адрес был заблокирован. Только попробуй впн включить сука.'})
 
-        form = NewThreadForm(request.POST)
+        if passcode:
+            form = NewThreadFormP(request.POST)
+        else:
+            form = NewThreadForm(request.POST)
 
         if form.is_valid():
             data = form.cleaned_data
@@ -70,7 +82,7 @@ def create_new_thread(request, pk):
         else:
             return render(request, 'error.html', {'error': 'Неправильно введены данные!'})
     else:
-        form = NewThreadForm(initial={'title': "Заголовок", 'text': "Текст"})
+        form = NewThreadForm(initial={'title': "Заголовок", 'text': "Текст"}) if not passcode else NewThreadFormP(initial={'title': "Заголовок", 'text': "Текст"})
         return render(request, 'boards/create_new_thread.html', {'form': form})
 
 @key_required
@@ -78,7 +90,10 @@ def add_comment_to_thread(request, pk, tpk):
     board = get_object_or_404(Board, code=pk)
     thread = get_object_or_404(Thread, id=tpk)
 
-    e_form = ThreadCommentForm({'text': 'Введите текст...'})
+    if 'passcode' in request.session:
+        passcode = Passcode.objects.validate(hex_code=request.session['passcode'])
+    else:
+        passcode = False
 
     if not thread.board.code == board.code:
         return render(request, 'error.html', {'error': 'Тред не найден на борде.'})
@@ -89,7 +104,7 @@ def add_comment_to_thread(request, pk, tpk):
         if anon.banned:
             return render(request, 'error.html', {'error': 'Ваш IP-адрес был заблокирован. Только попробуй впн включить сука.'})
 
-        form = ThreadCommentForm(request.POST)
+        form = ThreadCommentForm(request.POST) if not passcode else ThreadCommentFormP(request.POST)
         
         if form.is_valid():
             data = form.cleaned_data
@@ -98,10 +113,6 @@ def add_comment_to_thread(request, pk, tpk):
             nc.save()
 
             if request.FILES is not None and len(request.FILES.getlist('files')) > 0:
-                for file in request.FILES.getlist('files'):
-                    if file.size > 25 * 1000 * 1000 and not request.user.has_perm("boards.upload_large_files"):
-                        return render(request, 'boards/add_comment_to_thread.html', {'form': e_form, 'error': 'You don`t have permission to upload files larger than 25 megabytes.'})
-
                     f = CommentFile(comment=nc, file=file)
                     f.save()
 
@@ -109,4 +120,5 @@ def add_comment_to_thread(request, pk, tpk):
         else:
             return render(request, 'error.html', {'error': "Неправильно введена капча!"})
     else:
+        e_form = ThreadCommentForm({'text': 'Введите текст...'}) if not passcode else ThreadCommentFormP({'text': 'Введите текст...'})
         return render(request, 'boards/add_comment_to_thread.html', {'form': e_form})

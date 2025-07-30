@@ -26,5 +26,7 @@ urlpatterns = [
     path('boards/', include('boards.urls')),
     path('captcha/', include('captcha.urls')),
     path('key/', include('keyauth.urls')),
+    path('api/', include('api.urls')),
+    path('passcode/', include('passcode.urls')),
     path('', RedirectView.as_view(url='/boards/', permanent=True))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
