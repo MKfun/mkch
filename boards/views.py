@@ -1,10 +1,14 @@
 import hashlib
 
+import requests
+import json
+
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views import generic
 from django.urls import reverse
+from django.conf import settings
 
 from .models import Board, Thread, Comment, ThreadFile, CommentFile, Anon
 from .models import get_or_create_anon
@@ -71,13 +75,20 @@ def create_new_thread(request, pk):
 
             nt.save()
 
+            furls = []
             if request.FILES is not None and len(request.FILES.getlist('files')) > 0:
                 for file in request.FILES.getlist('files'):
-                    if file.size > 25 * 1000 * 1000 and not request.user.has_perm("boards.upload_large_files"):
-                        return render(request, 'boards/add_comment_to_thread.html', {'form': e_form, 'error': 'You don`t have permission to upload files larger than 25 megabytes.'})
+                    if file.size > 25 * 1000 * 1000:
+                        return render(request, 'boards/add_comment_to_thread.html', {'form': e_form, 'error': 'Лимит размера фалов - 25 мегабайт.'})
 
                     f = ThreadFile(thread=nt, file=file)
                     f.save()
+
+                    furls.append(f.file.url)
+
+            if settings.MKBOT and settings.MKBOT_ADDR:
+                data = {'board': board.code, 'title': nt.title, 'text': nt.text, 'files': furls}
+                ans = requests.post(settings.MKBOT_ADDR + "/newthread", data=json.dumps(data))
 
             return HttpResponseRedirect(reverse("board", kwargs={"pk": pk}))
         else:

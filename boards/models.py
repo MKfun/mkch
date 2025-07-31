@@ -80,8 +80,7 @@ class ThreadFile(models.Model):
 
     ftypes = {
         'photo': ['png', 'jpg', 'jpeg', 'webp'],
-        'video': ['mp4', 'webm', 'gif'],
-        'document': ['pdf', 'docx']
+        'video': ['mp4', 'webm', 'gif']
     }
 
     def fclass(self):
@@ -100,8 +99,7 @@ class CommentFile(models.Model):
 
     ftypes = {
         'photo': ['png', 'jpg', 'jpeg', 'webp'],
-        'video': ['mp4', 'webm', 'gif'],
-        'document': ['pdf', 'docx']
+        'video': ['mp4', 'webm', 'gif']
     }
 
     def fclass(self):

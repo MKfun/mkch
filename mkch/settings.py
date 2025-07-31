@@ -28,6 +28,9 @@ AUTH_KEY = "key"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+MKBOT = True # оповещать мкбот о новых тредах?
+MKBOT_ADDR = "http://127.0.0.1:5000" # адрес мкбота (протокол и порт обязательны) (можно не указывать если MKBOT == False)
+
 ALLOWED_HOSTS = ['127.0.0.1', '46.98.9.75']
 CSRF_TRUSTED_ORIGINS = ['http://46.98.9.75']
 
