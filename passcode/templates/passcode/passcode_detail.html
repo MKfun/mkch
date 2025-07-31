@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <div class="container">
+        <div class="thread-container">
+            <div class="thread-item">
+                <div class="thread-header">
+                    <h3>{{passcode.code}}</h3> <h4>{{passcode.anon_set.count}} анон(ов) ввело</h4></h3>
+                </div>
+            </div>
+                <div id="posts" class="posts-container">
+                {% for anon in passcode.anon_set.all %}
+                    <div class="post">
+                        <div class="post-header" id="comment_{{comment.id}}">
+                            <h4>{{anon.ip}}</h4>
+                        </div>
+                    </div>
+                {% endfor %}
+        </div>
+    </div>
+{% endblock %}

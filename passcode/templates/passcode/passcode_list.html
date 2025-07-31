@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block body %}
+	<div class="container">
+		<div class="board-container">
+			<div id="thread-list">
+				{% for passcode in passcode_list %}
+					<div class="thread-container" onclick="window.location.href='/passcode/detail/{{passcode.code}}'">
+						<div class="thread-item">
+							<div class="thread-header">
+								<h3>{{passcode.code}}</h3> <h4>{{passcode.anon_set.count}} анон(ов) ввело</h4></h3>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

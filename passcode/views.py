@@ -4,9 +4,16 @@ import time
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.views import generic
 from django.urls import reverse
 
 from .models import Passcode
+
+from boards.models import get_or_create_anon
+from boards.models import Anon
+
+from .mixins import StaffRequiredMixin
+
 from .forms import PasscodeEnterForm, PasscodeGenerateForm
 
 def index(request):
@@ -14,14 +21,19 @@ def index(request):
 
 def passcode_enter(request):
     if request.method == 'POST':
+        anon = get_or_create_anon(request)
+
         form = PasscodeEnterForm(request.POST)
 
         if form.is_valid():
             data = form.cleaned_data
             code = hashlib.sha256(data['passcode'].encode("utf-8")).hexdigest()
 
-            if Passcode.objects.validate(hex_code=code):
+            v, m = Passcode.objects.validate(hash_code=code)
+            if v:
                 request.session['passcode'] = code
+                anon.passcodes.add(m)
+                anon.save()
             else:
                 return render(request, 'error.html', {'error': 'Пасскод не найден.'})
 
@@ -46,3 +58,9 @@ def passcode_generate(request):
         return render(request, "success_generation.html", {'passcode': code})
     else:
         return render(request, "basic_form.html", {'form': PasscodeGenerateForm(), 'button_text': 'Сгенерировать'})
+
+class PasscodeListView(generic.ListView, StaffRequiredMixin):
+    model = Passcode
+
+class PasscodeDetailView(generic.DetailView, StaffRequiredMixin):
+    model = Passcode

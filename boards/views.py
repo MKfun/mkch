@@ -7,11 +7,11 @@ from django.views import generic
 from django.urls import reverse
 
 from .models import Board, Thread, Comment, ThreadFile, CommentFile, Anon
+from .models import get_or_create_anon
+
 from passcode.models import Passcode
 
 from .forms import *
-
-from .tools import get_client_ip
 
 from keyauth.decorators import key_required, KeyRequiredMixin
 
@@ -22,7 +22,7 @@ from passcode.models import Passcode
 @key_required
 def index(request):
     boards = Board.objects.all()
-    return render(request, 'index.html', context={'boards': boards, 'passcode': Passcode.objects.validate(hex_code=request.session.get('passcode'))})
+    return render(request, 'index.html', context={'boards': boards, 'passcode': Passcode.objects.validate(hash_code=request.session.get('passcode'))})
 
 class ThreadListView(KeyRequiredMixin, generic.ListView):
     model = Thread
@@ -44,13 +44,12 @@ def create_new_thread(request, pk):
     board = get_object_or_404(Board, code=pk)
 
     if 'passcode' in request.session:
-        passcode = Passcode.objects.validate(hex_code=request.session['passcode'])
+        passcode, _ = Passcode.objects.validate(hash_code=request.session['passcode'])
     else:
         passcode = False
 
     if request.method == 'POST':
-        ip = get_client_ip(request)
-        anon, _ = Anon.objects.get_or_create(ip=ip, defaults={'ip': ip, 'code': hashlib.sha256(ip.encode("utf-8")).hexdigest()[:6], 'banned': False})
+        anon = get_or_create_anon(request)
         if anon.banned:
             return render(request, 'error.html', {'error': 'Ваш IP-адрес был заблокирован. Только попробуй впн включить сука.'})
 
@@ -93,7 +92,7 @@ def add_comment_to_thread(request, pk, tpk):
     thread = get_object_or_404(Thread, id=tpk)
 
     if 'passcode' in request.session:
-        passcode = Passcode.objects.validate(hex_code=request.session['passcode'])
+        passcode, _ = Passcode.objects.validate(hash_code=request.session['passcode'])
     else:
         passcode = False
 
@@ -101,8 +100,8 @@ def add_comment_to_thread(request, pk, tpk):
         return render(request, 'error.html', {'error': 'Тред не найден на борде.'})
 
     if request.method == 'POST':
-        ip = get_client_ip(request)
-        anon, _ = Anon.objects.get_or_create(ip=ip, defaults={'ip': ip, 'code': hashlib.sha256(ip.encode("utf-8")).hexdigest()[:6], 'banned': False})
+        anon = get_or_create_anon(request)
+
         if anon.banned:
             return render(request, 'error.html', {'error': 'Ваш IP-адрес был заблокирован. Только попробуй впн включить сука.'})
 

@@ -1,11 +1,19 @@
+import hashlib
+import re
+
 from django.utils.html import escape
 from django.db import models
+
+from passcode.models import Passcode
+from .tools import get_client_ip
 
 class Anon(models.Model):
     ip = models.GenericIPAddressField(primary_key=True)
 
     code = models.TextField(default="anon")
     banned = models.BooleanField(default=False)
+
+    passcodes = models.ManyToManyField(Passcode)
 
 class Board(models.Model):
     class Meta:
@@ -105,3 +113,8 @@ class CommentFile(models.Model):
 
     def type(self):
         return self.file.path.split('.')[-1]
+
+def get_or_create_anon(request):
+    ip = get_client_ip(request)
+    anon, _ = Anon.objects.get_or_create(ip=ip, defaults={'ip': ip, 'code': re.sub(r'([^0-9]+?)', '', hashlib.sha256(ip.encode("utf-8")).hexdigest())[:6], 'banned': False})
+    return anon

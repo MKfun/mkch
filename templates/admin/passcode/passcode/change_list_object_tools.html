@@ -7,6 +7,9 @@
     <a href="/passcode/generate">
       {% blocktranslate with cl.opts.verbose_name as name %}Generate {{ name }}{% endblocktranslate %}
     </a>
+    <a href="/passcode/list">
+      {% blocktranslate with cl.opts.verbose_name as name %}{{ name }} statistic{% endblocktranslate %}
+    </a>
   </li>
   {% endif %}
 {% endblock %}
