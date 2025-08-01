@@ -40,11 +40,9 @@
 			</div>
 		</div>
 
-		{% if board.enable_posting or (not user.is_anonymous and user.is_admin)%}
 		<div class="new-thread-button">
 			<a class="new-thread-btn" href="/boards/board/{{board.code}}/new">Начать тред</a>
 		</div>
-		{% endif %}
 
 		<div class="pagination">
 			<span class="step-links">
