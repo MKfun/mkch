@@ -87,7 +87,7 @@ def create_new_thread(request, pk):
                     furls.append(f.file.url)
 
             if settings.MKBOT and settings.MKBOT_ADDR:
-                data = {'board': board.code, 'title': nt.title, 'text': nt.text, 'files': furls}
+                data = {'board': board.code, 'id': nt.id, 'title': nt.title, 'text': nt.text, 'files': furls}
                 ans = requests.post(settings.MKBOT_ADDR + "/newthread", data=json.dumps(data))
 
             return HttpResponseRedirect(reverse("board", kwargs={"pk": pk}))

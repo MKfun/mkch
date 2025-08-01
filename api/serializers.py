@@ -8,6 +8,12 @@ class ReadOnlyModelSerializer(serializers.ModelSerializer):
             fields[field].read_only = True
         return fields
 
+class BoardListSerializer(ReadOnlyModelSerializer):
+    class Meta:
+        model = Board
+        read_only = True
+        fields = '__all__'
+
 class BoardSerializer(ReadOnlyModelSerializer):
     files = serializers.SlugRelatedField(source="threadfile_set", slug_field="file.url", many=True, read_only=True)
 

@@ -1,6 +1,7 @@
 import hashlib
 import re
 
+from django.core.validators import FileExtensionValidator
 from django.utils.html import escape
 from django.db import models
 
@@ -76,12 +77,14 @@ class Comment(models.Model):
 
 class ThreadFile(models.Model):
     thread = models.ForeignKey(Thread, help_text="Тред, которому принадлежит файл", on_delete=models.SET_NULL, null=True)
-    file = models.FileField(help_text="Файл", null=True)
 
     ftypes = {
         'photo': ['png', 'jpg', 'jpeg', 'webp'],
         'video': ['mp4', 'webm', 'gif']
     }
+    allowed = ['png', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'gif']
+
+    file = models.FileField(help_text="Файл", null=True, validators=[FileExtensionValidator(allowed)])
 
     def fclass(self):
         p = self.file.path.split('.')[-1]
@@ -95,12 +98,14 @@ class ThreadFile(models.Model):
 
 class CommentFile(models.Model):
     comment = models.ForeignKey(Comment, help_text="Коммент, которому принадлежит файл", on_delete=models.SET_NULL, null=True)
-    file = models.FileField(help_text="Файл", null=True)
 
     ftypes = {
         'photo': ['png', 'jpg', 'jpeg', 'webp'],
         'video': ['mp4', 'webm', 'gif']
     }
+    allowed = ['png', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'gif']
+
+    file = models.FileField(help_text="Файл", null=True, validators=[FileExtensionValidator(allowed)])
 
     def fclass(self):
         p = self.file.path.split('.')[-1]

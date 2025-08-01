@@ -1,10 +1,18 @@
-from captcha.fields import CaptchaField
+from django.core import validators
 from django import forms
+
+from captcha.fields import CaptchaField
 
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
 
-class MultipleFileField(forms.FileField):
+class AllowedFileField(forms.FileField):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    default_validators = [validators.FileExtensionValidator(['png', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'gif'])]
+
+class MultipleFileField(AllowedFileField):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault("widget", MultipleFileInput())
         super().__init__(*args, **kwargs)

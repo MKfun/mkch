@@ -5,7 +5,13 @@ from boards.models import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .serializers import BoardSerializer, ThreadSerializer
+from .serializers import BoardListSerializer, BoardSerializer, ThreadSerializer
+
+class BoardListView(APIView):
+    def get(self, request):
+        boards = Board.objects.all()
+        serializer = BoardListSerializer(boards, many=True, read_only=True)
+        return Response(serializer.data)
 
 class BoardView(APIView):
     def get(self, request, pk):

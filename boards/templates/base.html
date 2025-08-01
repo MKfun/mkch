@@ -28,22 +28,24 @@
 			<img id="theme-toggle" class="small-icon" src="{% static 'media/sun.svg'%}" onclick="toggleTheme()"></img>
 		</div>
 	</head>
-	<body id="body">{% block body %}{% endblock %}</body>
+	<body id="body">
+		{% block body %}{% endblock %}
 
-	{% block pagination %}
-		{% if is_paginated %}
-			<div class="pagination">
-				<span class="page-links">
-					{% if page_obj.has_previous %}
-						<a href="{{request.path}}?page={{page_obj.previous_page_number}}">Назад</a>
-					{% endif %}
-					{% if page_obj.has_next %}
-						<a href="{{request.path}}?page={{page_obj.next_page_number}}">Далее</a>
-					{% endif %}
-				</span>
-			</div>
-		{% endif %}
-	{% endblock %}
+		{% block pagination %}
+			{% if is_paginated %}
+				<div class="pagination">
+					<span class="page-links">
+						{% if page_obj.has_previous %}
+							<a href="{{request.path}}?page={{page_obj.previous_page_number}}">Назад</a>
+						{% endif %}
+						{% if page_obj.has_next %}
+							<a href="{{request.path}}?page={{page_obj.next_page_number}}">Далее</a>
+						{% endif %}
+					</span>
+				</div>
+			{% endif %}
+		{% endblock %}
+	</body>
 
 	{% load static %}
 	<script src="{% static 'js/theme.js' %}"></script>
