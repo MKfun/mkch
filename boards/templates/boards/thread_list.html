@@ -19,6 +19,8 @@
 							{% for file in thread.threadfile_set.all %}
 									{% if file.fclass == "photo" %}
 										<img src="{{file.file.url}}" id={{file.file.url}} class="thread-image" onclick="createImageFloatingDiv('{{file.file.url}}')"></img>
+									{% elif file.fclass == "video" %}
+										<video controls="" src="{{file.file.url}}"></video>
 									{% else %}
 										<a href="{{file.file.url}}">{{file.file.name}}</a>
 									{% endif %}
@@ -38,9 +40,11 @@
 			</div>
 		</div>
 
+		{% if board.enable_posting or (not user.is_anonymous and user.is_admin)%}
 		<div class="new-thread-button">
 			<a class="new-thread-btn" href="/boards/board/{{board.code}}/new">Начать тред</a>
 		</div>
+		{% endif %}
 
 		<div class="pagination">
 			<span class="step-links">

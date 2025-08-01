@@ -46,6 +46,8 @@ class ThreadDetailView(KeyRequiredMixin, generic.DetailView):
 @key_required
 def create_new_thread(request, pk):
     board = get_object_or_404(Board, code=pk)
+    if not board.enable_posting and (request.user.is_anonymous or not request.user.is_admin):
+        return render(request, 'error.html', {'error': 'Борда назначена рид-онли. Пшёл вон отсюда, хакер блеять.'})
 
     if 'passcode' in request.session:
         passcode, _ = Passcode.objects.validate(hash_code=request.session['passcode'])
@@ -62,7 +64,7 @@ def create_new_thread(request, pk):
         else:
             form = NewThreadForm(request.POST)
 
-        if form.is_valid():
+        if form.is_valid(request): # КОСТЫЫЫЫЛЬ (ДЖАНГО НЕ ПОДДЕРЖИВАЕТ МНОГО ФАЙЛОВ ПОЭТОМУ ДЕЛАЕМ ЧЕРЕЗ КОСТЫЫЫЫЫЫЫЫЫЫЛЬ, КАК СДЕЛАЮТ ПОДДЕРЖКУ 1+ ФАЙЛА (ПО ИДЕЕ В НЕКСТ ВЕРСИИ) СКАЖИТЕ МНЕ, Я ИСПРАВЛЮ КОСТЫЫЫЫЫЫЫЫЫЛЬ)
             data = form.cleaned_data
 
             nt = Thread(board=board, title=data['title'], text=data['text'], author=anon)
@@ -71,16 +73,12 @@ def create_new_thread(request, pk):
             if not board.thread_limit == 0 and threads.count() > board.thread_limit:
                 earliest = threads.earliest('id')
                 earliest.delete()
-                earliest.save()
 
             nt.save()
 
             furls = []
             if request.FILES is not None and len(request.FILES.getlist('files')) > 0:
                 for file in request.FILES.getlist('files'):
-                    if file.size > 25 * 1000 * 1000:
-                        return render(request, 'boards/add_comment_to_thread.html', {'form': e_form, 'error': 'Лимит размера фалов - 25 мегабайт.'})
-
                     f = ThreadFile(thread=nt, file=file)
                     f.save()
 
@@ -100,6 +98,9 @@ def create_new_thread(request, pk):
 @key_required
 def add_comment_to_thread(request, pk, tpk):
     board = get_object_or_404(Board, code=pk)
+    if not board.enable_posting and (request.user.is_anonymous or not request.user.is_admin):
+        return render(request, 'error.html', {'error': 'Борда назначена рид-онли. Пшёл вон отсюда, хакер блеять.'})
+
     thread = get_object_or_404(Thread, id=tpk)
 
     if 'passcode' in request.session:
@@ -117,12 +118,16 @@ def add_comment_to_thread(request, pk, tpk):
             return render(request, 'error.html', {'error': 'Ваш IP-адрес был заблокирован. Только попробуй впн включить сука.'})
 
         form = ThreadCommentForm(request.POST) if not passcode else ThreadCommentFormP(request.POST)
-        
-        if form.is_valid():
+
+        if form.is_valid(request): # КОСТЫЫЫЫЛЬ (ДЖАНГО НЕ ПОДДЕРЖИВАЕТ МНОГО ФАЙЛОВ ПОЭТОМУ ДЕЛАЕМ ЧЕРЕЗ КОСТЫЫЫЫЫЫЫЫЫЫЛЬ, КАК СДЕЛАЮТ ПОДДЕРЖКУ 1+ ФАЙЛА (ПО ИДЕЕ В НЕКСТ ВЕРСИИ) СКАЖИТЕ МНЕ, Я ИСПРАВЛЮ КОСТЫЫЫЫЫЫЫЫЫЛЬ)
             data = form.cleaned_data
 
             nc = Comment(thread=thread, text=data['text'], author=anon)
             nc.save()
+
+            if board.bump_limit > 0 and Comment.objects.filter(thread=thread).count() >= board.bump_limit:
+                thread.delete()
+                return HttpResponseRedirect(reverse("board", kwargs={"pk": board.code}))
 
             if request.FILES is not None and len(request.FILES.getlist('files')) > 0:
                     f = CommentFile(comment=nc, file=file)

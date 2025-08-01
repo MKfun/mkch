@@ -28,6 +28,8 @@ AUTH_KEY = "key"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+VALID_FILETYPES = ['png', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'gif']
+
 MKBOT = True # оповещать мкбот о новых тредах?
 MKBOT_ADDR = "http://127.0.0.1:5000" # адрес мкбота (протокол и порт обязательны) (можно не указывать если MKBOT == False)
 
@@ -53,7 +55,8 @@ INSTALLED_APPS = [
     'keyauth.apps.KeyauthConfig',
     'api.apps.ApiConfig',
     'passcode.apps.PasscodeConfig',
-    'rest_framework'
+    'rest_framework',
+    'safe_filefield'
 ]
 
 MIDDLEWARE = [

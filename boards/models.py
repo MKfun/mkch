@@ -25,9 +25,12 @@ class Board(models.Model):
     code = models.CharField(max_length=20, help_text="Код доски (например, b)", primary_key=True)
     description = models.TextField(help_text="Описание доски, которое видят пользователи в её шапке")
 
-    banner = models.FileField(help_text="Приветственный баннер", null=True)
+    banner = models.FileField(help_text="Приветственный баннер", null=True, default=None)
 
     thread_limit = models.IntegerField(help_text="Количество тредов, при котором старые начнут удаляться, давая место новым (0 для неограниченного количества)", default=1000)
+
+    bump_limit = models.IntegerField(help_text="Бамплимит. При достижении (бамплимит) комментариев в треде он 'утонет' (удалится) (0 для выключения бамплимита)", default=500)
+    enable_posting = models.BooleanField(help_text="Если False, разрешает постинг в борде только админам (борда всё ещё будет доступна для просмотра из списка)", default=True)
 
     def __str__(self):
         return self.code

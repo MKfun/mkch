@@ -12,6 +12,13 @@ body {
 	color: #800000;
 }
 
+
+.thread-file video {
+	flex: 1;
+	width: 100%;
+	height: auto;
+}
+
 .container {
 	max-width: 1200px;
 	margin: 0 auto;
@@ -196,6 +203,7 @@ body {
 
 .thread-file {
 	margin: 10px 0;
+	display: flex;
 }
 
 .thread-image {

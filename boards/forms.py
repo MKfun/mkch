@@ -1,4 +1,6 @@
+from django.core.validators import FileExtensionValidator
 from django.core import validators
+from django.conf import settings
 from django import forms
 
 from captcha.fields import CaptchaField
@@ -6,15 +8,16 @@ from captcha.fields import CaptchaField
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
 
-class AllowedFileField(forms.FileField):
+class FileAllowedField(forms.FileField):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    default_validators = [validators.FileExtensionValidator(['png', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'gif'])]
+    default_validators = [FileExtensionValidator(['pdf'])]
 
-class MultipleFileField(AllowedFileField):
+class MultipleFileField(FileAllowedField):
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault("widget", MultipleFileInput())
+        kwargs.setdefault("widget", MultipleFileInput(attrs={"accept": ', '.join(settings.VALID_FILETYPES)}))
+
         super().__init__(*args, **kwargs)
 
     def clean(self, data, initial=None):
@@ -24,27 +27,31 @@ class MultipleFileField(AllowedFileField):
             result = [single_file_clean(x, initial) for x in data]
         else:
             result = [single_file_clean(data, initial)]
-
         return result
 
 # Хуёво реализованы формы, в интернете DRY-решения не нашёл. Если кто знает - кидайте PR
 
-class NewThreadForm(forms.Form):
+class FileValidationForm(forms.Form):
+    files = MultipleFileField(required=False)
+
+    def is_valid(self, request=None):
+        if request:
+            for f in request.FILES.getlist("files"):
+                print(f)
+                if not f.name.split(".")[-1] in settings.VALID_FILETYPES:
+                    return False
+
+        return super(FileValidationForm, self).is_valid()
+
+class NewThreadFormP(FileValidationForm):
     title = forms.CharField(min_length=1, max_length=64)
     text = forms.CharField(widget=forms.Textarea, max_length=16384)
-    files = MultipleFileField(required=False)
+
+class ThreadCommentFormP(FileValidationForm):
+    text = forms.CharField(widget=forms.Textarea, max_length=16384)
+
+class NewThreadForm(NewThreadFormP):
     captcha = CaptchaField()
 
-class ThreadCommentForm(forms.Form):
-    text = forms.CharField(widget=forms.Textarea, max_length=16384)
-    files = MultipleFileField(required=False)
+class ThreadCommentForm(ThreadCommentFormP):
     captcha = CaptchaField()
-
-class NewThreadFormP(forms.Form):
-    title = forms.CharField(min_length=1, max_length=64)
-    text = forms.CharField(widget=forms.Textarea, max_length=16384)
-    files = MultipleFileField(required=False)
-
-class ThreadCommentFormP(forms.Form):
-    text = forms.CharField(widget=forms.Textarea, max_length=16384)
-    files = MultipleFileField(required=False)
