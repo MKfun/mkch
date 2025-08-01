@@ -41,6 +41,24 @@
 		<div class="new-thread-button">
 			<a class="new-thread-btn" href="/boards/board/{{board.code}}/new">Начать тред</a>
 		</div>
+
+		<div class="pagination">
+			<span class="step-links">
+				{% if page_obj.has_previous %}
+					<a href="?page=1">&laquo; В начало</a>
+					<a href="?page={{ page_obj.previous_page_number }}">Назад</a>
+				{% endif %}
+
+				<span class="current">
+					Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+				</span>
+
+				{% if page_obj.has_next %}
+					<a href="?page={{ page_obj.next_page_number }}">Далее</a>
+					<a href="?page={{ page_obj.paginator.num_pages }}">В конец &raquo;</a>
+				{% endif %}
+			</span>
+		</div>
 	</div>
 
 	<script>
