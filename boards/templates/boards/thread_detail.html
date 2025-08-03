@@ -10,6 +10,8 @@
                     {% for file in thread.threadfile_set.all %}
                         {% if file.fclass == "photo" %}
                             <img src="{{file.file.url}}" class="thread-image" id="img_thread_{{thread.id}}_{{forloop.counter}}" onclick="createImageFloatingDiv('img_thread_{{thread.id}}_{{forloop.counter}}')"></img>
+                        {% elif file.fclass == "video" %}
+                            <video controls="" src="{{file.file.url}}"></video>
                         {% else %}
                             <a href="{{file.file.url}}">{{file.file.name}}</a>
                         {% endif %}
@@ -17,7 +19,7 @@
                 </div>
 
                 <div class="thread-header">
-                    <h1>{{thread.title}} </h1> <h2>{{thread.author.code}}</h2> <h3>{{thread.creation | date}}</h3>
+                    <h1>{{thread.title}} </h1> <h5>{{thread.creation | date}}, {{thread.comment_set.count}} СМС, {{thread.rating}}PP</h5>
                 </div>
 
 
@@ -29,11 +31,13 @@
                 {% for comment in thread.comment_set.all %}
                     <div class="post">
                         <div class="post-header" id="comment_{{comment.id}}">
-                            <h4>{% if thread.author == comment.author %}(ОП){% endif %} #{{comment.id}} {{comment.author.code}} {{comment.creation | date}}</h4>
+                            <h4>{% if thread.author == comment.author %}(ОП){% endif %} #{{comment.id}} {{comment.creation | date}}</h4>
 								{% for file in comment.commentfile_set.all %}
 								                            {% if file.fclass == "photo" %}
 								                                <img src="{{file.file.url}}" class="post-image" id="img_comment_{{comment.id}}_{{forloop.counter}}" onclick="createImageFloatingDiv('img_comment_{{comment.id}}_{{forloop.counter}}')"></img>
-								                            {% else %}
+                                                            {% elif file.fclass == "video" %}
+                                                                <video controls="" src="{{file.file.url}}"></video>
+                                                            {% else %}
 								                                <a href="{{file.file.url}}">{{file.file.name}}</a>
 								                            {% endif %}
                                 {% endfor %}
@@ -49,7 +53,7 @@
                         </div>
                     </div>
                 {% endfor %}
-                <a href="/boards/board/{{thread.board.code}}/thread/{{thread.id}}/comment" class="send-btn">Написать комментарий</a>
+                {% if not thread.board.lockdown and thread.board.enable_posting or user.is_admin %}<a href="/boards/board/{{thread.board.code}}/thread/{{thread.id}}/comment" class="send-btn">Написать комментарий</a>{% endif %}
         </div>
     </div>
 

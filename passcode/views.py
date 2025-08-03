@@ -12,7 +12,7 @@ from .models import Passcode
 from boards.models import get_or_create_anon
 from boards.models import Anon
 
-from .mixins import StaffRequiredMixin
+from .mixins import StaffMemberRequiredMixin
 
 from .forms import PasscodeEnterForm, PasscodeGenerateForm
 
@@ -59,8 +59,8 @@ def passcode_generate(request):
     else:
         return render(request, "basic_form.html", {'form': PasscodeGenerateForm(), 'button_text': 'Сгенерировать'})
 
-class PasscodeListView(generic.ListView, StaffRequiredMixin):
+class PasscodeListView(StaffMemberRequiredMixin, generic.ListView):
     model = Passcode
 
-class PasscodeDetailView(generic.DetailView, StaffRequiredMixin):
+class PasscodeDetailView(StaffMemberRequiredMixin, generic.DetailView):
     model = Passcode

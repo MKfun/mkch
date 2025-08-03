@@ -30,11 +30,11 @@ DEBUG = True
 
 VALID_FILETYPES = ['png', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'gif']
 
-MKBOT = True # оповещать мкбот о новых тредах?
+MKBOT = False # оповещать мкбот о новых тредах?
 MKBOT_ADDR = "http://127.0.0.1:5000" # адрес мкбота (протокол и порт обязательны) (можно не указывать если MKBOT == False)
 
-ALLOWED_HOSTS = ['127.0.0.1', '46.98.9.75']
-CSRF_TRUSTED_ORIGINS = ['http://46.98.9.75']
+ALLOWED_HOSTS = ['127.0.0.1', '46.98.9.75', '*']
+CSRF_TRUSTED_ORIGINS = ['http://46.98.9.75', 'https://392e34f93bd3.ngrok-free.app']
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -55,8 +55,7 @@ INSTALLED_APPS = [
     'keyauth.apps.KeyauthConfig',
     'api.apps.ApiConfig',
     'passcode.apps.PasscodeConfig',
-    'rest_framework',
-    'safe_filefield'
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

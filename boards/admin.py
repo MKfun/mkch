@@ -1,9 +1,13 @@
 from django.contrib import admin
-from .models import Board, Thread, Comment, Anon, ThreadFile, CommentFile
+from .models import Board, Thread, Comment, Anon, ThreadFile, CommentFile, Category
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', )
 
 @admin.register(Board)
 class BoardAdmin(admin.ModelAdmin):
-    list_display = ('code',)
+    list_display = ('code', 'lockdown')
 
 @admin.register(Thread)
 class ThreadAdmin(admin.ModelAdmin):

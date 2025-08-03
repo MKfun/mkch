@@ -4,6 +4,8 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('lockdown', views.lockdown_all, name='lockdown'),    # ТОЛЬКО POST ЗАПРОСЫ
+    path('pin',  views.pin_toggle, name="pin_thread_view"),   # ТОЛЬКО POST ЗАПРОСЫ
     re_path(r'^board/(?P<pk>\w+)$', views.ThreadListView.as_view(), name="board"),
     re_path(r'^board/(?P<pk>\w+)/new$', views.create_new_thread, name="create_thread"),
     re_path(r'^board/(?P<pk>\w+)/thread/(?P<tpk>[0-9]+)/comment$', views.add_comment_to_thread , name="add_comment_to_thread"),

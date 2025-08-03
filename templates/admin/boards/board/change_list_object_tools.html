@@ -1,0 +1,27 @@
+{% load i18n admin_urls %}
+
+{% block object-tools-items %}
+  {% if has_add_permission %}
+  <li>
+    <button onclick="lockdown(1)">{% csrf_token %} {% blocktranslate with cl.opts.verbose_name as name %}Lock all {% endblocktranslate %}</button>
+    <button onclick="lockdown(0)">{% blocktranslate with cl.opts.verbose_name as name %}Unlock all{% endblocktranslate %}</button>
+  </li>
+
+  <script src=" https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js "></script>
+
+  <script>
+    async function lockdown(state) {
+      await fetch("/boards/lockdown", {
+        method: "POST",
+        credentials: "include",
+        headers: {'X-CSRFToken': Cookies.get("csrftoken")},
+        body: JSON.stringify({
+          lock: state,
+          next: window.location.href
+        })
+      });
+      window.location.reload();
+    }
+  </script>
+  {% endif %}
+{% endblock %}

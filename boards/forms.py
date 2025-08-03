@@ -43,12 +43,15 @@ class FileValidationForm(forms.Form):
 
         return super(FileValidationForm, self).is_valid()
 
+class LockDownForm(forms.Form):
+    lock = forms.BooleanField()
+
 class NewThreadFormP(FileValidationForm):
-    title = forms.CharField(min_length=1, max_length=64)
-    text = forms.CharField(widget=forms.Textarea, max_length=16384)
+    title = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Заголовок'}), min_length=1, max_length=64)
+    text = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Текст'}), max_length=16384)
 
 class ThreadCommentFormP(FileValidationForm):
-    text = forms.CharField(widget=forms.Textarea, max_length=16384)
+    text = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Текст'}), max_length=16384)
 
 class NewThreadForm(NewThreadFormP):
     captcha = CaptchaField()

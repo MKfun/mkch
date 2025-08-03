@@ -16,12 +16,17 @@
 			</div>
 		</div>
 
+		<form>
+			<input id="search" name="code" placeholder="Поиск..." type="text"></input>
+			<input type="submit" value="Send" />
+		</form>
+
 		<div class="boards-container">
 			<h1>Список открытых досок</h1>
 			<div class="boards-list">
 				{% for board in boards %}
 					<div class="board-item">
-						<a href="/boards/board/{{board}}">{{board}} --- {{board.description}}</a>
+						<h3><a href="/boards/board/{{board}}">{{board}} --- {{board.description}}</a> | {% if board.category %}{{board.category}}{% else %}нет категории{% endif %}</h3>
 					</div>
 				{% endfor %}
 			</div>

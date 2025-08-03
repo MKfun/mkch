@@ -1,5 +1,6 @@
 import hashlib
 import re
+import statistics
 
 from django.core.validators import FileExtensionValidator
 from django.utils.html import escape
@@ -11,10 +12,15 @@ from .tools import get_client_ip
 class Anon(models.Model):
     ip = models.GenericIPAddressField(primary_key=True)
 
-    code = models.TextField(default="anon")
     banned = models.BooleanField(default=False)
 
     passcodes = models.ManyToManyField(Passcode)
+
+class Category(models.Model):
+    name = models.TextField(help_text="Название Категории")
+
+    def __str__(self):
+        return self.name
 
 class Board(models.Model):
     class Meta:
@@ -22,15 +28,17 @@ class Board(models.Model):
             ("upload_large_files", "Can upload large files")
         ]
 
+    category = models.ForeignKey(Category, null=True, default=None, on_delete=models.SET_NULL)
+
     code = models.CharField(max_length=20, help_text="Код доски (например, b)", primary_key=True)
     description = models.TextField(help_text="Описание доски, которое видят пользователи в её шапке")
 
     banner = models.FileField(help_text="Приветственный баннер", null=True, default=None)
 
     thread_limit = models.IntegerField(help_text="Количество тредов, при котором старые начнут удаляться, давая место новым (0 для неограниченного количества)", default=1000)
-
     bump_limit = models.IntegerField(help_text="Бамплимит. При достижении (бамплимит) комментариев в треде он 'утонет' (удалится) (0 для выключения бамплимита)", default=500)
     enable_posting = models.BooleanField(help_text="Если False, разрешает постинг в борде только админам (борда всё ещё будет доступна для просмотра из списка)", default=True)
+    lockdown = models.BooleanField(help_text="Карантин. В карантинных бордах НЕЛЬЗЯ создавать или бампать треды.", default=False)
 
     def __str__(self):
         return self.code
@@ -50,6 +58,15 @@ class Thread(models.Model):
 
     title = models.CharField(max_length=64, help_text="Заголовок", default="None")
     text = models.TextField(help_text="Текст")
+
+    rating = models.IntegerField(default=0, help_text="Рейтинг треда. Он задаётся автоматически, крайне не рекомендуется менять вручную!!!")
+
+    pinned = models.BooleanField(default=False, help_text="Если тред закреплён, он будет отображаться в самом начале списка тредов. Также можно задать из контектного меню треда если вы админ.")
+
+    def rating_pp(self):
+        highest = max([x.rating for x in Thread.objects.filter(board=self.board).exclude(id=self.id)])
+        if self.rating <= highest and not highest == 0:
+            self.rating += 1
 
     def __str__(self):
         return str(self.id)
@@ -122,5 +139,5 @@ class CommentFile(models.Model):
 
 def get_or_create_anon(request):
     ip = get_client_ip(request)
-    anon, _ = Anon.objects.get_or_create(ip=ip, defaults={'ip': ip, 'code': re.sub(r'([^0-9]+?)', '', hashlib.sha256(ip.encode("utf-8")).hexdigest())[:6], 'banned': False})
+    anon, _ = Anon.objects.get_or_create(ip=ip, defaults={'ip': ip, 'banned': False})
     return anon
