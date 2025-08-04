@@ -8,18 +8,16 @@
 			<div class="motd">
 				Добро пожаловать на MKch.
 			</div>
-
-			<div class="button-group">
-				{% if not passcode %}
-					<a class="group-button" href="/passcode">Купить пасскод</a>
-				{% endif %}
+			{% if not passcode %}
+			<div class="button-group">				
+				<a class="group-button" href="/passcode">Купить пасскод</a>
 			</div>
+			{% endif %}
+			<form class="search-form">
+				<input id="search" name="code" placeholder="Поиск..." type="text"></input>
+				<input type="submit" value="Искать" />
+			</form>
 		</div>
-
-		<form>
-			<input id="search" name="code" placeholder="Поиск..." type="text"></input>
-			<input type="submit" value="Send" />
-		</form>
 
 		<div class="boards-container">
 			<h1>Список открытых досок</h1>

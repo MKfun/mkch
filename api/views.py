@@ -5,7 +5,7 @@ from boards.models import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .serializers import BoardListSerializer, BoardSerializer, ThreadSerializer
+from .serializers import BoardListSerializer, BoardSerializer, ThreadSerializer, ThreadDetailSerializer
 
 class BoardListView(APIView):
     def get(self, request):
@@ -25,4 +25,11 @@ class ThreadView(APIView):
         comments = Comment.objects.filter(thread=thread)
 
         serializer = ThreadSerializer(comments, many=True, read_only=True)
+        return Response(serializer.data)
+
+class ThreadDetailView(APIView):
+    def get(self, request, bpk, pk):
+        thread = get_object_or_404(Thread, id=pk)
+
+        serializer = ThreadDetailSerializer(thread, read_only=True)
         return Response(serializer.data)

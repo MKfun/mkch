@@ -20,7 +20,7 @@ class BoardSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = Thread
         read_only = True
-        fields = ['id', 'creation', 'title', 'text', 'author', 'board', 'files']
+        fields = ['id', 'creation', 'title', 'text', 'pinned', 'rating', 'board', 'files']
 
 class ThreadSerializer(ReadOnlyModelSerializer):
     files = serializers.SlugRelatedField(source="commentfile_set", slug_field="file.url", many=True, read_only=True)
@@ -29,3 +29,11 @@ class ThreadSerializer(ReadOnlyModelSerializer):
         model = Comment
         read_only = True
         fields = ['id', 'creation', 'text', 'author', 'thread', 'files']
+
+class ThreadDetailSerializer(ReadOnlyModelSerializer):
+    files = serializers.SlugRelatedField(source="threadfile_set", slug_field="file.url", many=True, read_only=True)
+
+    class Meta:
+        model = Thread
+        read_only = True
+        fields = ['id', 'creation', 'title', 'text', 'author', 'board', 'files']

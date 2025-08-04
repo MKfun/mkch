@@ -29,7 +29,7 @@ def index(request):
     boards = Board.objects.all().order_by("category__name")
     fname = request.GET.get('code', None)
     if fname:
-        boards = boards.filter(code__=fname)
+        boards = boards.filter(code__icontains=fname)
 
     code, _ = Passcode.objects.validate(hash_code=request.session.get('passcode'))
     return render(request, 'index.html', context={'boards': boards, 'passcode': code})
@@ -143,10 +143,17 @@ def add_comment_to_thread(request, pk, tpk):
                 thread.delete()
                 return HttpResponseRedirect(reverse("board", kwargs={"pk": board.code}))
 
+            furls = []
             if request.FILES is not None and len(request.FILES.getlist('files')) > 0:
                 for fi in request.FILES.getlist('files'):
                     f = CommentFile(comment=nc, file=fi)
                     f.save()
+
+                    furls.append(f.file.url)
+
+            if settings.MKBOT and settings.MKBOT_ADDR:
+                data = {'thread': thread.id, 'thread_title': thread.title, 'board': board.code, 'id': nc.id, 'text': nc.text, 'files': furls}
+                ans = requests.post(settings.MKBOT_ADDR + "/newcomment", data=json.dumps(data))
 
             return HttpResponseRedirect(reverse("thread_detail_view", kwargs={"bpk": pk, "pk": tpk}))
         else:

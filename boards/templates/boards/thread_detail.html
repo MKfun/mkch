@@ -3,13 +3,13 @@
 {% block title %}<title>MKch - #{{thread.id}}</title>{% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="container" id="all-container">
         <div class="thread-container">
             <div class="thread-item">
                 <div class="thread-file" id="thread-file">
                     {% for file in thread.threadfile_set.all %}
                         {% if file.fclass == "photo" %}
-                            <img src="{{file.file.url}}" class="thread-image" id="img_thread_{{thread.id}}_{{forloop.counter}}" onclick="createImageFloatingDiv('img_thread_{{thread.id}}_{{forloop.counter}}')"></img>
+                            <a href="{{file.file.url}}"><img src="{{file.file.url}}" class="thread-image" id="img_thread_{{thread.id}}_{{forloop.counter}}"></img></a>
                         {% elif file.fclass == "video" %}
                             <video controls="" src="{{file.file.url}}"></video>
                         {% else %}
@@ -34,7 +34,7 @@
                             <h4>{% if thread.author == comment.author %}(ОП){% endif %} #{{comment.id}} {{comment.creation | date}}</h4>
 								{% for file in comment.commentfile_set.all %}
 								                            {% if file.fclass == "photo" %}
-								                                <img src="{{file.file.url}}" class="post-image" id="img_comment_{{comment.id}}_{{forloop.counter}}" onclick="createImageFloatingDiv('img_comment_{{comment.id}}_{{forloop.counter}}')"></img>
+								                                <a href="{{file.file.url}}"><img src="{{file.file.url}}" class="post-image" id="img_comment_{{comment.id}}_{{forloop.counter}}"></img></a>
                                                             {% elif file.fclass == "video" %}
                                                                 <video controls="" src="{{file.file.url}}"></video>
                                                             {% else %}
@@ -57,6 +57,21 @@
         </div>
     </div>
 
-    {% load static %}
-    <script src={% static 'js/draggable.js' %}></script>
+	<script>
+		function updateCommentList() {
+			fetch(window.location.href)
+				.then(response => response.text())
+				.then(text => {
+					const parser = new DOMParser();
+					const list = parser.parseFromString(text, 'text/html');
+
+					const container = list.getElementById("all-container");
+
+                    document.getElementById("all-container").innerHTML = container.innerHTML;
+				});
+		}
+
+		setInterval(updateCommentList, 10000);
+	</script>
+
 {% endblock %}

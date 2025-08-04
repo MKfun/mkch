@@ -64,9 +64,13 @@ class Thread(models.Model):
     pinned = models.BooleanField(default=False, help_text="Если тред закреплён, он будет отображаться в самом начале списка тредов. Также можно задать из контектного меню треда если вы админ.")
 
     def rating_pp(self):
-        highest = max([x.rating for x in Thread.objects.filter(board=self.board).exclude(id=self.id)])
-        if self.rating <= highest and not highest == 0:
+        l = [x.rating for x in Thread.objects.filter(board=self.board).exclude(id=self.id)]
+        if len(l) == 0 and self.rating == 0:
             self.rating += 1
+        elif len(l) > 0:
+            highest = max(l)
+            if self.rating <= highest:
+                self.rating += 1
 
     def __str__(self):
         return str(self.id)
@@ -99,8 +103,8 @@ class ThreadFile(models.Model):
     thread = models.ForeignKey(Thread, help_text="Тред, которому принадлежит файл", on_delete=models.SET_NULL, null=True)
 
     ftypes = {
-        'photo': ['png', 'jpg', 'jpeg', 'webp'],
-        'video': ['mp4', 'webm', 'gif']
+        'photo': ['png', 'jpg', 'jpeg', 'webp', 'gif'],
+        'video': ['mp4', 'webm']
     }
     allowed = ['png', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'gif']
 
@@ -120,8 +124,8 @@ class CommentFile(models.Model):
     comment = models.ForeignKey(Comment, help_text="Коммент, которому принадлежит файл", on_delete=models.SET_NULL, null=True)
 
     ftypes = {
-        'photo': ['png', 'jpg', 'jpeg', 'webp'],
-        'video': ['mp4', 'webm', 'gif']
+        'photo': ['png', 'jpg', 'jpeg', 'webp', 'gif'],
+        'video': ['mp4', 'webm']
     }
     allowed = ['png', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'gif']
 

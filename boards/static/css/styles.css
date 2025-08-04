@@ -134,6 +134,20 @@ h1, h2, h3, h4, h5, h6 {
 	text-align: center;
 }
 
+.info-header {
+	background: #efefef;
+	border: 1px solid #b7c5d9;
+	margin-bottom: 10px;
+	padding: 10px;
+	text-align: center;
+}
+
+.info-container {
+	background: #f0e0d6;
+	border: 1px solid #d9bfb7;
+	padding: 10px;
+	margin-bottom: 10px;
+}
 .motd {
 	color: #800000;
 	font-size: 16px;
@@ -169,6 +183,11 @@ h1, h2, h3, h4, h5, h6 {
 	font-size: 16px;
 }
 
+.search-form {
+	max-width: 256 px;
+	right: 20px;
+	position: fixed;
+}
 .back-link {
 	color: #ff6b6b;
 	text-decoration: none;
@@ -300,6 +319,7 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight: bold;
 	border-radius: 5px;
 	transition: background 0.2s;
+	margin: 1px;
 }
 
 .board-btn {
@@ -719,6 +739,10 @@ form table th,
 											.dark-theme form input {
 												background: #444;
 											}
+											
+											.dark-theme .board-container {
+												background: #333;
+											}
 
 											.dark-theme form input:focus {
 												background: #443
@@ -975,6 +999,15 @@ form table th,
 }
 
 .dark-theme .motd-container {
+	background: #333;
+	border: 1px solid #555;
+}
+
+.dark-theme .info-container {
+	background: #333;
+	border: 1px solid #555;
+}
+.dark-theme .info-header {
 	background: #333;
 	border: 1px solid #555;
 }
