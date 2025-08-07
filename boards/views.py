@@ -18,6 +18,8 @@ from passcode.models import Passcode
 
 from .forms import *
 
+from .tools import remove_exif
+
 from keyauth.decorators import key_required, KeyRequiredMixin
 
 from passcode.models import Passcode
@@ -36,7 +38,7 @@ def index(request):
 
 class ThreadListView(KeyRequiredMixin, generic.ListView):
     model = Thread
-    paginate_by = 10
+    paginate_by = 9
 
     def get_queryset(self):
         q = super().get_queryset().filter(board__code=self.kwargs['pk']).order_by("-pinned", "-rating")
@@ -80,19 +82,21 @@ def create_new_thread(request, pk):
             data = form.cleaned_data
 
             nt = Thread(board=board, title=data['title'], text=data['text'], author=anon)
+            nt.save()
 
             threads = Thread.objects.filter(board__code=board.code)
-            if not board.thread_limit == 0 and threads.count() > board.thread_limit:
+            if not board.thread_limit <= 0 and threads.count() > board.thread_limit:
                 earliest = threads.earliest('id')
                 earliest.delete()
-
-            nt.save()
 
             furls = []
             if request.FILES is not None and len(request.FILES.getlist('files')) > 0:
                 for file in request.FILES.getlist('files'):
                     f = ThreadFile(thread=nt, file=file)
                     f.save()
+
+                    if f.fclass() == "photo" and not f.type() == "gif":
+                        remove_exif(f.file.path)
 
                     furls.append(f.file.url)
 
@@ -148,6 +152,9 @@ def add_comment_to_thread(request, pk, tpk):
                 for fi in request.FILES.getlist('files'):
                     f = CommentFile(comment=nc, file=fi)
                     f.save()
+
+                    if f.fclass() == "photo" and not f.type() == "gif":
+                        remove_exif(f.path)
 
                     furls.append(f.file.url)
 

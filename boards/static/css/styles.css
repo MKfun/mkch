@@ -18,6 +18,37 @@ h1, h2, h3, h4, h5, h6 {
 	overflow-wrap: break-word;
 }
 
+.description {
+	max-width: 100vw;
+	word-break: break-word;
+	overflow-wrap: break-word;
+}
+
+.dropfield {
+	text-align: center;
+	width: 100%;
+	height: 10%;
+}
+
+.dragndrop {
+	animation: shake 0.5s;
+	animation-iteration-count: infinite;
+}
+
+@keyframes shake {
+	0% { transform: translate(1px, 1px) rotate(0deg); }
+	10% { transform: translate(-1px, -2px) rotate(-1deg); }
+	20% { transform: translate(-3px, 0px) rotate(1deg); }
+	30% { transform: translate(3px, 2px) rotate(0deg); }
+	40% { transform: translate(1px, -1px) rotate(1deg); }
+	50% { transform: translate(-1px, 2px) rotate(-1deg); }
+	60% { transform: translate(-3px, 1px) rotate(0deg); }
+	70% { transform: translate(3px, 1px) rotate(-1deg); }
+	80% { transform: translate(-1px, -1px) rotate(1deg); }
+	90% { transform: translate(1px, 2px) rotate(0deg); }
+	100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
 .thread-file {
 	display: flex;
 	flex-wrap: wrap;
@@ -204,7 +235,21 @@ h1, h2, h3, h4, h5, h6 {
 
 .threads-list {
 	max-height: 600px;
-	overflow-y: auto;
+	overflow: hidden;
+}
+
+@keyframes slidein {
+	from {
+		margin-right: 100%;
+		opacity: 0;
+		width: 300%;
+	}
+
+	to {
+		margin-right: 0%;
+		opacity: 1;
+		width: 100%;
+	}
 }
 
 .thread-item {
@@ -213,6 +258,9 @@ h1, h2, h3, h4, h5, h6 {
 	margin-bottom: 10px;
 	padding: 10px;
 	transition: background 0.2s;
+
+	animation: slidein;
+	animation-duration: 0.5s;
 }
 
 .thread-item:hover {
@@ -244,7 +292,13 @@ h1, h2, h3, h4, h5, h6 {
 .thread-image {
 	max-width: 200px;
 	max-height: 200px;
+	transition: transform .2s;
 	border: 1px solid #d9bfb7;
+	margin: 0 auto;
+}
+
+.thread-image:hover {
+	transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
 
 .board-banner {

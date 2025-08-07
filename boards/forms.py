@@ -16,7 +16,7 @@ class FileAllowedField(forms.FileField):
 
 class MultipleFileField(FileAllowedField):
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault("widget", MultipleFileInput(attrs={"accept": ', '.join(settings.VALID_FILETYPES)}))
+        kwargs.setdefault("widget", MultipleFileInput(attrs={"ondrop": "drop_handler(event)", "ondragenter": "dragenter_handler(event)", "ondragleave": "dragleave_handler(event)", "ondragover": "dragover_handler(event)", "accept": ', '.join(settings.VALID_FILETYPES)}))
 
         super().__init__(*args, **kwargs)
 

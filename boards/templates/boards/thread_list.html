@@ -14,6 +14,7 @@
 					<img src="{{board.banner.url}}" class="banner-image"></img>
 				</div>
 			{% endif %}
+			<h3 class="description">{{board.detail_description}}</h3>
 		<div class="new-thread-button">
 			{% if user.is_staff or not board.lockdown and board.enable_posting %}
 				<a class="new-thread-btn" href="/boards/board/{{board.code}}/new">Начать тред</a>
@@ -21,38 +22,38 @@
 				<h1>писька</h1>
 			{% endif %}
 		</div>
-			<div id="thread-list">
-				
+			<div id="thread-list" class="thread-list-c">
+				<div class="thread-inner">
+					{% for thread in thread_list %}
+						<div class="thread-container">
+							<div class="thread-item">
+								<div class="thread-file" onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'">
+								{% for file in thread.threadfile_set.all %}
+										{% if file.fclass == "photo" %}
+											<a href="{{file.file.url}}"><img src="{{file.file.url}}" id={{file.file.url}} class="thread-image"></img></a>
+										{% elif file.fclass == "video" %}
+											<video controls="" src="{{file.file.url}}"></video>
+										{% else %}
+											<a href="{{file.file.url}}">{{file.file.name}}</a>
+										{% endif %}
+								{% endfor %}
+								</div>
 
-				{% for thread in thread_list %}
-					<div class="thread-container">
-						<div class="thread-item">
-							<div class="thread-file" onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'">
-							{% for file in thread.threadfile_set.all %}
-									{% if file.fclass == "photo" %}
-										<a href="{{file.file.url}}"><img src="{{file.file.url}}" id={{file.file.url}} class="thread-image"></img></a>
-									{% elif file.fclass == "video" %}
-										<video controls="" src="{{file.file.url}}"></video>
-									{% else %}
-										<a href="{{file.file.url}}">{{file.file.name}}</a>
+								<div class="thread-header">
+									<div onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'"><h1>{{thread.title}}</h1> <h2>{{thread.comment_set.count}} СМС, {{thread.rating}}PP {{thread.creation | date}}</h2></div>
+									{% if user.is_staff %}
+										{% load static %}
+										<img class="small-icon" src="{% if thread.pinned %}{% static 'media/unpin.png' %}{% else %}{% static 'media/pin.png' %}{% endif %}" onclick="pin({{thread.id}})"></img>
 									{% endif %}
-							{% endfor %}
-							</div>
+								</div>
 
-							<div class="thread-header">
-								<div onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'"><h1>{{thread.title}}</h1> <h2>{{thread.comment_set.count}} СМС, {{thread.rating}}PP {{thread.creation | date}}</h2></div>
-								{% if user.is_staff %}
-									{% load static %}
-									<img class="small-icon" src="{% if thread.pinned %}{% static 'media/unpin.png' %}{% else %}{% static 'media/pin.png' %}{% endif %}" onclick="pin({{thread.id}})"></img>
-								{% endif %}
-							</div>
-
-							<div class="thread-description" onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'">
-								<h2>{{thread.text}}</h2>
+								<div class="thread-description" onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'">
+									<h2>{{thread.text}}</h2>
+								</div>
 							</div>
 						</div>
-					</div>
-				{% endfor %}
+					{% endfor %}
+				</div>
 			</div>
 		</div>
 
@@ -76,25 +77,6 @@
 			</span>
 		</div>
 	</div>
-
-	<script>
-		function updateThreadList() {
-			fetch(window.location.href)
-				.then(response => response.text())
-				.then(text => {
-					const parser = new DOMParser();
-					const list = parser.parseFromString(text, 'text/html');
-
-					const container = list.getElementById("thread-container");
-
-					if(container) {
-						document.getElementById("thread-list").innerHTML = container.innerHTML;
-					}
-				});
-		}
-
-		setInterval(updateThreadList, 10000);
-	</script>
 
 	<script src=" https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js "></script>
 

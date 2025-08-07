@@ -31,7 +31,8 @@ class Board(models.Model):
     category = models.ForeignKey(Category, null=True, default=None, on_delete=models.SET_NULL)
 
     code = models.CharField(max_length=20, help_text="Код доски (например, b)", primary_key=True)
-    description = models.TextField(help_text="Описание доски, которое видят пользователи в её шапке")
+    description = models.TextField(help_text="Короткое описание доски, которое пользователи видят в списке рядом с ней")
+    detail_description = models.TextField(help_text="Подробное описание доски, видно которое пользователи видят в шапке самой доски", null=True)
 
     banner = models.FileField(help_text="Приветственный баннер", null=True, default=None)
 

@@ -36,4 +36,4 @@ class ThreadDetailSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = Thread
         read_only = True
-        fields = ['id', 'creation', 'title', 'text', 'author', 'board', 'files']
+        fields = ['id', 'creation', 'title', 'text', 'board', 'files']
