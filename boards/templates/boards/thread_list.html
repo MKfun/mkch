@@ -9,7 +9,7 @@
 				<input id="search" name="title" placeholder="Поиск..." type="text"></input>
 				<input type="submit" value="Искать" />
 			</form>
-			<button id="nsfw-toggle" class="new-thread-btn" onclick="toggleNsfwBlur()">{% if blur %} Не блюрить NSFW{% else %}Блюрить NSFW{% endif %}</button>
+			<!-- <button id="nsfw-toggle" class="new-thread-btn" onclick="toggleNsfwBlur()">{% if blur %} Не блюрить NSFW{% else %}Блюрить NSFW{% endif %}</button> -->
 		</div>
 
 		<div class="board-container">
@@ -21,7 +21,7 @@
 			<h3 class="description">{{board.detail_description}}</h3>
 		<div class="new-thread-button">
 			{% if user.is_staff or not board.lockdown and board.enable_posting %}
-				<a class="new-thread-btn" href="/boards/board/{{board.code}}/new">Начать тред</a>
+				<a class="new-thread-btn" href="/boards/board/{{board.code}}/new">> Начать тред <</a>
 			{% else %}
 				<h1>писька</h1>
 			{% endif %}
