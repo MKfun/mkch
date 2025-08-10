@@ -4,10 +4,14 @@
 
 {% block body %}
 	<div class="container">
-		<form class="search-form">
-			<input id="search" name="title" placeholder="Поиск..." type="text"></input>
-			<input type="submit" value="Искать" />
-		</form>
+		<div class="search-form">
+			<form>
+				<input id="search" name="title" placeholder="Поиск..." type="text"></input>
+				<input type="submit" value="Искать" />
+			</form>
+			<button id="nsfw-toggle" class="new-thread-btn" onclick="toggleNsfwBlur()">{% if blur %} Не блюрить NSFW{% else %}Блюрить NSFW{% endif %}</button>
+		</div>
+
 		<div class="board-container">
 			{% if board.banner %}
 				<div class="board-banner">
@@ -30,9 +34,9 @@
 								<div class="thread-file" onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'">
 								{% for file in thread.threadfile_set.all %}
 										{% if file.fclass == "photo" %}
-											<a href="{{file.file.url}}"><img src="{{file.file.url}}" id={{file.file.url}} class="thread-image"></img></a>
+											<a href="{{file.file.url}}"><img src="{{file.file.url}}" id={{file.file.url}} class="thread-image{% if thread.is_nsfw and blur %}-nsfw{% endif %}"></img></a>
 										{% elif file.fclass == "video" %}
-											<video controls="" src="{{file.file.url}}"></video>
+											<video controls="" src="{{file.file.url}}" {% if thread.is_nsfw and blur %}class="blured"{% endif %}></video>
 										{% else %}
 											<a href="{{file.file.url}}">{{file.file.name}}</a>
 										{% endif %}
@@ -78,7 +82,8 @@
 		</div>
 	</div>
 
-	<script src=" https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js "></script>
+	{% load static %}
+	<script src="{% static 'js/nsfw.js' %}"></script>
 
 	<script>
 		async function pin(id) {

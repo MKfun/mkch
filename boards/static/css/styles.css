@@ -128,7 +128,10 @@ h1, h2, h3, h4, h5, h6 {
 	background: #f0e0d6;
 	border: 1px solid #d9bfb7;
 	padding: 10px;
-	transition: background 0.2s;
+}
+
+.warning {
+	color: red;
 }
 
 .board-item:hover {
@@ -257,10 +260,6 @@ h1, h2, h3, h4, h5, h6 {
 	border: 1px solid #d9bfb7;
 	margin-bottom: 10px;
 	padding: 10px;
-	transition: background 0.2s;
-
-	animation: slidein;
-	animation-duration: 0.5s;
 }
 
 .thread-item:hover {
@@ -298,6 +297,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .thread-image:hover {
+	transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+.thread-image-nsfw {
+	max-width: 200px;
+	max-height: 200px;
+	transition: transform .2s;
+	border: 1px solid #d9bfb7;
+	margin: 0 auto;
+	filter: blur(0.5rem);
+}
+
+.thread-image-nsfw:hover {
+	filter: blur(0rem);
 	transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
 
@@ -549,6 +562,43 @@ div:target {
 	max-width: 300px;
 	max-height: 300px;
 	border: 1px solid #d9bfb7;
+}
+
+.post-image-nsfw {
+	max-width: 300px;
+	max-height: 300px;
+	border: 1px solid #d9bfb7;
+	filter: blur(0.5rem);
+}
+
+.post-image-nsfw:hover {
+	filter: blur(0rem);
+	transform: scale(1.1);
+}
+
+.blured {
+	max-width: 300px;
+	max-height: 300px;
+	border: 1px solid #d9bfb7;
+	filter: blur(0.5rem);
+	transition: 1s filter linear;
+	-webkit-transition: 1s -webkit-filter linear;
+	-moz-transition: 1s -moz-filter linear;
+	-ms-transition: 1s -ms-filter linear;
+	-o-transition: 1s -o-filter linear;
+}
+
+.blured:hover {
+	filter: blur(0rem);
+	transition: 1s filter linear;
+	-webkit-transition: 1s -webkit-filter linear;
+	-moz-transition: 1s -moz-filter linear;
+	-ms-transition: 1s -ms-filter linear;
+	-o-transition: 1s -o-filter linear;
+}
+
+.blured:playing {
+	filter: blur(0rem);
 }
 
 .file-info {

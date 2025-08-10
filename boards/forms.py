@@ -49,9 +49,11 @@ class LockDownForm(forms.Form):
 class NewThreadFormP(FileValidationForm):
     title = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Заголовок'}), min_length=1, max_length=64)
     text = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Текст'}), max_length=16384)
+    is_nsfw = forms.BooleanField(label="NSFW?", required=False)
 
 class ThreadCommentFormP(FileValidationForm):
     text = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Текст'}), max_length=16384)
+    is_nsfw = forms.BooleanField(label="NSFW?", required=False)
 
 class NewThreadForm(NewThreadFormP):
     captcha = CaptchaField()

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block body %}
+	<div class="container">
+		<div class="motd-container">
+			<div class="motd">
+				{% load static %}
+				<img src="{% static 'media/not_found.gif' %}"></img>
+			</div>
+			<h3>Пост, что вы искали, удалён или не найден. Быть может, вы неправильно ввели данные?</h3>
+		</div>
+{% endblock %}

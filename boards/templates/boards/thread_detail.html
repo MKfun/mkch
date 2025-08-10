@@ -32,10 +32,10 @@
                     {% for comment in thread.comment_set.all %}
                         <div class="post" id="post-{{comment.id}}">
                             <div class="post-header" id="comment_{{comment.id}}">
-                                <h4>{% if thread.author == comment.author %}(ОП){% endif %} #{{comment.id}} {{comment.creation | date}}</h4>
+                                <h4>{% if thread.author == comment.author %}(ОП){% endif %} {{comment.author_code}} #{{comment.id}} {{comment.creation | date}}</h4>
                                     {% for file in comment.commentfile_set.all %}
                                                                 {% if file.fclass == "photo" %}
-                                                                    <a href="{{file.file.url}}"><img src="{{file.file.url}}" class="post-image" id="img_comment_{{comment.id}}_{{forloop.counter}}"></img></a>
+                                                                    <a href="{{file.file.url}}"><img src="{{file.file.url}}" class="post-image{% if comment.is_nsfw and blur %}-nsfw{% endif %}" id="img_comment_{{comment.id}}_{{forloop.counter}}"></img></a>
                                                                 {% elif file.fclass == "video" %}
                                                                     <video class="video-post-{{comment.id}}" controls="" src="{{file.file.url}}"></video>
                                                                 {% else %}
