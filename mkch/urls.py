@@ -21,6 +21,8 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
 
+from .views import *
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('boards/', include('boards.urls')),
@@ -28,5 +30,6 @@ urlpatterns = [
     path('key/', include('keyauth.urls')),
     path('api/', include('api.urls')),
     path('passcode/', include('passcode.urls')),
-    path('', RedirectView.as_view(url='/boards/', permanent=True))
+    path('', RedirectView.as_view(url='/boards/', permanent=True)),
+    path('settings/', settings_view, name="settings")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

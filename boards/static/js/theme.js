@@ -13,7 +13,7 @@ function toggleTheme() {
     }
 
     if(e) {
-        e.src = e.src.replace(theme=="dark"?"moon.svg":"sun.svg", theme=="dark"?"sun.svg":"moon.svg");
+        e.innerHTML = theme == "dark" ? "Тёмная тема" : "Светлая тема";
     }
 }
 
@@ -24,9 +24,10 @@ function initTheme() {
 
     if(theme === "dark") {
         b.classList.add("dark-theme");
-        if(e) {
-            e.src = e.src.replace("sun.svg", "moon.svg");
-        }
+    }
+
+    if(e) {
+        e.innerHTML = theme == "dark" ? "Светлая тема" : "Тёмная тема";
     }
 }
 

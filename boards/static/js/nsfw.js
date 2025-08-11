@@ -5,10 +5,12 @@ function toggleNsfwBlur() {
 
     if(s=="1") {
         Cookies.set("blur-nsfw", "0");
-        window.location.reload();
     }
     else {
         Cookies.set("blur-nsfw", "1");
-        window.location.reload();
+    }
+
+    if(e) {
+        e.innerHTML = s=="1" ? "Блюрить NSFW" : "Не блюрить NSFW"
     }
 }
