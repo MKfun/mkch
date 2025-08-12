@@ -28,61 +28,34 @@
                 </div>
             </div>
                 <div id="posts" class="posts-container">
-                <div id="posts-inner" class="posts-inner-c">
-                    {% for comment in thread.comment_set.all %}
-                        <div class="post" id="post-{{comment.id}}">
-                            <div class="post-header" id="comment_{{comment.id}}">
-                                <h4>{% if thread.author == comment.author %}(ОП){% endif %} {{comment.author_code}} #{{comment.id}} {{comment.creation | date}}</h4>
-                                    {% for file in comment.commentfile_set.all %}
-                                                                {% if file.fclass == "photo" %}
-                                                                    <a href="{{file.file.url}}"><img src="{{file.file.url}}" class="post-image{% if comment.is_nsfw and blur %}-nsfw{% endif %}" id="img_comment_{{comment.id}}_{{forloop.counter}}"></img></a>
-                                                                {% elif file.fclass == "video" %}
-                                                                    <video class="video-post-{{comment.id}}" controls="" src="{{file.file.url}}"></video>
-                                                                {% else %}
-                                                                    <a href="{{file.file.url}}">{{file.file.name}}</a>
-                                                                {% endif %}
-                                    {% endfor %}
-                                <div class="post-message"><h3>{{comment.formatted | safe}}</h3></div>
-                            </div>
-
-                            {% if comment.replies %}
-                            <div class="replies">
-                                <h6 class="reply">
-                                    {% for reply in comment.replies %}
-                                        <a href="#comment_{{reply.id}}">>> {{reply.id}}</a>
-                                    {% endfor %}
-                                </h6>
-                            </div>
-                            {% endif %}
-
+                {% for comment in thread.comment_set.all %}
+                    <div class="post">
+                        <div class="post-header" id="comment_{{comment.id}}">
+                            <h4>{% if thread.author == comment.author %}(ОП){% endif %} #{{comment.id}} {{comment.creation | date}}</h4>
+								{% for file in comment.commentfile_set.all %}
+								                            {% if file.fclass == "photo" %}
+								                                <a href="{{file.file.url}}"><img src="{{file.file.url}}" class="post-image" id="img_comment_{{comment.id}}_{{forloop.counter}}"></img></a>
+                                                            {% elif file.fclass == "video" %}
+                                                                <video controls="" src="{{file.file.url}}"></video>
+                                                            {% else %}
+								                                <a href="{{file.file.url}}">{{file.file.name}}</a>
+								                            {% endif %}
+                                {% endfor %}
+                            <div class="post-message"><h3>{{comment.formatted | safe}}</h3></div>
                         </div>
-                    {% endfor %}
-                </div>
+                        {% if comment.replies %}
+                        <div class="replies">
+                            <h6 class="reply">
+                                {% for reply in comment.replies %}
+                                    <a href="#comment_{{reply.id}}">>> {{reply.id}}</a>
+                                {% endfor %}
+                            </h6>
+                        </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
                 {% if not thread.board.lockdown and thread.board.enable_posting or user.is_admin %}<a href="/boards/board/{{thread.board.code}}/thread/{{thread.id}}/comment" class="send-btn">Написать комментарий</a>{% endif %}
         </div>
     </div>
-
-	<script>
-		function updateCommentList() {
-			fetch(window.location.href)
-				.then(response => response.text())
-				.then(text => {
-					const parser = new DOMParser();
-					const list = parser.parseFromString(text, 'text/html');
-
-					const posts = list.querySelectorAll(".post");
-					const posts_o = document.querySelectorAll(".post");
-					const container = document.querySelector(".posts-inner-c");
-
-					if(posts.length <= posts_o.length) {return;}
-					const diff = posts.length - posts_o.length;
-                    for(let i = posts_o.length-1; i < posts.length; i++) {
-                        container.appendChild(posts[i]);
-					}
-				});
-		}
-
-		setInterval(updateCommentList, 10000);
-	</script>
 
 {% endblock %}

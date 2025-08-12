@@ -31,14 +31,12 @@ class Board(models.Model):
     category = models.ForeignKey(Category, null=True, default=None, on_delete=models.SET_NULL)
 
     code = models.CharField(max_length=20, help_text="Код доски (например, b)", primary_key=True)
-    description = models.TextField(help_text="Короткое описание доски, которое пользователи видят в списке рядом с ней")
-    detail_description = models.TextField(help_text="Подробное описание доски, видно которое пользователи видят в шапке самой доски", null=True)
+    description = models.TextField(help_text="Описание доски, которое видят пользователи в её шапке")
 
     banner = models.FileField(help_text="Приветственный баннер", null=True, default=None)
 
     thread_limit = models.IntegerField(help_text="Количество тредов, при котором старые начнут удаляться, давая место новым (0 для неограниченного количества)", default=1000)
     bump_limit = models.IntegerField(help_text="Бамплимит. При достижении (бамплимит) комментариев в треде он 'утонет' (удалится) (0 для выключения бамплимита)", default=500)
-    is_nsfw = models.BooleanField(help_text="Помечает борд как NSFW. Файлы с тредов в NSFW бордах отправляются МКБотом под спойлером, а сама категория помечается красным цветом.", default=False)
     enable_posting = models.BooleanField(help_text="Если False, разрешает постинг в борде только админам (борда всё ещё будет доступна для просмотра из списка)", default=True)
     lockdown = models.BooleanField(help_text="Карантин. В карантинных бордах НЕЛЬЗЯ создавать или бампать треды.", default=False)
 
@@ -62,7 +60,6 @@ class Thread(models.Model):
     text = models.TextField(help_text="Текст")
 
     rating = models.IntegerField(default=0, help_text="Рейтинг треда. Он задаётся автоматически, крайне не рекомендуется менять вручную!!!")
-    is_nsfw = models.BooleanField(help_text="Является ли тред NSFW (всегда True для комментов на NSFW бордах)", default=False)
 
     pinned = models.BooleanField(default=False, help_text="Если тред закреплён, он будет отображаться в самом начале списка тредов. Также можно задать из контектного меню треда если вы админ.")
 
@@ -84,8 +81,6 @@ class Comment(models.Model):
     thread = models.ForeignKey(Thread, help_text="Тред, к которому пишется комментарий", on_delete=models.SET_NULL, null=True)
 
     author = models.ForeignKey(Anon, help_text="Создатель треда", on_delete=models.SET_NULL, null=True)
-    author_code = models.TextField(help_text="Код автора, задаётся автоматически.", null=True, default=None)
-    is_nsfw = models.BooleanField(help_text="Является ли коммент NSFW (всегда True для комментов под NSFW тредами)", default=False)
 
     text = models.TextField(help_text="Текст")
 

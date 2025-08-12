@@ -11,5 +11,3 @@ urlpatterns = [
     re_path(r'^board/(?P<pk>\w+)/thread/(?P<tpk>[0-9]+)/comment$', views.add_comment_to_thread , name="add_comment_to_thread"),
     re_path(r'^board/(?P<bpk>\w+)/thread/(?P<pk>[0-9]+)$', views.ThreadDetailView.as_view(), name="thread_detail_view"),
 ]
-
-handler404 = views.handler404

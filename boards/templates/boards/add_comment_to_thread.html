@@ -3,23 +3,20 @@
 {% block title %}<title>MKch - Комментирование</title>{% endblock %}
 
 {% block body %}
-	<div class="container">
-		<div class="thread">
-			<h2>Добавить комментарий к треду</h2>
-			{% if error %}
-				<h3>Ошибка: {{error}}</h3>
-			{% endif %}
+<div class="container">
+	<div class="thread">
+		<h2>Добавить комментарий к треду</h2>
+		{% if error %}
+			<h3>Ошибка: {{error}}</h3>
+		{% endif %}
 
-			<form enctype="multipart/form-data" action="" method="post">
-				{% csrf_token %}
-				<table>
-					{{form}}
-				</table>
-				<input type="submit" value="Создать" />
-			</form>
-		</div>
+		<form enctype="multipart/form-data" action="" method="post">
+			{% csrf_token %}
+			<table>
+				{{form}}
+			</table>
+			<input type="submit" value="Создать" />
+		</form>
 	</div>
-
-	{% load static %}
-	<script src="{% static 'js/dragNDrop.js' %}"></script>
+</div>
 {% endblock %}

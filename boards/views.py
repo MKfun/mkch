@@ -3,7 +3,7 @@ import hashlib
 import requests
 import json
 
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -18,20 +18,15 @@ from passcode.models import Passcode
 
 from .forms import *
 
-from .tools import remove_exif
-
 from keyauth.decorators import key_required, KeyRequiredMixin
 
 from passcode.models import Passcode
 
 # Хуёво реализована проверка пасскодов, в интернете DRY-решения не нашёл. Если кто знает - кидайте PR
 
-def handler404(request):
-    return render(request, 'not_found.html', {error: 'Мы искали по всем углам, но не нашли пост что вам нужен. Может, пост был удалён или вы ввели неправильные данные?'})
-
 @key_required
 def index(request):
-    boards = Board.objects.all().order_by("category__name", "-is_nsfw")
+    boards = Board.objects.all().order_by("category__name")
     fname = request.GET.get('code', None)
     if fname:
         boards = boards.filter(code__icontains=fname)
@@ -41,7 +36,7 @@ def index(request):
 
 class ThreadListView(KeyRequiredMixin, generic.ListView):
     model = Thread
-    paginate_by = 9
+    paginate_by = 10
 
     def get_queryset(self):
         q = super().get_queryset().filter(board__code=self.kwargs['pk']).order_by("-pinned", "-rating")
@@ -55,8 +50,6 @@ class ThreadListView(KeyRequiredMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(ThreadListView, self).get_context_data(**kwargs)
         context["board"] = get_object_or_404(Board, code=self.kwargs['pk'])
-        context["blur"] = True if self.request.COOKIES.get("blur-nsfw") == "1" else False
-
         return context
 
 class ThreadDetailView(KeyRequiredMixin, generic.DetailView):
@@ -86,13 +79,14 @@ def create_new_thread(request, pk):
         if form.is_valid(request): # КОСТЫЫЫЫЛЬ (ДЖАНГО НЕ ПОДДЕРЖИВАЕТ МНОГО ФАЙЛОВ ПОЭТОМУ ДЕЛАЕМ ЧЕРЕЗ КОСТЫЫЫЫЫЫЫЫЫЫЛЬ, КАК СДЕЛАЮТ ПОДДЕРЖКУ 1+ ФАЙЛА (ПО ИДЕЕ В НЕКСТ ВЕРСИИ) СКАЖИТЕ МНЕ, Я ИСПРАВЛЮ КОСТЫЫЫЫЫЫЫЫЫЛЬ)
             data = form.cleaned_data
 
-            nt = Thread(board=board, title=data['title'], text=data['text'], author=anon, is_nsfw=(data['is_nsfw']))
-            nt.save()
+            nt = Thread(board=board, title=data['title'], text=data['text'], author=anon)
 
             threads = Thread.objects.filter(board__code=board.code)
-            if not board.thread_limit <= 0 and threads.count() > board.thread_limit:
+            if not board.thread_limit == 0 and threads.count() > board.thread_limit:
                 earliest = threads.earliest('id')
                 earliest.delete()
+
+            nt.save()
 
             furls = []
             if request.FILES is not None and len(request.FILES.getlist('files')) > 0:
@@ -100,23 +94,17 @@ def create_new_thread(request, pk):
                     f = ThreadFile(thread=nt, file=file)
                     f.save()
 
-                    if f.fclass() == "photo" and not f.type() == "gif":
-                        remove_exif(f.file.path)
-
                     furls.append(f.file.url)
 
             if settings.MKBOT and settings.MKBOT_ADDR:
-                data = {'board': board.code, 'is_nsfw': nt.is_nsfw, 'id': nt.id, 'title': nt.title, 'text': nt.text, 'files': furls}
+                data = {'board': board.code, 'id': nt.id, 'title': nt.title, 'text': nt.text, 'files': furls}
                 ans = requests.post(settings.MKBOT_ADDR + "/newthread", data=json.dumps(data))
 
             return HttpResponseRedirect(reverse("board", kwargs={"pk": pk}))
         else:
             return render(request, 'error.html', {'error': 'Неправильно введены данные!'})
     else:
-        form = NewThreadForm(initial={"is_nsfw": board.is_nsfw}) if not passcode else NewThreadFormP(initial={"is_nsfw": board.is_nsfw})
-        if not board.is_nsfw:
-            form.fields['is_nsfw'].disabled = True
-
+        form = NewThreadForm() if not passcode else NewThreadFormP()
         return render(request, 'boards/create_new_thread.html', {'form': form})
 
 @key_required
@@ -145,7 +133,7 @@ def add_comment_to_thread(request, pk, tpk):
         if form.is_valid(request): # КОСТЫЫЫЫЛЬ (ДЖАНГО НЕ ПОДДЕРЖИВАЕТ МНОГО ФАЙЛОВ ПОЭТОМУ ДЕЛАЕМ ЧЕРЕЗ КОСТЫЫЫЫЫЫЫЫЫЫЛЬ, КАК СДЕЛАЮТ ПОДДЕРЖКУ 1+ ФАЙЛА (ПО ИДЕЕ В НЕКСТ ВЕРСИИ) СКАЖИТЕ МНЕ, Я ИСПРАВЛЮ КОСТЫЫЫЫЫЫЫЫЫЛЬ)
             data = form.cleaned_data
 
-            nc = Comment(thread=thread, text=data['text'], author=anon, author_code=hashlib.sha256((str(thread.id) + anon.ip).encode()).hexdigest()[:6])
+            nc = Comment(thread=thread, text=data['text'], author=anon)
             nc.save()
 
             thread.rating_pp()
@@ -161,25 +149,17 @@ def add_comment_to_thread(request, pk, tpk):
                     f = CommentFile(comment=nc, file=fi)
                     f.save()
 
-                    if f.fclass() == "photo" and not f.type() == "gif":
-                        remove_exif(f.file.path)
-
                     furls.append(f.file.url)
 
             if settings.MKBOT and settings.MKBOT_ADDR:
-                data = {'thread': thread.id, 'thread_title': thread.title, 'board': board.code, 'is_nsfw': nc.is_nsfw, 'id': nc.id, 'text': nc.text, 'files': furls}
+                data = {'thread': thread.id, 'thread_title': thread.title, 'board': board.code, 'id': nc.id, 'text': nc.text, 'files': furls}
                 ans = requests.post(settings.MKBOT_ADDR + "/newcomment", data=json.dumps(data))
 
             return HttpResponseRedirect(reverse("thread_detail_view", kwargs={"bpk": pk, "pk": tpk}))
         else:
             return render(request, 'error.html', {'error': "Неправильно введена капча!"})
     else:
-        nsw = thread.is_nsfw
-
-        e_form = ThreadCommentForm(initial={"is_nsfw": nsw}) if not passcode else ThreadCommentFormP(initial={"is_nsfw": nsw})
-        if not nsw:
-            e_form.fields['is_nsfw'].disabled = True
-
+        e_form = ThreadCommentForm() if not passcode else ThreadCommentFormP()
         return render(request, 'boards/add_comment_to_thread.html', {'form': e_form})
 
 @staff_member_required

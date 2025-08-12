@@ -16,7 +16,7 @@ class FileAllowedField(forms.FileField):
 
 class MultipleFileField(FileAllowedField):
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault("widget", MultipleFileInput(attrs={"ondrop": "drop_handler(event)", "ondragenter": "dragenter_handler(event)", "ondragleave": "dragleave_handler(event)", "ondragover": "dragover_handler(event)", "accept": ', '.join(settings.VALID_FILETYPES)}))
+        kwargs.setdefault("widget", MultipleFileInput(attrs={"accept": ', '.join(settings.VALID_FILETYPES)}))
 
         super().__init__(*args, **kwargs)
 
@@ -49,11 +49,9 @@ class LockDownForm(forms.Form):
 class NewThreadFormP(FileValidationForm):
     title = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Заголовок'}), min_length=1, max_length=64)
     text = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Текст'}), max_length=16384)
-    is_nsfw = forms.BooleanField(label="NSFW?", required=False)
 
 class ThreadCommentFormP(FileValidationForm):
     text = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Текст'}), max_length=16384)
-    is_nsfw = forms.BooleanField(label="NSFW?", required=False)
 
 class NewThreadForm(NewThreadFormP):
     captcha = CaptchaField()

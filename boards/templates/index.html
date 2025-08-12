@@ -24,7 +24,7 @@
 			<div class="boards-list">
 				{% for board in boards %}
 					<div class="board-item">
-						<h3><a href="/boards/board/{{board}}">{{board}} --- {{board.description}}</a> | {% if board.category %}{{board.category}}{% else %}нет категории{% endif %}{%if board.is_nsfw %} | NSFW{% endif %}</h3>
+						<h3><a href="/boards/board/{{board}}">{{board}} --- {{board.description}}</a> | {% if board.category %}{{board.category}}{% else %}нет категории{% endif %}</h3>
 					</div>
 				{% endfor %}
 			</div>

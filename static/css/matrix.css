@@ -1,0 +1,77 @@
+html, body {
+    background-color: #000 !important;
+    color: #00ff00 !important;
+    font-family: 'Courier New', monospace;
+    overflow-x: hidden;
+}
+
+a {
+    color: #00ff00 !important;
+}
+
+a:hover {
+    color: #33ff33 !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #00ff00 !important;
+}
+
+input, select, textarea, button {
+    background-color: #001a00 !important;
+    color: #00ff00 !important;
+    border: 1px solid #00ff00 !important;
+}
+
+#content-related {
+    background-color: #001a00 !important;
+    color: #00ff00 !important;
+    border: 1px solid #00ff00 !important;
+}
+
+#nav-sidebar {
+    background-color: #001a00 !important;
+    color: #000000 !important;
+    border: 1px solid #00ff00 !important;
+}
+
+#header, #user-tools, .breadcrumbs, .module caption {
+    background-color: #000 !important;
+    color: #00ff00 !important;
+    border-bottom: 1px solid #00ff00 !important;
+}
+
+table, th, td {
+    border-color: #00ff00 !important;
+    background-color: #000 !important;
+    color: #00ff00 !important;
+}
+
+.button, input[type="submit"] {
+    background-color: #003300 !important;
+    color: #00ff00 !important;
+    border: 1px solid #00ff00 !important;
+}
+
+.button:hover, input[type="submit"]:hover {
+    background-color: #004d00 !important;
+}
+
+.messagelist li {
+    background-color: #003300 !important;
+    color: #00ff00 !important;
+}
+
+#login-form {
+    background-color: #000 !important;
+    border: 1px solid #00ff00 !important;
+}
+
+body::-webkit-scrollbar {
+    width: 0;
+}
+
+body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}

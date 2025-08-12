@@ -3,20 +3,16 @@
 {% block title %}<title>MKch - Создание треда</title>{% endblock %}
 
 {% block body %}
-	<div class="container">
-		<div class="thread">
-			<h2>Начать новый тред</h2>
-			<form enctype="multipart/form-data" action="" method="post">
-				{% csrf_token %}
-				<table>
-					<h5>(DragNDrop supported)</h5>
-					{{form}}
-				</table>
-				<input type="submit" value="Создать" />
-			</form>
-		</div>
+<div class="container">
+	<div class="thread">
+		<h2>Начать новый тред</h2>
+		<form enctype="multipart/form-data" action="" method="post">
+			{% csrf_token %}
+			<table>
+				{{form}}
+			</table>
+			<input type="submit" value="Создать" />
+		</form>
 	</div>
-
-	{% load static %}
-	<script src="{% static 'js/dragNDrop.js' %}"></script>
+</div>
 {% endblock %}
