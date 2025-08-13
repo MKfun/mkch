@@ -4,8 +4,9 @@
 	<div class="container-centered">
         <button id="theme-toggle" class="settings-button" onclick="toggleTheme()">Тёмная тема</button>
         <br />
-        <br />
         <button id="nsfw-toggle" class="settings-button" onclick="toggleNsfwBlur()">{% if nsfw %}Не блюрить NSFW{% else %}Блюрить NSFW{% endif %}</button>
+        <br />
+        <button id="animations-toggle" class="settings-button" onclick="toggleAnimations()">{% if animations %}Выключить анимации{% else %}Включить анимации{% endif %}</button>
 	</div>
 
 	{% load static %}
@@ -13,4 +14,7 @@
 
 	{% load static %}
 	<script src="{% static 'js/theme.js' %}"></script>
+
+	{% load static %}
+	<script src="{% static 'js/animations.js' %}"></script>
 {% endblock %}

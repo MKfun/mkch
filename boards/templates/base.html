@@ -15,7 +15,7 @@
 		<div class="header">
 			{% block head %}{% endblock %}
 
-			<a href="/">MKch</a>
+			<a href="/">mkch</a>
 
 			<div class="header-buttons">
 				{% if user.is_authenticated %}
@@ -36,4 +36,6 @@
 
 	{% load static %}
 	<script src="{% static 'js/theme.js' %}"></script>
+	<script src="{% static 'js/nsfw.js' %}"></script>
+	<script src="{% static 'js/animations.js' %}"></script>
 </html>

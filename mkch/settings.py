@@ -30,11 +30,11 @@ DEBUG = True
 
 VALID_FILETYPES = ['png', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'gif']
 
-MKBOT = True # оповещать мкбот о новых тредах?
+MKBOT = False # оповещать мкбот о новых тредах?
 MKBOT_ADDR = "http://127.0.0.1:5000" # адрес мкбота (протокол и порт обязательны) (можно не указывать если MKBOT == False)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'dc57d6de0cad.ngrok-free.app']
-CSRF_TRUSTED_ORIGINS = ['http://46.98.9.75', 'https://dc57d6de0cad.ngrok-free.app']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'schchan.xyz']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'https://schchan.xyz']
 
 LOGIN_REDIRECT_URL = '/'
 
