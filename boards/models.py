@@ -95,7 +95,26 @@ class Comment(models.Model):
         for i, word in enumerate(words):
             if word.startswith("#"):
                 word = word[1:]
-                words[i] = f"<a href='#comment_{word}'> >> {word}</a>"
+                try:
+                    _ = int(word)
+                except Exception:
+                    continue
+                words[i] = f"<a href='#comment_{word}'>#{word}</a>"
+            elif word.startswith("mkchtlnk"):
+                parts = word.split(":")
+                if len(parts) < 3:
+                    continue
+                board = parts[1]
+                tid = parts[2]
+
+                try:
+                    _ = int(tid)
+                    b = Board.objects.get(code=board)
+                    thread = Thread.objects.get(board=b, id=tid)
+                except Exception as e:
+                    continue
+
+                words[i] = f"<a href='/boards/board/{board}/thread/{tid}'>{board}->{tid}</a>"
         return " ".join(words)
 
     def replies(self):
