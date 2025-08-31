@@ -15,6 +15,7 @@ from .models import Board, Thread, Comment, ThreadFile, CommentFile, Anon, Categ
 from .models import get_or_create_anon
 
 from passcode.models import Passcode
+from passcode.decorators import key_required, KeyRequiredMixin
 
 from .forms import *
 
@@ -27,6 +28,7 @@ from passcode.models import Passcode
 def handler404(request, _):
     return render(request, 'not_found.html', {error: 'Мы искали по всем углам, но не нашли пост что вам нужен. Может, пост был удалён или вы ввели неправильные данные?'})
 
+@key_required
 def index(request):
     boards = Board.objects.all().order_by("category__name", "-is_nsfw")
     fname = request.GET.get('code', None)
@@ -38,7 +40,7 @@ def index(request):
 
     return render(request, 'index.html', context={'boards': boards, 'passcode': code, 'passcode_entered': code_entered})
 
-class ThreadListView(generic.ListView):
+class ThreadListView(KeyRequiredMixin, generic.ListView):
     model = Thread
     paginate_by = 9
 
@@ -58,9 +60,10 @@ class ThreadListView(generic.ListView):
 
         return context
 
-class ThreadDetailView(generic.DetailView):
+class ThreadDetailView(KeyRequiredMixin, generic.DetailView):
     model = Thread
 
+@key_required
 def create_new_thread(request, pk):
     board = get_object_or_404(Board, code=pk)
     if (not board.enable_posting and (request.user.is_anonymous or not request.user.is_staff)) or board.lockdown:
@@ -117,6 +120,7 @@ def create_new_thread(request, pk):
 
         return render(request, 'boards/create_new_thread.html', {'form': form})
 
+@key_required
 def add_comment_to_thread(request, pk, tpk):
     board = get_object_or_404(Board, code=pk)
     if (not board.enable_posting and (request.user.is_anonymous or not request.user.is_staff)) or board.lockdown:
