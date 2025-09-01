@@ -2,7 +2,6 @@ function makeDraggable(element) {
     let p0, p1, p2, p3 = 0;
     let scale = 1.0;
 
-    console.log(element.id);
     let eh = document.getElementById(element.id + "-header");
 
     if(eh) {
@@ -66,29 +65,36 @@ function makeDraggable(element) {
 }
 
 function createImageFloatingDiv(imgId) {
-    let d = document.createElement("div");
-    let h = document.createElement("div");
-
-    d.appendChild(h);
-
-    d.id = `floatingdiv_${imgId}`;
-    d.className = "draggable";
-    d.style.left = "10%";
-    d.style.top = "10%";
-
-    h.className = "draggable-header";
-
+    let width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
     let iorg = document.getElementById(imgId);
 
-    let i = document.createElement("img");
-    i.src = iorg.src;
+	if(width < 640) {
+    	window.location.href = iorg.src;
+    }
+    else {
+	    let d = document.createElement("div");
+	    let h = document.createElement("div");
 
-    t = document.createElement("h1");
-    t.innerHTML = "ЛКМ - ДВИГАТЬ | КОЛЕСО - ЗАКРЫТЬ";
-    h.appendChild(t);
+	    d.appendChild(h);
 
-    d.appendChild(i);
+	    d.id = `floatingdiv_${imgId}`;
+	    d.className = "draggable";
+	    d.style.left = "10%";
+	    d.style.top = "10%";
 
-    document.body.appendChild(d);
-    makeDraggable(d);
+	    h.className = "draggable-header";
+
+	    let i = document.createElement("img");
+	    i.src = iorg.src;
+
+	    t = document.createElement("h1");
+	    t.className = "draggable-header-text";
+	    t.innerHTML = i.src.length > 40 ? i.src.substring(0, 40) + "..." : i.src;
+	    h.appendChild(t);
+
+	    d.appendChild(i);
+
+	    document.body.appendChild(d);
+	    makeDraggable(d);
+    }
 }

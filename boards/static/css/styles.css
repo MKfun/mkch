@@ -698,7 +698,17 @@ div:target {
 	padding: 10px;
 	cursor: move;
 	z-index: 10;
-	background-color: #2196F3;
+	background-color: #800000;
+	max-width: 100%;
+	min-width: 100%;
+	color: #fff;
+}
+
+.dark-theme .draggable-header {
+	padding: 10px;
+	cursor: move;
+	z-index: 10;
+	background-color: #1a1a1a;
 	color: #fff;
 }
 

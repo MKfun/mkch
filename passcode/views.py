@@ -9,7 +9,7 @@ from django.urls import reverse
 
 from .models import Passcode
 
-from boards.models import get_or_create_anon
+from boards.models_tools import get_or_create_anon
 from boards.models import Anon
 
 from .mixins import StaffMemberRequiredMixin

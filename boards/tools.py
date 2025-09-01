@@ -1,3 +1,4 @@
+import numpy as np
 from PIL import Image
 
 def get_client_ip(request):

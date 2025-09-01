@@ -1,19 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}<title>MKch - Главная</title>{% endblock %}
+{% block title %}<title>mkch - Главная</title>{% endblock %}
 
 {% block body %}
 	<div class="container">
 		<div class="motd-container">
 			<div class="motd">
-				Добро пожаловать на mkch.
+				Добро пожаловать на mkch, анонимный имиджборд MK.
 			</div>	
-
-			{% if not passcode %}
-				<div class="button-group">
-					<a class="group-button" href="/passcode">{% if passcode_entered %}Пасскод удалён. > Купить новый <{% else %}Купить пасскод{% endif %}</a>
-				</div>
-			{% endif %}
 
 			<form class="search-form">
 				<input id="search" name="code" placeholder="Поиск..." type="text"></input>

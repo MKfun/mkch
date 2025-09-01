@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}<title>MKch - Комментирование</title>{% endblock %}
+{% block title %}<title>mkch - Комментирование</title>{% endblock %}
 
 {% block body %}
 	<div class="container">
 		<div class="thread">
 			<h2>Добавить комментарий к треду</h2>
 			{% if error %}
-				<h3>Ошибка: {{error}}</h3>
+				<h3>{{error}}</h3>
 			{% endif %}
 
 			<form enctype="multipart/form-data" action="" method="post">

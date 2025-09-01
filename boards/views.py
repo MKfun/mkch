@@ -1,10 +1,12 @@
 import hashlib
+import numpy as np
 
 import requests
 import json
 
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
+from django.db.models import F
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views import generic
@@ -12,10 +14,9 @@ from django.urls import reverse
 from django.conf import settings
 
 from .models import Board, Thread, Comment, ThreadFile, CommentFile, Anon, Category
-from .models import get_or_create_anon
+from .models_tools import get_or_create_anon, available_boards
 
 from passcode.models import Passcode
-from passcode.decorators import key_required, KeyRequiredMixin
 
 from .forms import *
 
@@ -23,24 +24,24 @@ from .tools import remove_exif
 
 from passcode.models import Passcode
 
-# Хуёво реализована проверка пасскодов, в интернете DRY-решения не нашёл. Если кто знает - кидайте PR
+from .decorators import board_permission_required, BoardPermissionRequiredMixin
+
+# Плохо реализована проверка пасскодов, в интернете DRY-решения не нашёл. Если кто знает - кидайте PR
 
 def handler404(request, _):
     return render(request, 'not_found.html', {error: 'Мы искали по всем углам, но не нашли пост что вам нужен. Может, пост был удалён или вы ввели неправильные данные?'})
 
-@key_required
 def index(request):
-    boards = Board.objects.all().order_by("category__name", "-is_nsfw")
-    fname = request.GET.get('code', None)
-    if fname:
-        boards = boards.filter(code__icontains=fname)
+    anon = get_or_create_anon(request)
+
+    boards = available_boards(anon)
 
     code, _ = Passcode.objects.validate(hash_code=request.session.get('passcode'))
     code_entered = 'passcode' in request.session
 
     return render(request, 'index.html', context={'boards': boards, 'passcode': code, 'passcode_entered': code_entered})
 
-class ThreadListView(KeyRequiredMixin, generic.ListView):
+class ThreadListView(BoardPermissionRequiredMixin, generic.ListView):
     model = Thread
     paginate_by = 9
 
@@ -60,10 +61,13 @@ class ThreadListView(KeyRequiredMixin, generic.ListView):
 
         return context
 
-class ThreadDetailView(KeyRequiredMixin, generic.DetailView):
+class ThreadDetailView(BoardPermissionRequiredMixin, generic.DetailView):
     model = Thread
 
-@key_required
+    def get_object(self):
+        return Thread.objects.get(id=self.kwargs['tpk'], board__code=self.kwargs['pk'])
+
+@board_permission_required
 def create_new_thread(request, pk):
     board = get_object_or_404(Board, code=pk)
     if (not board.enable_posting and (request.user.is_anonymous or not request.user.is_staff)) or board.lockdown:
@@ -112,7 +116,7 @@ def create_new_thread(request, pk):
 
             return HttpResponseRedirect(reverse("board", kwargs={"pk": pk}))
         else:
-            return render(request, 'error.html', {'error': 'Неправильно введены данные!'})
+            return render(request, 'boards/create_new_thread.html', {'form': form, 'error': 'Неправильно введены данные (возможно, каптча)'})
     else:
         form = NewThreadForm(initial={"is_nsfw": board.is_nsfw}) if not passcode else NewThreadFormP(initial={"is_nsfw": board.is_nsfw})
         if not board.is_nsfw:
@@ -120,7 +124,7 @@ def create_new_thread(request, pk):
 
         return render(request, 'boards/create_new_thread.html', {'form': form})
 
-@key_required
+@board_permission_required
 def add_comment_to_thread(request, pk, tpk):
     board = get_object_or_404(Board, code=pk)
     if (not board.enable_posting and (request.user.is_anonymous or not request.user.is_staff)) or board.lockdown:
@@ -171,9 +175,9 @@ def add_comment_to_thread(request, pk, tpk):
                 data = {'thread': thread.id, 'thread_title': thread.title, 'board': board.code, 'is_nsfw': nc.is_nsfw, 'id': nc.id, 'text': nc.text, 'files': furls}
                 ans = requests.post(settings.MKBOT_ADDR + "/newcomment", data=json.dumps(data))
 
-            return HttpResponseRedirect(reverse("thread_detail_view", kwargs={"bpk": pk, "pk": tpk}))
+            return HttpResponseRedirect(reverse("thread_detail_view", kwargs={"pk": pk, "tpk": tpk}))
         else:
-            return render(request, 'error.html', {'error': "Неправильно введена капча!"})
+            return render(request, 'boards/create_new_thread.html', {'form': form, 'error': 'Неправильно введены данные (возможно, каптча)'})
     else:
         nsw = thread.is_nsfw
 

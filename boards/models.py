@@ -1,20 +1,28 @@
 import hashlib
 import re
 import statistics
+import numpy as np
 
 from django.core.validators import FileExtensionValidator
 from django.utils.html import escape
 from django.db import models
 
 from passcode.models import Passcode
-from .tools import get_client_ip
+
+class Permission(models.Model):
+    code = models.TextField(help_text="Код разрешения.")
+
+    def __str__(self):
+        return self.code
 
 class Anon(models.Model):
-    ip = models.GenericIPAddressField(primary_key=True)
+    ip = models.GenericIPAddressField(unique=True)
 
     banned = models.BooleanField(default=False)
 
-    passcodes = models.ManyToManyField(Passcode)
+    passcodes = models.ManyToManyField(Passcode, blank=True)
+
+    permissions = models.ManyToManyField(Permission, blank=True)
 
 class Category(models.Model):
     name = models.TextField(help_text="Название Категории")
@@ -23,18 +31,13 @@ class Category(models.Model):
         return self.name
 
 class Board(models.Model):
-    class Meta:
-        permissions = [
-            ("upload_large_files", "Can upload large files")
-        ]
-
     category = models.ForeignKey(Category, null=True, default=None, on_delete=models.SET_NULL)
+
+    permissions_required = models.ManyToManyField(Permission, blank=True)
 
     code = models.CharField(max_length=20, help_text="Код доски (например, b)", primary_key=True)
     description = models.TextField(help_text="Короткое описание доски, которое пользователи видят в списке рядом с ней")
-
     detail_description = models.TextField(help_text="Подробное описание доски, видно которое пользователи видят в шапке самой доски", null=True)
-
 
     banner = models.FileField(help_text="Приветственный баннер", null=True, default=None)
 
@@ -47,13 +50,21 @@ class Board(models.Model):
     def __str__(self):
         return self.code
 
+    def has_permission(self, anon):
+        codes_a = [p.code for p in anon.permissions.all()]
+        codes_b = [p.code for p in self.permissions_required.all()]
+
+        for c in codes_b:
+            if c not in codes_a:
+                return False
+        return True
+
 class Thread(models.Model):
     class Meta:
         permissions = [
             ("create_new_threads", "Can create new threads"),
             ("comment_threads", "Can comment threads")
         ]
-        managed = True
 
     creation = models.DateTimeField(help_text="Дата и время создания", auto_now=True)
 
@@ -64,9 +75,9 @@ class Thread(models.Model):
     title = models.CharField(max_length=64, help_text="Заголовок", default="None")
     text = models.TextField(help_text="Текст")
 
+    rating = models.IntegerField(default=0, help_text="Рейтинг треда. Он задаётся автоматически, крайне не рекомендуется менять вручную!!!")
     is_nsfw = models.BooleanField(help_text="Является ли тред NSFW (всегда True для комментов на NSFW бордах)", default=False)
 
-    rating = models.IntegerField(default=0, help_text="Рейтинг треда. Он задаётся автоматически, крайне не рекомендуется менять вручную!!!")
     pinned = models.BooleanField(default=False, help_text="Если тред закреплён, он будет отображаться в самом начале списка тредов. Также можно задать из контектного меню треда если вы админ.")
 
     def rating_pp(self):
@@ -88,7 +99,6 @@ class Comment(models.Model):
 
     author = models.ForeignKey(Anon, help_text="Создатель треда", on_delete=models.SET_NULL, null=True)
     author_code = models.TextField(help_text="Код автора, задаётся автоматически.", null=True, default=None)
-
     is_nsfw = models.BooleanField(help_text="Является ли коммент NSFW (всегда True для комментов под NSFW тредами)", default=False)
 
     text = models.TextField(help_text="Текст")
@@ -168,8 +178,3 @@ class CommentFile(models.Model):
 
     def type(self):
         return self.file.path.split('.')[-1]
-
-def get_or_create_anon(request):
-    ip = get_client_ip(request)
-    anon, _ = Anon.objects.get_or_create(ip=ip, defaults={'ip': ip, 'banned': False})
-    return anon

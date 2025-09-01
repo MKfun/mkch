@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}<title>MKch - {{board.code}}</title>{% endblock %}
+{% block title %}<title>mkch - {{board.code}}</title>{% endblock %}
 
 {% block body %}
 	<div class="container">
@@ -46,10 +46,10 @@
 				{% for thread in thread_list %}
 					<div class="thread-container">
 						<div class="thread-item">
-							<div class="thread-file" onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'">
+							<div class="thread-file" onclick="">
 							{% for file in thread.threadfile_set.all %}
 									{% if file.fclass == "photo" %}
-										<a href="{{file.file.url}}"><img src="{{file.file.url}}" id={{file.file.url}} class="thread-image"></img></a>
+										<img src="{{file.file.url}}" id={{file.file.url}} class="thread-image" onclick="createImageFloatingDiv('{{file.file.url}}')"></img>
 									{% elif file.fclass == "video" %}
 										<video controls="" src="{{file.file.url}}"></video>
 									{% else %}
@@ -77,6 +77,9 @@
 	</div>
 
 	<script src=" https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js "></script>
+
+	{% load static %}
+	<script src="{% static 'js/draggable.js' %}"></script>
 
 	<script>
 		async function pin(id) {
