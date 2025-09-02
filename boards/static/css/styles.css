@@ -33,6 +33,10 @@ h1, h2, h3, h4, h5, h6 {
 	background-color: #800000;
 }
 
+.dark-theme a {
+        color: #fb9900;
+}
+
 .thread-file {
 	display: flex;
 	flex-wrap: wrap;
@@ -273,13 +277,7 @@ h1, h2, h3, h4, h5, h6 {
 .thread-image {
 	max-width: 200px;
 	max-height: 200px;
-	transition: transform .2s;
 	border: 1px solid #d9bfb7;
-	margin: 0 auto;
-}
-
-.animated .thread-image:hover {
-	transform: scale(1.5);
 }
 
 .thread-image-nsfw {
@@ -321,7 +319,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .button-group {
 	text-align: center;
-	margin: 20px 0;
+	margin: 15px 0;
 }
 
 .group-button {
