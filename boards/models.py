@@ -9,20 +9,12 @@ from django.db import models
 
 from passcode.models import Passcode
 
-class Permission(models.Model):
-    code = models.TextField(help_text="Код разрешения.")
-
-    def __str__(self):
-        return self.code
-
 class Anon(models.Model):
-    ip = models.GenericIPAddressField(unique=True)
+    ip = models.GenericIPAddressField(primary_key=True, unique=True)
 
     banned = models.BooleanField(default=False)
 
     passcodes = models.ManyToManyField(Passcode, blank=True)
-
-    permissions = models.ManyToManyField(Permission, blank=True)
 
 class Category(models.Model):
     name = models.TextField(help_text="Название Категории")
@@ -32,8 +24,6 @@ class Category(models.Model):
 
 class Board(models.Model):
     category = models.ForeignKey(Category, null=True, default=None, on_delete=models.SET_NULL)
-
-    permissions_required = models.ManyToManyField(Permission, blank=True)
 
     code = models.CharField(max_length=20, help_text="Код доски (например, b)", primary_key=True)
     description = models.TextField(help_text="Короткое описание доски, которое пользователи видят в списке рядом с ней")

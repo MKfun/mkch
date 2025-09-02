@@ -16,15 +16,3 @@ def get_or_create_anon(request):
             anon, _ = Anon.objects.get_or_create(ip=ip, defaults={'ip': ip, 'banned': False}) 
         request.session['ip'] = ip
     return anon
-
-def available_boards(anon: Anon):
-    ac = anon.permissions.all().values_list('id', flat=True)
-
-    def my_func(i):
-        document = i.permissions_required.all().values_list('id', flat=True)
-        return document
-
-    aaa = [i.pk for i in Board.objects.prefetch_related('permissions_required').all() if np.isin(my_func(i), ac).all()]
-    boards = Board.objects.filter(pk__in=aaa)
-
-    return boards
