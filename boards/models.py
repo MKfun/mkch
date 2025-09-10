@@ -10,7 +10,7 @@ from django.db import models
 from passcode.models import Passcode
 
 class Anon(models.Model):
-    ip = models.GenericIPAddressField(primary_key=True, unique=True)
+    ip = models.GenericIPAddressField(unique=True)
 
     banned = models.BooleanField(default=False)
 
@@ -23,7 +23,7 @@ class Category(models.Model):
         return self.name
 
 class Board(models.Model):
-    category = models.ForeignKey(Category, null=True, default=None, on_delete=models.SET_NULL)
+    category = models.ForeignKey(Category, null=True, default=None, on_delete=models.CASCADE)
 
     code = models.CharField(max_length=20, help_text="Код доски (например, b)", primary_key=True)
     description = models.TextField(help_text="Короткое описание доски, которое пользователи видят в списке рядом с ней")
@@ -58,9 +58,9 @@ class Thread(models.Model):
 
     creation = models.DateTimeField(help_text="Дата и время создания", auto_now=True)
 
-    author = models.ForeignKey(Anon, help_text="Создатель треда", on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey(Anon, help_text="Создатель треда", on_delete=models.CASCADE, null=True)
 
-    board = models.ForeignKey(Board, help_text="Доска треда", on_delete=models.SET_NULL, null=True)
+    board = models.ForeignKey(Board, help_text="Доска треда", on_delete=models.CASCADE, null=True)
 
     title = models.CharField(max_length=64, help_text="Заголовок", default="None")
     text = models.TextField(help_text="Текст")
@@ -85,16 +85,16 @@ class Thread(models.Model):
 class Comment(models.Model):
     creation = models.DateTimeField(help_text="Дата и время создания", auto_now=True)
 
-    thread = models.ForeignKey(Thread, help_text="Тред, к которому пишется комментарий", on_delete=models.SET_NULL, null=True)
+    thread = models.ForeignKey(Thread, help_text="Тред, к которому пишется комментарий", on_delete=models.CASCADE, null=True)
 
-    author = models.ForeignKey(Anon, help_text="Создатель треда", on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey(Anon, help_text="Создатель треда", on_delete=models.CASCADE, null=True)
     author_code = models.TextField(help_text="Код автора, задаётся автоматически.", null=True, default=None)
     is_nsfw = models.BooleanField(help_text="Является ли коммент NSFW (всегда True для комментов под NSFW тредами)", default=False)
 
     text = models.TextField(help_text="Текст")
 
     def formatted(self):
-        t = escape(self.text) # как же мне похуй
+        t = escape(self.text)
         words = t.split(" ")
         for i, word in enumerate(words):
             if word.startswith("#"):
@@ -117,8 +117,11 @@ class Comment(models.Model):
                     thread = Thread.objects.get(board=b, id=tid)
                 except Exception as e:
                     continue
-
                 words[i] = f"<a href='/boards/board/{board}/thread/{tid}'>{board}->{tid}</a>"
+            elif word.startswith("mkchqstart:") and word.endswith(":mkchqend"):
+                text = word.split("mkchqstart:")[1].split(":mkchqend")[0]
+                word = f"<h4 class='quote'>f{text}</h4>"
+
         return " ".join(words)
 
     def replies(self):
@@ -128,7 +131,7 @@ class Comment(models.Model):
         return str(self.thread.id) + ", " + str(self.id)
 
 class ThreadFile(models.Model):
-    thread = models.ForeignKey(Thread, help_text="Тред, которому принадлежит файл", on_delete=models.SET_NULL, null=True)
+    thread = models.ForeignKey(Thread, help_text="Тред, которому принадлежит файл", on_delete=models.CASCADE, null=True)
 
     ftypes = {
         'photo': ['png', 'jpg', 'jpeg', 'webp', 'gif'],
@@ -149,7 +152,7 @@ class ThreadFile(models.Model):
         return self.file.path.split('.')[-1]
 
 class CommentFile(models.Model):
-    comment = models.ForeignKey(Comment, help_text="Коммент, которому принадлежит файл", on_delete=models.SET_NULL, null=True)
+    comment = models.ForeignKey(Comment, help_text="Коммент, которому принадлежит файл", on_delete=models.CASCADE, null=True)
 
     ftypes = {
         'photo': ['png', 'jpg', 'jpeg', 'webp', 'gif'],

@@ -27,6 +27,30 @@
 				{% endfor %}
 			</div>
 		</div>
+
+		<div class="boards-table">
+			<table>
+				<div class="entry">
+					<tr>
+						<th>Доска</th>
+						<th>Название</th>
+						<th>Описание</th>
+						<th>Постов</th>
+					</tr>
+				</div>
+
+				{% for board in boards %}
+					<div class="entry">
+						<tr>
+							<th><a href="/boards/board/{{board.code}}">/{{board.code}}/</a></th>
+							<th>{% if board.description %}{{board.description}}{% else %}Нет Данных{% endif %}</th>
+							<th>{% if board.detail_description %}{{board.detail_description}}{% else %}Нет Данных{% endif %}</th>
+							<th>{{board.thread_set.count}}</th>
+						</tr>
+					</div>
+				{% endfor %}
+			</table>
+		</div>
 	</div>
 
 	{% load static %}

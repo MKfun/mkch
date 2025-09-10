@@ -18,6 +18,12 @@ h1, h2, h3, h4, h5, h6 {
 	overflow-wrap: break-word;
 }
 
+.boards-table {
+	display: grid;
+	padding: 10px;
+	border: 1px solid;
+}
+
 .container-centered {
 	text-align: center;
 }
@@ -31,6 +37,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .dark-theme .settings-button {
 	background-color: #800000;
+}
+
+.floating-image {
+	max-width: 100vw;
+	max-height: 100vw;
 }
 
 .dark-theme a {

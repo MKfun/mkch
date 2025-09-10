@@ -65,10 +65,10 @@ function makeDraggable(element) {
 }
 
 function createImageFloatingDiv(imgId) {
-    let width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+    let width = screen.width;
     let iorg = document.getElementById(imgId);
 
-	if(width < 640) {
+    if(width < 640) {
     	window.location.href = iorg.src;
     }
     else {
@@ -85,6 +85,7 @@ function createImageFloatingDiv(imgId) {
 	    h.className = "draggable-header";
 
 	    let i = document.createElement("img");
+	    i.className = "floating-image"
 	    i.src = iorg.src;
 
 	    t = document.createElement("h1");
