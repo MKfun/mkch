@@ -1,0 +1,6 @@
+PoW: кратко
+
+Поддержка Web Workers. Если они вырезаны (JShelter прив дружищ) — есть фоллбек в один поток.
+В UI показываем предупреждение и продолжаем работу однопоточно.
+На сервер уходит мета: hasWorkers/hasCrypto/threads/mode/reason. При single-thread пишем warning в логи.
+

@@ -20,6 +20,7 @@ from passcode.models import Passcode
 from keyauth.decorators import *
 
 from .forms import *
+from pow.decorators import require_pow
 
 from .tools import remove_exif
 
@@ -68,6 +69,7 @@ class ThreadDetailView(KeyRequiredMixin, generic.DetailView):
         return Thread.objects.get(id=self.kwargs['tpk'], board__code=self.kwargs['pk'])
 
 @key_required
+@require_pow
 def create_new_thread(request, pk):
     board = get_object_or_404(Board, code=pk)
     if (not board.enable_posting and (request.user.is_anonymous or not request.user.is_staff)) or board.lockdown:
@@ -86,7 +88,7 @@ def create_new_thread(request, pk):
         if passcode:
             form = NewThreadFormP(request.POST)
         else:
-            form = NewThreadForm(request.POST)
+            form = NewThreadFormPoW(request.POST)
 
         if form.is_valid(request): # КОСТЫЫЫЫЛЬ (ДЖАНГО НЕ ПОДДЕРЖИВАЕТ МНОГО ФАЙЛОВ ПОЭТОМУ ДЕЛАЕМ ЧЕРЕЗ КОСТЫЫЫЫЫЫЫЫЫЫЛЬ, КАК СДЕЛАЮТ ПОДДЕРЖКУ 1+ ФАЙЛА (ПО ИДЕЕ В НЕКСТ ВЕРСИИ) СКАЖИТЕ МНЕ, Я ИСПРАВЛЮ КОСТЫЫЫЫЫЫЫЫЫЛЬ)
             data = form.cleaned_data
@@ -118,13 +120,14 @@ def create_new_thread(request, pk):
         else:
             return render(request, 'boards/create_new_thread.html', {'form': form, 'error': 'Неправильно введены данные (возможно, каптча)'})
     else:
-        form = NewThreadForm(initial={"is_nsfw": board.is_nsfw}) if not passcode else NewThreadFormP(initial={"is_nsfw": board.is_nsfw})
+        form = NewThreadFormPoW(initial={"is_nsfw": board.is_nsfw}) if not passcode else NewThreadFormP(initial={"is_nsfw": board.is_nsfw})
         if not board.is_nsfw:
             form.fields['is_nsfw'].disabled = True
 
         return render(request, 'boards/create_new_thread.html', {'form': form})
 
 @key_required
+@require_pow
 def add_comment_to_thread(request, pk, tpk):
     board = get_object_or_404(Board, code=pk)
     if (not board.enable_posting and (request.user.is_anonymous or not request.user.is_staff)) or board.lockdown:
@@ -145,7 +148,7 @@ def add_comment_to_thread(request, pk, tpk):
         if anon.banned:
             return render(request, 'error.html', {'error': 'Ваш IP-адрес был заблокирован. Только попробуй впн включить сука.'})
 
-        form = ThreadCommentForm(request.POST) if not passcode else ThreadCommentFormP(request.POST)
+        form = ThreadCommentFormPoW(request.POST) if not passcode else ThreadCommentFormP(request.POST)
 
         if form.is_valid(request): # КОСТЫЫЫЫЛЬ (ДЖАНГО НЕ ПОДДЕРЖИВАЕТ МНОГО ФАЙЛОВ ПОЭТОМУ ДЕЛАЕМ ЧЕРЕЗ КОСТЫЫЫЫЫЫЫЫЫЫЛЬ, КАК СДЕЛАЮТ ПОДДЕРЖКУ 1+ ФАЙЛА (ПО ИДЕЕ В НЕКСТ ВЕРСИИ) СКАЖИТЕ МНЕ, Я ИСПРАВЛЮ КОСТЫЫЫЫЫЫЫЫЫЛЬ)
             data = form.cleaned_data
@@ -181,7 +184,7 @@ def add_comment_to_thread(request, pk, tpk):
     else:
         nsw = thread.is_nsfw
 
-        e_form = ThreadCommentForm(initial={"is_nsfw": nsw}) if not passcode else ThreadCommentFormP(initial={"is_nsfw": nsw})
+        e_form = ThreadCommentFormPoW(initial={"is_nsfw": nsw}) if not passcode else ThreadCommentFormP(initial={"is_nsfw": nsw})
         if not nsw:
             e_form.fields['is_nsfw'].disabled = True
 

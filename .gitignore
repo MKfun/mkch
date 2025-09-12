@@ -1,0 +1,20 @@
+venv
+.DS_Store #я ненавижу эту хуйню!!
+db.sqlite3
+/static
+__pycache__
+*.pyc
+__pycache__/
+*.sqlite3
+*.db
+media/
+uploads/
+staticfiles/
+tmp/
+logs/
+build/
+dist/
+*.egg-info/
+.eggs/
+.idea/
+.vscode/

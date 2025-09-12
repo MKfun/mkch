@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="pow-required">
+    <h2>Требуется доказательство работы</h2>
+    <p>Для защиты от спама необходимо выполнить вычисления в браузере.</p>
+    
+    <div id="pow-container">
+        <div class="pow-challenge">
+            <h3>Доказательство работы</h3>
+            <p>Пожалуйста, подождите, пока ваш браузер выполнит вычисления...</p>
+            <div class="pow-progress">
+                <div class="pow-progress-bar">
+                    <div class="pow-progress-fill" id="pow-progress"></div>
+                </div>
+                <span id="pow-status">Инициализация...</span>
+            </div>
+        </div>
+    </div>
+    
+    <form method="post" id="pow-form">
+        {% csrf_token %}
+        <input type="hidden" name="pow_validated" id="pow-validated" value="">
+        <button type="submit" id="pow-submit" style="display: none;">Продолжить</button>
+    </form>
+</div>
+
+<script src="{% static 'pow/pow.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const powContainer = document.getElementById('pow-container');
+    const progressBar = document.getElementById('pow-progress');
+    const statusText = document.getElementById('pow-status');
+    const powValidated = document.getElementById('pow-validated');
+    const powSubmit = document.getElementById('pow-submit');
+    
+    let powValidator = new PoWValidator();
+    
+    function updateProgress(nonce) {
+        const progress = Math.min(100, (nonce / 10000) * 100);
+        progressBar.style.width = progress + '%';
+        statusText.textContent = `Вычисление... ${nonce}`;
+    }
+    
+    async function solvePow() {
+        try {
+            statusText.textContent = 'Получение задачи...';
+            const result = await powValidator.solveChallenge(updateProgress);
+            
+            if (result.valid) {
+                statusText.textContent = 'Успешно! Продолжаем...';
+                powValidated.value = 'true';
+                powSubmit.style.display = 'block';
+                powSubmit.click();
+            } else {
+                statusText.textContent = 'Ошибка: ' + result.error;
+            }
+        } catch (error) {
+            statusText.textContent = 'Ошибка: ' + error.message;
+        }
+    }
+    
+    solvePow();
+});
+</script>
+
+<style>
+.pow-required {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+.pow-challenge {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.pow-progress {
+    margin-top: 15px;
+}
+
+.pow-progress-bar {
+    width: 100%;
+    height: 20px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.pow-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+#pow-status {
+    font-size: 14px;
+    color: #666;
+}
+</style>
+{% endblock %}
