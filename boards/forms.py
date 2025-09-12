@@ -4,6 +4,7 @@ from django.conf import settings
 from django import forms
 
 from captcha.fields import CaptchaField
+from pow.decorators import require_pow
 
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
@@ -60,3 +61,9 @@ class NewThreadForm(NewThreadFormP):
 
 class ThreadCommentForm(ThreadCommentFormP):
     captcha = CaptchaField()
+
+class NewThreadFormPoW(NewThreadFormP):
+    pass
+
+class ThreadCommentFormPoW(ThreadCommentFormP):
+    pass

@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'keyauth.apps.KeyauthConfig',
     'api.apps.ApiConfig',
     'passcode.apps.PasscodeConfig',
+    'pow.apps.PowConfig',
     'rest_framework'
 ]
 
@@ -135,7 +136,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = 'static/'
-STATICFILE_DIRS = ['boards/static', 'passcode/static']
+STATICFILE_DIRS = ['boards/static', 'passcode/static', 'pow/static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

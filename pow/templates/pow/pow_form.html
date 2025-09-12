@@ -1,0 +1,174 @@
+{% load static %}
+
+<div id="pow-container" style="display: none;">
+    <tr>
+        <td colspan="2">
+            <div class="pow-challenge">
+                <p><strong>Доказательство работы:</strong> Пожалуйста, подождите, пока ваш браузер выполнит вычисления...</p>
+                <div class="pow-progress">
+                    <div class="pow-progress-bar">
+                        <div class="pow-progress-fill" id="pow-progress"></div>
+                    </div>
+                <span id="pow-status" class="ok">Инициализация...</span>
+                <button id="pow-retry" onclick="solvePow()" style="display: none; margin-top: 10px; padding: 5px 10px;">Попробовать снова</button>
+            </div>
+        </div>
+    </td>
+</tr>
+
+<script src="{% static 'pow/pow.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const powContainer = document.getElementById('pow-container');
+    const progressBar = document.getElementById('pow-progress');
+    const statusText = document.getElementById('pow-status');
+    
+    let powValidator = new PoWValidator();
+    let isProcessing = false;
+    
+    function showPowForm() {
+        const form = document.querySelector('form table');
+        if (form && powContainer) {
+            form.appendChild(powContainer);
+            powContainer.style.display = 'block';
+        }
+    }
+    
+    function hidePowForm() {
+        if (powContainer) {
+            powContainer.style.display = 'none';
+        }
+    }
+    
+    function showRetryButton() {
+        const retryBtn = document.getElementById('pow-retry');
+        if (retryBtn) {
+            retryBtn.style.display = 'inline-block';
+        }
+    }
+    
+    function hideRetryButton() {
+        const retryBtn = document.getElementById('pow-retry');
+        if (retryBtn) {
+            retryBtn.style.display = 'none';
+        }
+    }
+    
+    function updateProgress(nonce) {
+        const progress = Math.min(100, (nonce / 10000) * 100);
+        progressBar.style.width = progress + '%';
+        if (!window.__powStatusLocked) {
+            statusText.textContent = `Вычисление... ${nonce}`;
+        }
+    }
+    
+    async function solvePow() {
+        if (isProcessing) return;
+        
+        console.log('PoW: Starting solvePow');
+        isProcessing = true;
+        showPowForm();
+        
+        try {
+            statusText.textContent = 'Получение задачи...';
+            console.log('PoW: Getting challenge...');
+            const result = await powValidator.solveChallenge(updateProgress);
+            
+            console.log('PoW: Result:', result);
+            if (result.valid) {
+                statusText.textContent = 'Успешно!';
+                hideRetryButton();
+                hidePowForm();
+                
+                console.log('PoW: Validation complete, form will be submitted');
+            } else {
+                let errorMsg = 'Ошибка валидации';
+                if (result.error.includes('Rate limit')) {
+                    errorMsg = 'Слишком много запросов. Попробуйте через минуту.';
+                } else if (result.error.includes('Invalid execution time')) {
+                    errorMsg = 'Слишком быстрое решение. Попробуйте еще раз.';
+                } else if (result.error.includes('Invalid or expired')) {
+                    errorMsg = 'Задача истекла. Обновите страницу и попробуйте снова.';
+                } else if (result.error.includes('Insufficient difficulty')) {
+                    errorMsg = 'Недостаточная сложность решения.';
+                }
+                statusText.textContent = errorMsg;
+                showRetryButton();
+            }
+        } catch (error) {
+            console.error('PoW: Error:', error);
+            let errorMsg = 'Ошибка соединения';
+            if (error.message.includes('Failed to fetch')) {
+                errorMsg = 'Ошибка соединения с сервером. Проверьте интернет.';
+            } else if (error.message.includes('Aborted')) {
+                errorMsg = 'Операция отменена.';
+            }
+            statusText.textContent = errorMsg;
+            showRetryButton();
+        } finally {
+            isProcessing = false;
+        }
+    }
+    
+    const forms = document.querySelectorAll('form');
+    console.log('PoW: Found forms:', forms.length);
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            console.log('PoW: Form submit intercepted');
+            e.preventDefault();
+            console.log('PoW: Preventing submit, starting PoW');
+            solvePow().then(() => {
+                console.log('PoW: Validation complete, submitting form');
+                form.submit();
+            });
+        });
+    });
+});
+</script>
+
+<style>
+.pow-challenge {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 3px;
+    padding: 15px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.pow-challenge p {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #495057;
+}
+
+.pow-progress {
+    margin-top: 10px;
+}
+
+.pow-progress-bar {
+    width: 100%;
+    height: 16px;
+    background: #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.pow-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #28a745, #20c997);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+#pow-status {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+#pow-status.warn { color: #d19a14; }
+#pow-status.err { color: #c0392b; }
+#pow-status.ok { color: #2c7a7b; }
+</style>

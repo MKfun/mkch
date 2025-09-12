@@ -30,6 +30,7 @@ urlpatterns = [
     path('key/', include('keyauth.urls')),
     path('api/', include('api.urls')),
     path('passcode/', include('passcode.urls')),
+    path('pow/', include('pow.urls')),
     path('', RedirectView.as_view(url='/boards/', permanent=True)),
     path('settings/', settings_view, name="settings")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
