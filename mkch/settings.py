@@ -36,6 +36,9 @@ MKBOT_ADDR = "http://127.0.0.1:5000" # адрес мкбота (протокол
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'schchan.xyz']
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'https://schchan.xyz']
 
+# вот здесь воткни прокси которые юзаются
+TRUSTED_PROXIES = ['127.0.0.1', '::1']
+
 LOGIN_REDIRECT_URL = '/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
