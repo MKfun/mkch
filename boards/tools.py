@@ -2,11 +2,18 @@ import numpy as np
 from PIL import Image
 
 def get_client_ip(request):
+    from django.conf import settings
+    
+    # х форвадд для запросов через прокси
+    remote_addr = request.META.get('REMOTE_ADDR')
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
+    
+    if x_forwarded_for and remote_addr in getattr(settings, 'TRUSTED_PROXIES', []):
+        # хватаем первый IP из списка (не уверен что работает)
+        ip = x_forwarded_for.split(',')[0].strip()
     else:
-        ip = request.META.get('REMOTE_ADDR')
+        ip = remote_addr
+    
     return ip
 
 def remove_exif(fname: str): # по факту просто копирует файл
