@@ -7,11 +7,12 @@ from django.views.decorators.http import require_http_methods
 from django.core.cache import cache
 from django.utils import timezone
 from .models import PoWChallenge
+from boards.tools import get_client_ip
 
 logger = logging.getLogger(__name__)
 
 def check_rate_limit(request, key_prefix, limit=10, window=60):
-    client_ip = request.META.get('REMOTE_ADDR', 'unknown')
+    client_ip = get_client_ip(request)
     cache_key = f"{key_prefix}:{client_ip}"
     
     current_time = timezone.now().timestamp()
@@ -28,7 +29,7 @@ def check_rate_limit(request, key_prefix, limit=10, window=60):
 
 @require_http_methods(["GET"])
 def get_challenge(request):
-    client_ip = request.META.get('REMOTE_ADDR', 'unknown')
+    client_ip = get_client_ip(request)
     logger.info(f"PoW: Challenge request from {client_ip}")
     
     if not check_rate_limit(request, 'pow_challenge', limit=5, window=60):
@@ -52,7 +53,7 @@ def get_challenge(request):
 @require_http_methods(["POST"])
 @csrf_exempt
 def validate_challenge(request):
-    client_ip = request.META.get('REMOTE_ADDR', 'unknown')
+    client_ip = get_client_ip(request)
     logger.info(f"PoW: Validation request from {client_ip}")
     
     if not check_rate_limit(request, 'pow_validate', limit=20, window=60):

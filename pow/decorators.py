@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.core.cache import cache
 from django.utils import timezone
 from .models import PoWChallenge
-from boards.models_tools import get_or_create_anon
+from boards.models_tools import get_or_create_anon, get_client_ip
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ def require_pow(view_func):
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
         if request.method == 'POST':
-            client_ip = request.META.get('REMOTE_ADDR', 'unknown')
+            client_ip = get_client_ip(request)
             logger.info(f"PoW: Checking validation for {client_ip}")
             anon = get_or_create_anon(request)
             if anon.passcodes.exists():
