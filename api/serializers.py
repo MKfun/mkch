@@ -37,3 +37,11 @@ class ThreadDetailSerializer(ReadOnlyModelSerializer):
         model = Thread
         read_only = True
         fields = ['id', 'creation', 'title', 'text', 'board', 'files']
+
+class AllThreadsSerializer(ReadOnlyModelSerializer):
+    files = serializers.SlugRelatedField(source="threadfile_set", slug_field="file.url", many=True, read_only=True)
+
+    class Meta:
+        model = Thread
+        read_only = True
+        fields = ['id', 'creation', 'title', 'text', 'pinned', 'rating', 'board', 'files']

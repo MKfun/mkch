@@ -51,8 +51,28 @@
 				{% endfor %}
 			</table>
 		</div>
+
+		<button class="thread-tracker-timer">Обновить</button>
+		<form class="thread-tracker-form">
+			<input name="max_threads" default="10" placeholder="Макс. тредов" />
+			<input name="update_delay" default="30" placeholder="Задержка перед обновлением" />
+			<input name="board_code" placeholder="Борда" />
+			<select name="ordering">
+				<option value="-creation">Самые новые</option>
+				<option value="creation">Самые старые</option>
+				<option value="-rating">Самые бампнутые</option>
+				<option value="rating">Самые небампнутые</option>
+			</select>
+			<input type="submit" class="mini-button" />
+		</form>
+
+		<div class="thread-tracker-boards"></div>
+
+		<div class="thread-tracker">
+		</div>
 	</div>
 
 	{% load static %}
 	<script src="{% static 'js/draggable.js' %}"></script>
+	<script src="{% static 'js/tracker.js' %}"></script>
 {% endblock %}

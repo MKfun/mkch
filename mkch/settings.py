@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+import firebase_admin
+from firebase_admin import auth
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -33,8 +36,8 @@ VALID_FILETYPES = ['png', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'gif']
 MKBOT = False # оповещать мкбот о новых тредах?
 MKBOT_ADDR = "http://127.0.0.1:5000" # адрес мкбота (протокол и порт обязательны) (можно не указывать если MKBOT == False)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'schchan.xyz']
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'https://schchan.xyz']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'schchan.xyz', '665216971e91.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'https://schchan.xyz', 'https://665216971e91.ngrok-free.app']
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -56,7 +59,8 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'passcode.apps.PasscodeConfig',
     'pow.apps.PowConfig',
-    'rest_framework'
+    'rest_framework',
+    'push_notifications'
 ]
 
 MIDDLEWARE = [
@@ -88,6 +92,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mkch.wsgi.application'
 
+# Push notifications config
+default_app = firebase_admin.initialize_app()
+PUSH_NOTIFICATIONS_SETTINGS = {
+        "APNS_CERTIFICATE": "/path/to/your/certificate.pem",
+        "APNS_TOPIC": "com.example.push_test",
+        "WNS_PACKAGE_SECURITY_ID": "[your package security id, e.g: 'ms-app://e-3-4-6234...']",
+        "WNS_SECRET_KEY": "BCp70uFVTIAKbHiIFt2RFzAnPCdT73HymDfij-j0ABtxj5C9Xrkj3122744xsfa3zaaTkBuqPGoFkedar4GF6so", # changealso notify/static/js/worker.js
+        "WP_PRIVATE_KEY": os.path.join(BASE_DIR, 'keys', 'private_key.pem'),
+        "WP_CLAIMS": {'sub': "mailto:timursennikov1@gmail.com"}, # заменить на mailto:<ваш е-мейл>
+        "USER_MODEL": "boards.Anon"
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -136,7 +151,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = 'static/'
-STATICFILE_DIRS = ['boards/static', 'passcode/static', 'pow/static']
+STATICFILE_DIRS = ['boards/static', 'passcode/static', 'pow/static', 'notify/static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

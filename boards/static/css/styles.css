@@ -1511,3 +1511,19 @@ form table th,
 ::-webkit-scrollbar-thumb:hover {
 	background: #c4a6a0;
 }
+
+.tracker-entry {
+	border: 1px solid;
+	padding: 10px;
+	margin-top: 10px;
+}
+
+.thread-tracker {
+	border: 1px solid;
+	padding: 5px;
+}
+
+.thread-tracker-timer {
+	margin: 10px;
+	margin-top: 15px;
+}

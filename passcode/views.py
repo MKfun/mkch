@@ -1,5 +1,5 @@
 import hashlib
-import time
+import secrets
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseRedirect
@@ -52,7 +52,7 @@ def passcode_reset(request):
 @staff_member_required
 def passcode_generate(request):
     if request.method == "POST":
-        code = hashlib.sha256(str(time.time()).encode("utf-8")).hexdigest()
+        code = hashlib.sha256(secrets.token_hex(32)).hexdigest()
         c = Passcode(code=code)
         c.save()
         return render(request, "success_generation.html", {'passcode': code})

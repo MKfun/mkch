@@ -2,10 +2,13 @@ from django.shortcuts import get_object_or_404
 
 from boards.models import *
 
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .serializers import BoardListSerializer, BoardSerializer, ThreadSerializer, ThreadDetailSerializer
+from rest_framework import filters
+
+from .serializers import BoardListSerializer, BoardSerializer, ThreadSerializer, ThreadDetailSerializer, AllThreadsSerializer
 
 from boards.models_tools import get_or_create_anon
 
@@ -38,3 +41,9 @@ class ThreadDetailView(APIView):
 
         serializer = ThreadDetailSerializer(thread, read_only=True)
         return Response(serializer.data)
+
+class AllThreadsView(generics.ListAPIView):
+    queryset = Thread.objects.all()
+    serializer_class = AllThreadsSerializer
+    filter_backends = [filters.OrderingFilter]
+    filterset_fields = ['id', 'creation']
