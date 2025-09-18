@@ -62,8 +62,8 @@ class PoWValidator {
             
             const elapsedTime = (performance.now() - startTime) / 1000;
             
-            if (elapsedTime < 1.0) {
-                const waitTime = 1.0 - elapsedTime;
+            if (elapsedTime < 2.0) {
+                const waitTime = 2.0 - elapsedTime;
                 console.log(`PoW: Waiting ${waitTime.toFixed(2)}s to meet minimum time requirement`);
                 await new Promise(resolve => setTimeout(resolve, waitTime * 1000));
             }

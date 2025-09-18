@@ -74,7 +74,7 @@ class PoWChallenge(models.Model):
         if not hmac.compare_digest(self.hmac_signature, expected_hmac):
             return False, "Invalid challenge signature"
         
-        if elapsed_time < 1.0 or elapsed_time > 300:
+        if elapsed_time < 0.2 or elapsed_time > 300:
             return False, "Invalid execution time"
         
         calc_string = f"{self.challenge}{nonce}"
