@@ -118,13 +118,13 @@ def create_new_thread(request, pk):
 
             return HttpResponseRedirect(reverse("board", kwargs={"pk": pk}))
         else:
-            return render(request, 'boards/create_new_thread.html', {'form': form, 'error': 'Неправильно введены данные (возможно, каптча)'})
+            return render(request, 'boards/create_new_thread.html', {'form': form, 'error': 'Неправильно введены данные (возможно, капча)', 'passcode': passcode})
     else:
         form = NewThreadFormPoW(initial={"is_nsfw": board.is_nsfw}) if not passcode else NewThreadFormP(initial={"is_nsfw": board.is_nsfw})
         if not board.is_nsfw:
             form.fields['is_nsfw'].disabled = True
 
-        return render(request, 'boards/create_new_thread.html', {'form': form})
+        return render(request, 'boards/create_new_thread.html', {'form': form, 'passcode': passcode})
 
 @key_required
 @require_pow
@@ -180,7 +180,7 @@ def add_comment_to_thread(request, pk, tpk):
 
             return HttpResponseRedirect(reverse("thread_detail_view", kwargs={"pk": pk, "tpk": tpk}))
         else:
-            return render(request, 'boards/create_new_thread.html', {'form': form, 'error': 'Неправильно введены данные (возможно, каптча)'})
+            return render(request, 'boards/add_comment_to_thread.html', {'form': form, 'error': 'Неправильно введены данные (возможно, капча)', 'passcode': passcode})
     else:
         nsw = thread.is_nsfw
 
@@ -188,7 +188,7 @@ def add_comment_to_thread(request, pk, tpk):
         if not nsw:
             e_form.fields['is_nsfw'].disabled = True
 
-        return render(request, 'boards/add_comment_to_thread.html', {'form': e_form})
+        return render(request, 'boards/add_comment_to_thread.html', {'form': e_form, 'passcode': passcode})
 
 @staff_member_required
 def pin_toggle(request):

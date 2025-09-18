@@ -57,10 +57,6 @@ class PoWChallenge(models.Model):
         logger.info(f"PoW: validate_solution - used: {self.used}, expires_at: {self.expires_at}, now: {timezone.now()}")
         logger.info(f"PoW: validate_solution - session_key match: {self.session_key == session_key}")
         
-        if self.used:
-            logger.warning(f"PoW: Challenge already used")
-            return False, "Challenge already used"
-        
         if timezone.now() > self.expires_at:
             logger.warning(f"PoW: Challenge expired - now: {timezone.now()}, expires: {self.expires_at}")
             return False, "Challenge expired"
@@ -89,8 +85,5 @@ class PoWChallenge(models.Model):
         
         if not response.startswith('0' * self.difficulty):
             return False, "Insufficient difficulty"
-        
-        self.used = True
-        self.save()
         
         return True, "Valid solution"

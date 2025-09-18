@@ -10,7 +10,7 @@
                         <div class="pow-progress-fill" id="pow-progress"></div>
                     </div>
                 <span id="pow-status" class="ok">Инициализация...</span>
-                <button id="pow-retry" onclick="solvePow()" style="display: none; margin-top: 10px; padding: 5px 10px;">Попробовать снова</button>
+                <button id="pow-retry" onclick="resetError(); solvePow();" style="display: none; margin-top: 10px; padding: 5px 10px;">Попробовать снова</button>
             </div>
         </div>
     </td>
@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let powValidator = new PoWValidator();
     let isProcessing = false;
+    let formSubmitted = false;
+    let hasError = false;
     
     function showPowForm() {
         const form = document.querySelector('form table');
@@ -62,11 +64,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    function resetError() {
+        hasError = false;
+        hideRetryButton();
+        console.log('PoW: Error state reset');
+    }
+    
     async function solvePow() {
-        if (isProcessing) return;
+        if (isProcessing || formSubmitted) return;
         
         console.log('PoW: Starting solvePow');
         isProcessing = true;
+        hasError = false;
         showPowForm();
         
         try {
@@ -79,32 +88,51 @@ document.addEventListener('DOMContentLoaded', function() {
                 statusText.textContent = 'Успешно!';
                 hideRetryButton();
                 hidePowForm();
+                formSubmitted = true;
                 
                 console.log('PoW: Validation complete, form will be submitted');
             } else {
+                hasError = true;
                 let errorMsg = 'Ошибка валидации';
                 if (result.error.includes('Rate limit')) {
-                    errorMsg = 'Слишком много запросов. Попробуйте через минуту.';
+                    errorMsg = 'Слишком много запросов. Обновите страницу и попробуйте через минуту.';
                 } else if (result.error.includes('Invalid execution time')) {
-                    errorMsg = 'Слишком быстрое решение. Попробуйте еще раз.';
+                    errorMsg = 'Слишком быстрое решение. Обновите страницу и попробуйте еще раз.';
                 } else if (result.error.includes('Invalid or expired')) {
                     errorMsg = 'Задача истекла. Обновите страницу и попробуйте снова.';
                 } else if (result.error.includes('Insufficient difficulty')) {
-                    errorMsg = 'Недостаточная сложность решения.';
+                    errorMsg = 'Недостаточная сложность решения. Обновите страницу.';
+                } else if (result.error.includes('already used')) {
+                    errorMsg = 'Доказательство уже использовано. Обновите страницу.';
                 }
                 statusText.textContent = errorMsg;
                 showRetryButton();
+                
+                setTimeout(() => {
+                    if (hasError) {
+                        window.location.reload();
+                    }
+                }, 5000);
             }
         } catch (error) {
             console.error('PoW: Error:', error);
+            hasError = true;
             let errorMsg = 'Ошибка соединения';
             if (error.message.includes('Failed to fetch')) {
-                errorMsg = 'Ошибка соединения с сервером. Проверьте интернет.';
+                errorMsg = 'Ошибка соединения с сервером. Обновите страницу.';
             } else if (error.message.includes('Aborted')) {
-                errorMsg = 'Операция отменена.';
+                errorMsg = 'Операция отменена. Обновите страницу.';
+            } else if (error.message.includes('Already processing')) {
+                errorMsg = 'Уже выполняется. Обновите страницу.';
             }
             statusText.textContent = errorMsg;
             showRetryButton();
+            
+            setTimeout(() => {
+                if (hasError) {
+                    window.location.reload();
+                }
+            }, 5000);
         } finally {
             isProcessing = false;
         }
@@ -116,10 +144,18 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', function(e) {
             console.log('PoW: Form submit intercepted');
             e.preventDefault();
+            
+            if (formSubmitted || hasError) {
+                console.log('PoW: Form already submitted or has error, ignoring');
+                return;
+            }
+            
             console.log('PoW: Preventing submit, starting PoW');
             solvePow().then(() => {
-                console.log('PoW: Validation complete, submitting form');
-                form.submit();
+                if (formSubmitted && !hasError) {
+                    console.log('PoW: Validation complete, submitting form');
+                    form.submit();
+                }
             });
         });
     });
