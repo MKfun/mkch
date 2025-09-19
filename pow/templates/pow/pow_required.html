@@ -36,6 +36,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const powSubmit = document.getElementById('pow-submit');
     
     let powValidator = new PoWValidator();
+    let formSubmitted = false;
+    let hasError = false;
     
     function updateProgress(nonce) {
         const progress = Math.min(100, (nonce / 10000) * 100);
@@ -44,6 +46,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     async function solvePow() {
+        if (formSubmitted || hasError) return;
+        
         try {
             statusText.textContent = 'Получение задачи...';
             const result = await powValidator.solveChallenge(updateProgress);
@@ -51,13 +55,34 @@ document.addEventListener('DOMContentLoaded', function() {
             if (result.valid) {
                 statusText.textContent = 'Успешно! Продолжаем...';
                 powValidated.value = 'true';
+                formSubmitted = true;
                 powSubmit.style.display = 'block';
                 powSubmit.click();
             } else {
-                statusText.textContent = 'Ошибка: ' + result.error;
+                hasError = true;
+                let errorMsg = 'Ошибка: ' + result.error;
+                if (result.error.includes('Rate limit')) {
+                    errorMsg = 'Слишком много запросов. Обновите страницу и попробуйте через минуту.';
+                } else if (result.error.includes('already used')) {
+                    errorMsg = 'Доказательство уже использовано. Обновите страницу.';
+                }
+                statusText.textContent = errorMsg;
+                
+                setTimeout(() => {
+                    if (hasError) {
+                        window.location.reload();
+                    }
+                }, 5000);
             }
         } catch (error) {
+            hasError = true;
             statusText.textContent = 'Ошибка: ' + error.message;
+            
+            setTimeout(() => {
+                if (hasError) {
+                    window.location.reload();
+                }
+            }, 5000);
         }
     }
     

@@ -22,5 +22,7 @@
 
 	{% load static %}
 	<script src="{% static 'js/dragNDrop.js' %}"></script>
-	{% include 'pow/pow_form.html' %}
+	{% if not passcode %}
+		{% include 'pow/pow_form.html' %}
+	{% endif %}
 {% endblock %}

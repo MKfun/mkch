@@ -40,7 +40,7 @@ def get_challenge(request):
         request.session.create()
         session_key = request.session.session_key
     
-    challenge = PoWChallenge.create_challenge(session_key, difficulty=5, ttl=3600)  
+    challenge = PoWChallenge.create_challenge(session_key, difficulty=4, ttl=3600)  
     logger.info(f"PoW: Created challenge {challenge.challenge[:8]}... for session {session_key[:8]}...")
     logger.info(f"PoW: Challenge expires at {challenge.expires_at}, TTL: 3600s")
     

@@ -52,7 +52,7 @@ def passcode_reset(request):
 @staff_member_required
 def passcode_generate(request):
     if request.method == "POST":
-        code = hashlib.sha256(secrets.token_hex(32)).hexdigest()
+        code = hashlib.sha256(secrets.token_hex(32).encode()).hexdigest() # я блять по жопе дам, СЛОМАЙ ПРОД НЕМЕДЛЕННО 
         c = Passcode(code=code)
         c.save()
         return render(request, "success_generation.html", {'passcode': code})
