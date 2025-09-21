@@ -16,6 +16,8 @@ from .mixins import StaffMemberRequiredMixin
 
 from .forms import PasscodeEnterForm, PasscodeGenerateForm
 
+from passcode.forms import render_form
+
 def index(request):
     return render(request, 'passcode_index.html')
 
@@ -40,7 +42,7 @@ def passcode_enter(request):
             return HttpResponseRedirect('/')
     else:
         form = PasscodeEnterForm(initial={'passcode': 'Пасскод'})
-        return render(request, 'basic_form.html', {'form': form})
+        return render_form(request, 'basic_form.html', {'form': form})
 
 def passcode_reset(request):
     if 'passcode' in request.session:
