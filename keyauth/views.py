@@ -5,8 +5,6 @@ from django.conf import settings
 from django.http import HttpResponseRedirect
 from .forms import KeyEnterForm
 
-from passcode.forms import render_form
-
 def key_enter(request):
     if request.method == 'POST':
         form = KeyEnterForm(request.POST)
@@ -22,5 +20,4 @@ def key_enter(request):
 
             return HttpResponseRedirect('/')
     else:
-        form = KeyEnterForm(initial={'key': 'Ключ'})
-        return render_form(request, 'basic_form.html', {'form': form})
+        return render(request, 'basic_form.html', {'form': KeyEnterForm()})
