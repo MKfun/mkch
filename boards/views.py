@@ -32,6 +32,23 @@ def handler404(request, _):
     return render(request, 'not_found.html', {error: 'Мы искали по всем углам, но не нашли пост что вам нужен. Может, пост был удалён или вы ввели неправильные данные?'})
 
 @key_required
+def thread_tracker(request):
+    ordb = request.GET.get('order_by', '-creation')
+    ordb = ordb if ordb in settings.VALID_TRACKER_ORDER else '-creation'
+
+    maxn = request.GET.get('max_num', 10)
+    try:
+        maxn = int(maxn)
+        if maxn < 0:
+            maxn = 0
+    except:
+        maxn = 10
+
+    blur = True if request.COOKIES.get("blur-nsfw") == "1" else False
+
+    return render(request, 'tracker.html', {'threads': Thread.objects.all().order_by(ordb)[:maxn], 'sort_method': ordb, 'max_threads': maxn, 'blur': blur})
+
+@key_required
 def index(request):
     anon = get_or_create_anon(request)
 
@@ -64,6 +81,26 @@ class ThreadListView(KeyRequiredMixin, generic.ListView):
 
 class ThreadDetailView(KeyRequiredMixin, generic.DetailView):
     model = Thread
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        board = get_object_or_404(Board, code=self.kwargs['pk'])
+
+
+        if 'passcode' in self.request.session:
+            passcode, _ = Passcode.objects.validate(hash_code=self.request.session['passcode'])
+        else:
+            passcode = False
+
+        form = ThreadCommentFormPoW(initial={"is_nsfw": board.is_nsfw}) if not passcode else ThreadCommentFormP(initial={"is_nsfw": board.is_nsfw})
+        if not board.is_nsfw:
+            form.fields['is_nsfw'].disabled = True
+
+        context['passcode'] = passcode
+        context['form'] = form
+
+        return context
 
     def get_object(self):
         return Thread.objects.get(id=self.kwargs['tpk'], board__code=self.kwargs['pk'])
@@ -178,7 +215,7 @@ def add_comment_to_thread(request, pk, tpk):
                 data = {'thread': thread.id, 'thread_title': thread.title, 'board': board.code, 'is_nsfw': nc.is_nsfw, 'id': nc.id, 'text': nc.text, 'files': furls}
                 ans = requests.post(settings.MKBOT_ADDR + "/newcomment", data=json.dumps(data))
 
-            return HttpResponseRedirect(reverse("thread_detail_view", kwargs={"pk": pk, "tpk": tpk}))
+            return HttpResponseRedirect(reverse("thread_detail_view", kwargs={"pk": pk, "tpk": tpk}) + f"#comment_{nc.id}")
         else:
             return render(request, 'boards/add_comment_to_thread.html', {'form': form, 'error': 'Неправильно введены данные (возможно, капча)', 'passcode': passcode})
     else:
@@ -189,6 +226,8 @@ def add_comment_to_thread(request, pk, tpk):
             e_form.fields['is_nsfw'].disabled = True
 
         return render(request, 'boards/add_comment_to_thread.html', {'form': e_form, 'passcode': passcode})
+
+# КРАСНАЯ ШАПОЧКА СОСИ МОЙ ЖИРНЫЙ ЧЛЕН
 
 @staff_member_required
 def pin_toggle(request):

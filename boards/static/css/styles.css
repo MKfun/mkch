@@ -28,6 +28,11 @@ h1, h2, h3, h4, h5, h6 {
 	text-align: center;
 }
 
+.settings-input {
+	width: 15vw;
+	height: 5vh;
+}
+
 .settings-button {
 	margin: 5px;
 	width: 15vw;
@@ -46,6 +51,15 @@ h1, h2, h3, h4, h5, h6 {
 
 .dark-theme a {
         color: #fb9900;
+}
+
+.mini-thread {
+	border: 1px solid;
+	margin: 10px;
+}
+
+.mini-thread h2, h3, .mini-media {
+	margin: 5px;
 }
 
 .thread-file {
@@ -291,12 +305,47 @@ h1, h2, h3, h4, h5, h6 {
 	border: 1px solid #d9bfb7;
 }
 
+.board-name-div {
+	background-color: #0f0f0f;
+	max-width: 100px;
+	border: 1px solid;
+	margin: 0px;
+}
+
+.dark-theme .board-name-div {
+	background-color: #0f0f0f;
+	max-width: 100px;
+	border: 1px solid;
+	margin: 0px;
+}
+
+.mini-media {
+	max-width: 10vw;
+	max-height: 10vh;
+	border: 1px solid #d9bfb7;
+}
+
+.mini-media-nsfw {
+	max-width: 200px;
+	max-height: 200px;
+	transition: transform .2s;
+	border: 1px solid #d9bfb7;
+	filter: blur(0.5rem);
+}
+
+.mini-media-nsfw:hover {
+	filter: blur(0rem);
+}
+
+.animated .mini-media-nsfw:hover {
+	transform: scale(1.5);
+}
+
 .thread-image-nsfw {
 	max-width: 200px;
 	max-height: 200px;
 	transition: transform .2s;
 	border: 1px solid #d9bfb7;
-	margin: 0 auto;
 	filter: blur(0.5rem);
 }
 

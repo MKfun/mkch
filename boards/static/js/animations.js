@@ -1,14 +1,14 @@
 function toggleAnimations() {
     let b = document.body;
     let e = document.getElementById("animations-toggle");
-    const anims = localStorage.getItem("animations");
+    const anims = LocalStorage.get("animations", "1");
 
     if(anims == "1") {
-        localStorage.setItem("animations", "0");
+        LocalStorage.set("animations", "0");
         b.classList.remove("animated");
     }
     else {
-        localStorage.setItem("animations", "1");
+        LocalStorage.set("animations", "1");
         b.classList.add("animated");
     }
 
@@ -20,7 +20,7 @@ function toggleAnimations() {
 function initAnimations() {
     let e = document.getElementById("animations-toggle");
     let b = document.body;
-    let anims = localStorage.getItem("animations");
+    let anims = LocalStorage.get("animations", "1");
 
     if(anims == "1") {
         b.classList.add("animated");

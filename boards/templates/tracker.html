@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block body %}
+	<h5>Трекер находится в бета-тесте. Не всё ещё имелементировано в трекер, могут наблюдайться баги.</h5>
+
+	<form class="change-thread-settings-form">
+		<!-- TODO
+		<select class="select-order_by" name="order_by" value={{sort_method}}>
+			<option value="-creation">Новые</option>
+			<option value="creation">Старые</option>
+			<option value="-rating">Бампнутые</option>
+			<option value="rating">Небампнутые</option>
+		</select>
+		-->
+
+		<input class="select-max_num" name="max_num" type="number" placeholder="Макс. тредов" value={{max_threads}} inputmode="numeric" onchange="this.value.replaceAll('-', '')" />
+		<input type="submit" />
+	</form>
+
+	<input class="tracker-set-interval" type="number" placeholder="Частота обновления" />
+	<button class="tracker-update">Обновить</button>
+
+	<div class="thread-tracker-boards"></div>
+
+	<div class="thread-tracker">
+		{% for thread in threads %}
+			<div class="mini-thread" id="thread-{{thread.id}}">
+				<h1 class="tid" hidden="true">{{thread.id}}</h1>
+				<div class="board-name-div"><h3>{{thread.board.code}}</h3></div>
+				<h2>{{thread.title}}</h2>
+				<h3>{{thread.text}}</h3>
+
+				{% for file in thread.threadfile_set.all %}
+					{% if file.fclass == "photo" %}
+					<img src="{{file.file.url}}" class="mini-media{% if blur and thread.is_nsfw %}-nsfw{% endif %}" id="img_thread_{{thread.id}}_{{forloop.counter}}" onclick="createImageFloatingDiv('img_thread_{{thread.id}}_{{forloop.counter}}')"></img>
+					{% elif file.fclass == "video" %}
+					    <video controls="" src="{{file.file.url}}" class="mini-media"></video>
+					{% else %}
+					    <a href="{{file.file.url}}" class="mini-media">{{file.file.name}}</a>
+					{% endif %}
+				{% endfor %}
+			</div>
+		{% endfor %}
+	</div>
+
+	{% load static %}
+	<script src="{% static 'js/draggable.js' %}"></script>
+	<script src="{% static 'js/tracker.js' %}"></script>
+
+	<script>
+		let tracker = new Tracker();
+		setInterval(() => {tracker.countdown()}, 1000);
+
+		window.addEventListener('load', () => {
+			document.querySelector(".tracker-update").addEventListener('click', () => {
+				tracker.forceUpdate();
+			});
+
+			document.querySelector(".tracker-set-interval").addEventListener('input', (e) => {
+				tracker.setUpdateInterval(parseInt(e.target.value));
+			});
+
+			document.querySelector(".change-thread-settings-form").addEventListener('submit', (e) => {
+				e.preventDefault();
+
+				tracker.setUpdateParams(e.target);
+			});
+		});
+	</script>
+
+
+{% endblock %}

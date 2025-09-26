@@ -4,6 +4,8 @@
 
 {% block body %}
     <div class="container" id="all-container">
+	<h1 class="js-autopop">Если вы это видите то у вас выключен JS. Пожалуйста, включите его, так как на нём держится куча функций, в частности функция отображения формы написания комментария при клике на кнопку.</h1>
+
         <div class="thread-container">
             <div class="thread-item">
                 <div class="thread-file" id="thread-file">
@@ -58,12 +60,25 @@
                         </div>
                     {% endfor %}
                 </div>
-                {% if not thread.board.lockdown and thread.board.enable_posting or user.is_admin %}<a href="/boards/board/{{thread.board.code}}/thread/{{thread.id}}/comment" class="send-btn">Написать комментарий</a>{% endif %}
+                {% if not thread.board.lockdown and thread.board.enable_posting or user.is_admin %}
+			<button class="show-comment-form-button">Написать комментарий</button>
+			<form class="comment-form" method="POST" action="/boards/board/{{thread.board.code}}/thread/{{thread.id}}/comment" enctype="multipart/form-data" hidden="">
+				{% csrf_token %}
+				<table>
+					{{form}}
+				</table>
+				<input type="submit" value="SUBMIT!" />
+			</form>
+		{% endif %}
         </div>
     </div>
 
 	{% load static %}
 	<script src="{% static 'js/draggable.js' %}"></script>
+	<script src="{% static 'js/dragNDrop.js' %}"></script>
+	{% if not passcode %}
+		{% include 'pow/pow_form.html' %}
+	{% endif %}
 
 	<script>
 		function updateCommentList() {
@@ -82,10 +97,23 @@
                     for(let i = posts_o.length; i < posts.length; i++) {
                         container.appendChild(posts[i]);
 					}
+
+					document.querySelector(".thread-header").innerHTML = list.querySelector(".thread-header").innerHTML;
 				});
 		}
 
-		setInterval(updateCommentList, 10000);
+		function showForm(e) {
+			console.log("sex");
+
+			e.target.hidden = true;
+			let formo = document.querySelector(".comment-form");
+			formo.hidden = null;
+		}
+
+		window.addEventListener("load", () => {
+			document.querySelector(".show-comment-form-button").addEventListener("click", showForm);
+			setInterval(updateCommentList, 10000);
+		});
 	</script>
 
 {% endblock %}
