@@ -306,7 +306,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .board-name-div {
-	background-color: #0f0f0f;
+	background-color: #b8ab88;
 	max-width: 100px;
 	border: 1px solid;
 	margin: 0px;
@@ -1575,4 +1575,8 @@ form table th,
 .thread-tracker-timer {
 	margin: 10px;
 	margin-top: 15px;
+}
+
+.step-links *{
+	padding: 6px;
 }

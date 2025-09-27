@@ -39,8 +39,7 @@ def passcode_enter(request):
 
             return HttpResponseRedirect('/')
     else:
-        form = PasscodeEnterForm(initial={'passcode': 'Пасскод'})
-        return render(request, 'basic_form.html', {'form': form})
+        return render(request, 'basic_form.html', {'form': PasscodeEnterForm()})
 
 def passcode_reset(request):
     if 'passcode' in request.session:

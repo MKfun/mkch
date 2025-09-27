@@ -28,51 +28,75 @@
 		<div class="pagination">
 			<span class="step-links">
 				{% if page_obj.has_previous %}
-					<a href="?page=1">&laquo; В начало</a>
-					<a href="?page={{ page_obj.previous_page_number }}">Назад</a>
+					<a href="?page=1">&laquo;1</a>
+					{% if page_obj.previous_page_number != 1 %}
+						<a href="?page={{ page_obj.previous_page_number }}">&lsaquo;{{ page_obj.previous_page_number }}</a>
+					{% endif %}
 				{% endif %}
 
-				<span class="current">
-					Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
-				</span>
+				<span class="current">{{ page_obj.number }}</span>
 
 				{% if page_obj.has_next %}
-					<a href="?page={{ page_obj.next_page_number }}">Далее</a>
-					<a href="?page={{ page_obj.paginator.num_pages }}">В конец &raquo;</a>
+					{% if page_obj.next_page_number != page_obj.paginator.num_pages %}
+						<a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}&rsaquo;</a>
+					{% endif %}
+					<a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}&raquo;</a>
 				{% endif %}
 			</span>
 		</div>
-			<div id="thread-list">
-				{% for thread in thread_list %}
-					<div class="thread-container">
-						<div class="thread-item">
-							<div class="thread-file" onclick="">
-							{% for file in thread.threadfile_set.all %}
-									{% if file.fclass == "photo" %}
+
+		<div id="thread-list">
+			{% for thread in thread_list %}
+				<div class="thread-container">
+					<div class="thread-item">
+						<div class="thread-file" onclick="">
+						{% for file in thread.threadfile_set.all %}
+								{% if file.fclass == "photo" %}
 									<img src="{{file.file.url}}" id={{file.file.url}} class="thread-image{% if blur and thread.is_nsfw %}-nsfw{% endif %}" onclick="createImageFloatingDiv('{{file.file.url}}')"></img>
-									{% elif file.fclass == "video" %}
-										<video controls="" src="{{file.file.url}}"></video>
-									{% else %}
-										<a href="{{file.file.url}}">{{file.file.name}}</a>
-									{% endif %}
-							{% endfor %}
-							</div>
-
-							<div class="thread-header">
-								<div onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'"><h1>{{thread.title}}</h1> <h2>{{thread.comment_set.count}} СМС, {{thread.rating}}PP {{thread.creation | date}}</h2></div>
-								{% if user.is_staff %}
-									{% load static %}
-									<img class="small-icon" src="{% if thread.pinned %}{% static 'media/unpin.png' %}{% else %}{% static 'media/pin.png' %}{% endif %}" onclick="pin({{thread.id}})"></img>
+								{% elif file.fclass == "video" %}
+									<video controls="" src="{{file.file.url}}"></video>
+								{% else %}
+									<a href="{{file.file.url}}">{{file.file.name}}</a>
 								{% endif %}
-							</div>
+						{% endfor %}
+						</div>
 
-							<div class="thread-description" onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'">
-								<h2>{{thread.text}}</h2>
-							</div>
+						<div class="thread-header">
+							<div onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'"><h1>{{thread.title}}</h1> <h2>{{thread.comment_set.count}} СМС, {{thread.rating}}PP {{thread.creation | date}}</h2></div>
+							{% if user.is_staff %}
+								{% load static %}
+								<img class="small-icon" src="{% if thread.pinned %}{% static 'media/unpin.png' %}{% else %}{% static 'media/pin.png' %}{% endif %}" onclick="pin({{thread.id}})"></img>
+							{% elif thread.pinned %}
+								{% load static %}
+								<img class="small-icon" src="{% static 'media/unpin.png' %}"></img>
+							{% endif %}
+						</div>
+
+						<div class="thread-description" onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'">
+							<h2>{{thread.text}}</h2>
 						</div>
 					</div>
-				{% endfor %}
-			</div>
+				</div>
+			{% endfor %}
+		</div>
+		<div class="pagination">
+			<span class="step-links">
+				{% if page_obj.has_previous %}
+					<a href="?page=1">&laquo;1</a>
+					{% if page_obj.previous_page_number != 1 %}
+						<a href="?page={{ page_obj.previous_page_number }}">&lsaquo;{{ page_obj.previous_page_number }}</a>
+					{% endif %}
+				{% endif %}
+
+				<span class="current">{{ page_obj.number }}</span>
+
+				{% if page_obj.has_next %}
+					{% if page_obj.next_page_number != page_obj.paginator.num_pages %}
+						<a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}&rsaquo;</a>
+					{% endif %}
+					<a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}&raquo;</a>
+				{% endif %}
+			</span>
 		</div>
 	</div>
 

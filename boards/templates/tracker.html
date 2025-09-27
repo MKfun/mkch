@@ -24,7 +24,7 @@
 
 	<div class="thread-tracker">
 		{% for thread in threads %}
-			<div class="mini-thread" id="thread-{{thread.id}}">
+			<div class="mini-thread" id="thread-{{thread.id}}" onclick="window.location.href='/boards/board/{{thread.board.code}}/thread/{{thread.id}}'">
 				<h1 class="tid" hidden="true">{{thread.id}}</h1>
 				<div class="board-name-div"><h3>{{thread.board.code}}</h3></div>
 				<h2>{{thread.title}}</h2>
