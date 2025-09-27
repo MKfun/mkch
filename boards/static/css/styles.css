@@ -1527,3 +1527,7 @@ form table th,
 	margin: 10px;
 	margin-top: 15px;
 }
+
+.step-links *{
+	padding: 6px;
+}
