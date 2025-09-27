@@ -3,6 +3,6 @@ function popWarnings() {
 	for(warning of warnings) {warning.remove();}
 }
 
-window.addEventListener('load', () => {
+window.addEventListener('DOMContentLoaded', () => {
 	popWarnings();
 });
