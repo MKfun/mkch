@@ -1,7 +1,8 @@
 function toggleTheme() {
     let b = document.body;
     let e = document.getElementById("theme-toggle");
-    const theme = localStorage.getItem("theme");
+
+    const theme = LocalStorage.get("theme", "light");
 
     if(theme=="dark") {
         localStorage.setItem("theme", "light");
@@ -20,7 +21,8 @@ function toggleTheme() {
 function initTheme() {
     let e = document.getElementById("theme-toggle");
     let b = document.body;
-    let theme = localStorage.getItem("theme");
+
+    let theme = LocalStorage.get("theme", "light");
 
     if(theme === "dark") {
         b.classList.add("dark-theme");

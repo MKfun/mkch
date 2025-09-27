@@ -32,12 +32,13 @@ AUTH_KEY = "key"
 DEBUG = True
 
 VALID_FILETYPES = ['png', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'gif']
+VALID_TRACKER_ORDER = ['-creation', 'creation', '-rating', 'rating']
 
 MKBOT = False # оповещать мкбот о новых тредах?
 MKBOT_ADDR = "http://127.0.0.1:5000" # адрес мкбота (протокол и порт обязательны) (можно не указывать если MKBOT == False)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'schchan.xyz', '665216971e91.ngrok-free.app']
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'https://schchan.xyz', 'https://665216971e91.ngrok-free.app']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1']
 
 LOGIN_REDIRECT_URL = '/'
 

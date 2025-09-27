@@ -44,6 +44,7 @@
 				{% endif %}
 			</span>
 		</div>
+
 		<div id="thread-list">
 			{% for thread in thread_list %}
 				<div class="thread-container">
@@ -51,7 +52,7 @@
 						<div class="thread-file" onclick="">
 						{% for file in thread.threadfile_set.all %}
 								{% if file.fclass == "photo" %}
-									<img src="{{file.file.url}}" id={{file.file.url}} class="thread-image" onclick="createImageFloatingDiv('{{file.file.url}}')"></img>
+									<img src="{{file.file.url}}" id={{file.file.url}} class="thread-image{% if blur and thread.is_nsfw %}-nsfw{% endif %}" onclick="createImageFloatingDiv('{{file.file.url}}')"></img>
 								{% elif file.fclass == "video" %}
 									<video controls="" src="{{file.file.url}}"></video>
 								{% else %}
