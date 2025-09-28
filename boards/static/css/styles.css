@@ -749,6 +749,10 @@ div:target {
 	text-align: center;
 }
 
+.pagination.bottom {
+	margin-bottom: 20px;
+}
+
 .pagination a {
 	color: #800000;
 	text-decoration: none;												
@@ -1579,4 +1583,40 @@ form table th,
 
 .step-links *{
 	padding: 6px;
+}
+
+.thread-info {
+	margin-right: auto;
+}
+
+.thread-id {
+	color: #cbbbb2;
+	word-break: keep-all;
+	overflow-wrap: normal;
+}
+
+.dark-theme .thread-id {
+	color: #656565;
+}
+
+.thread-id.list {
+	margin-right: 3mm;
+}
+
+.thread-id.detail {
+	text-align: center;
+	margin: 0 3mm;
+}
+
+.thread-stats.detail {
+	margin: 0 3mm;
+}
+
+.thread-meta {
+	display: flex;
+	flex-wrap: wrap-reverse;
+	align-items: center;
+	gap: 0 3mm;
+	justify-content: space-between;
+	flex-grow: 1;
 }

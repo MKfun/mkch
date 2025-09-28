@@ -25,7 +25,7 @@
 			{% endif %}
 		</div>
 
-		<div class="pagination">
+		<div class="pagination top">
 			<span class="step-links">
 				{% if page_obj.has_previous %}
 					<a href="?page=1">&laquo;1</a>
@@ -61,8 +61,18 @@
 						{% endfor %}
 						</div>
 
-						<div class="thread-header">
-							<div onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'"><h1>{{thread.title}}</h1> <h2>{{thread.comment_set.count}} СМС, {{thread.rating}}PP {{thread.creation | date}}</h2></div>
+						<div class="thread-header list">
+							<div class="thread-info list" onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'">
+								<h1 class="thread-title list">
+									{{thread.title}}
+								</h1>
+								<h2 class="thread-stats list">
+									{{thread.comment_set.count}} СМС, 
+									{{thread.rating}}PP 
+									{{thread.creation | date}}
+								</h2>
+							</div>
+							<h1 class="thread-id list">#{{thread.id}}</h1>
 							{% if user.is_staff %}
 								{% load static %}
 								<img class="small-icon" src="{% if thread.pinned %}{% static 'media/unpin.png' %}{% else %}{% static 'media/pin.png' %}{% endif %}" onclick="pin({{thread.id}})"></img>
@@ -79,7 +89,7 @@
 				</div>
 			{% endfor %}
 		</div>
-		<div class="pagination">
+		<div class="pagination bottom">
 			<span class="step-links">
 				{% if page_obj.has_previous %}
 					<a href="?page=1">&laquo;1</a>
