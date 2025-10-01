@@ -1,42 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-	{% block title %}<title>mkch</title>{% endblock %}
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
+  {% block title %}<title>mkch</title>{% endblock %}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-	{% block static %}
-	{% load static %}
-		<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-	{% endblock %}
+  {% block static %}
+  {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  {% endblock %}
 
-	{% block static_extra %}{% endblock %}
+  {% block static_extra %}{% endblock %}
 
-	<head>
-		<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-		{% load static %}
-		<script src="{% static 'js/localStorage.js' %}"></script>
-		<script src="{% static 'js/theme.js' %}"></script>
-		<script src="{% static 'js/nsfw.js' %}"></script>
-		<script src="{% static 'js/animations.js' %}"></script>
-		<script src="{% static 'js/initial.js' %}"></script>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    {% load static %}
+    <script src="{% static 'js/localStorage.js' %}"></script>
+    <script src="{% static 'js/theme.js' %}"></script>
+    <script src="{% static 'js/nsfw.js' %}"></script>
+    <script src="{% static 'js/animations.js' %}"></script>
+    <script src="{% static 'js/initial.js' %}"></script>
 
-		<div class="header">
-			{% block head %}{% endblock %}
+    <div class="header">
+      {% block head %}{% endblock %}
 
-			<a href="/">mkch</a>
+      <a href="/">mkch</a>
 
-			<div class="header-buttons">
-				{% if user.is_authenticated %}
-					<a>{{user.username}}</a>
-				{% endif %}
-				<br/>
-			</div>
+      <div class="header-buttons">
+        {% if user.is_authenticated %}
+          <a>{{user.username}}</a>
+        {% endif %}
+        <br/>
+      </div>
 
-			{% load static %}
-			<a href="/settings"><img class="small-icon" src="{% static 'media/settings.svg'%}" ></img></a>
-		</div>
-	</head>
-	<body id="body">
-		{% block body %}{% endblock %}
-	</body>
+      {% load static %}
+      <a href="/settings"><img class="small-icon" src="{% static 'media/settings.svg'%}" ></img></a>
+    </div>
+  </head>
+  <body id="body">
+    <script>
+    (function() {
+      try {
+
+        if (localStorage.getItem('theme') === 'dark') {
+          document.body.classList.add('dark-theme');
+        }
+
+        if (localStorage.getItem('animations') !== '0') {
+          document.body.classList.add('animated');
+        }
+      } catch (e) {
+      }
+    })();
+    </script>
+    {% block body %}{% endblock %}
+  </body>
 </html>

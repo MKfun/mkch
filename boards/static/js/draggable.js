@@ -79,8 +79,10 @@ function createImageFloatingDiv(imgId) {
 
 	    d.id = `floatingdiv_${imgId}`;
 	    d.className = "draggable";
-	    d.style.left = "10%";
-	    d.style.top = "10%";
+	    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const topOffset = 50;
+	    d.style.left = "35%";
+	    d.style.top = `${scrollTop + topOffset}px`
 
 	    h.className = "draggable-header";
 
