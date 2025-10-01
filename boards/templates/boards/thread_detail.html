@@ -20,10 +20,13 @@
                     {% endfor %}
                 </div>
 
-                <div class="thread-header">
-                    <h1>{{thread.title}} </h1> <h5>{{thread.creation | date}}, {{thread.comment_set.count}} СМС, {{thread.rating}}PP</h5>
+                <div class="thread-header detail">
+                    <h1 class="thread-title detail">{{thread.title}}</h1>
+                    <span class="thread-meta detail">
+                        <h1 class="thread-id detail">#{{thread.id}}</h1>
+                        <h5 class="thread-stats detail">{{thread.creation | date}}, {{thread.comment_set.count}} СМС, {{thread.rating}}PP</h5>
+                    </span>
                 </div>
-
 
                 <div class="thread-description">
                     <h2>{{thread.text}}</h2>

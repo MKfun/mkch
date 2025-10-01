@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block body %}
 	<div class="container-centered">
         <button id="theme-toggle" class="settings-button" onclick="toggleTheme()">Тёмная тема</button>
@@ -9,12 +11,17 @@
         <button id="animations-toggle" class="settings-button" onclick="toggleAnimations()">{% if animations %}Выключить анимации{% else %}Включить анимации{% endif %}</button>
 	</div>
 
-	{% load static %}
+	<div class="dev-team">
+		<h2></h2>
+		<img width="384" src="{% static "media/picture.png" %}">
+		<h5>Команда разработчиков не имеет отношения к команде админов</h5>
+	</div>
+
 	<script src="{% static 'js/nsfw.js' %}"></script>
-
-	{% load static %}
 	<script src="{% static 'js/theme.js' %}"></script>
-
-	{% load static %}
 	<script src="{% static 'js/animations.js' %}"></script>
+	<script src="{% static 'js/splashes.js' %}"></script>
+	<script>
+		window.addEventListener('load', () => {setDevSplash();});
+	</script>
 {% endblock %}
