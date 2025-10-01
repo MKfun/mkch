@@ -1620,3 +1620,22 @@ form table th,
 	justify-content: space-between;
 	flex-grow: 1;
 }
+
+.dev-team {
+	display: flex;
+	margin: 16mm 0;
+	flex-grow: 1;
+	flex-direction: column;
+}
+
+.dev-team * {
+	margin: 0 auto;
+}
+
+.dev-team h5 {
+	color: #cec1b9;
+}
+
+.dark-theme .dev-team h5 {
+	color: #333;
+}
