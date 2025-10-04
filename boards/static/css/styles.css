@@ -1723,3 +1723,17 @@ del {
 .dark-theme .format-btn:hover {
     background: #666;
 }
+
+.post-id-link {
+    text-decoration: none;
+    cursor: pointer;
+    color: #800000; 
+}
+
+.post-id-link:hover {
+    text-decoration: underline; 
+}
+
+.dark-theme .post-id-link {
+    color: #e0e0e0; 
+}

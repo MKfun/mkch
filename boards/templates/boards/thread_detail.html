@@ -37,7 +37,7 @@
                     {% for comment in thread.comment_set.all %}
                         <div class="post{% if comment.id in user_posts %} user-post{% elif comment.id in replies_to_user %} reply-to-user{% endif %}" id="post-{{comment.id}}">
                             <div class="post-header" id="comment_{{comment.id}}">
-                                <h4>{% if thread.author == comment.author %}(ОП){% endif %} {{comment.author_code}} #{{comment.id}} {{comment.creation | date}}</h4>
+                                <h4>{% if thread.author == comment.author %}(ОП){% endif %} {{comment.author_code}} <a href="javascript:void(0);" onclick="addReply('{{comment.id}}')" class="post-id-link">#{{comment.id}}</a> {{comment.creation | date}}</h4>
                                     {% for file in comment.commentfile_set.all %}
                                                                 {% if file.fclass == "photo" %}
                                                                     <img src="{{file.file.url}}" class="post-image{% if comment.is_nsfw and blur %}-nsfw{% endif %}" id="img_comment_{{comment.id}}_{{forloop.counter}}" onclick="createImageFloatingDiv('img_comment_{{comment.id}}_{{forloop.counter}}')"></img>
@@ -119,6 +119,27 @@
 			let formo = document.querySelector(".comment-form");
 			formo.hidden = null;
 		}
+
+        function addReply(postId) {
+            const form = document.querySelector('.comment-form');
+            const textarea = form.querySelector('textarea');
+            const showFormButton = document.querySelector('.show-comment-form-button');
+
+            if (form.hidden) {
+                showFormButton.click();
+            }
+
+            const replyText = '#' + postId + ' ';
+            let currentText = textarea.value;
+
+            if (currentText.length > 0 && currentText[currentText.length - 1] !== ' ' && currentText[currentText.length - 1] !== '\n') {
+                textarea.value += ' ';
+            }
+
+            textarea.value += replyText;
+
+            textarea.focus();
+        }
 
 		window.addEventListener("load", () => {
 			document.querySelector(".show-comment-form-button").addEventListener("click", showForm);
