@@ -95,34 +95,25 @@ class Comment(models.Model):
 
     def formatted(self):
         t = escape(self.text)
-        words = t.split(" ")
-        for i, word in enumerate(words):
-            if word.startswith("#"):
-                word = word[1:]
-                try:
-                    _ = int(word)
-                except Exception:
-                    continue
-                words[i] = f"<a href='#comment_{word}'>#{word}</a>"
-            elif word.startswith("mkchtlnk"):
-                parts = word.split(":")
-                if len(parts) < 3:
-                    continue
-                board = parts[1]
-                tid = parts[2]
 
-                try:
-                    _ = int(tid)
-                    b = Board.objects.get(code=board)
-                    thread = Thread.objects.get(board=b, id=tid)
-                except Exception as e:
-                    continue
-                words[i] = f"<a href='/boards/board/{board}/thread/{tid}'>{board}->{tid}</a>"
-            elif word.startswith("mkchqstart:") and word.endswith(":mkchqend"):
-                text = word.split("mkchqstart:")[1].split(":mkchqend")[0]
-                word = f"<h4 class='quote'>f{text}</h4>"
+        t = re.sub(r'^(&gt;.*)', r'<span class="quote">\1</span>', t, flags=re.MULTILINE)
+        t = re.sub(r'&gt;!(.*?)!&lt;', r'<span class="spoiler">\1</span>', t, re.DOTALL)
+        t = re.sub(r'~~([\s\S]+?)~~', r'<del>\1</del>', t)
 
-        return " ".join(words)
+        t = re.sub(r'#(\d+)', r'<a href="#comment_\1">#\1</a>', t)
+
+        def mkchtlnk_replacer(match):
+            try:
+                board_code = match.group(1)
+                thread_id = match.group(2) 
+                Thread.objects.get(board__code=board_code, id=thread_id)
+                return f"<a href='/boards/board/{board_code}/thread/{thread_id}'>{board_code}-&gt;{thread_id}</a>"
+            except (Board.DoesNotExist, Thread.DoesNotExist, ValueError):
+                return match.group(0)
+
+        t = re.sub(r'mkchtlnk:(\w+):(\d+)', mkchtlnk_replacer, t)
+
+        return t.replace('\n', '<br>')
 
     def replies(self):
         return Comment.objects.filter(thread=self.thread).filter(text__contains="#"+str(self.id))

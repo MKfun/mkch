@@ -67,6 +67,12 @@
 			<button class="show-comment-form-button">Написать комментарий</button>
 			<form class="comment-form" method="POST" action="/boards/board/{{thread.board.code}}/thread/{{thread.id}}/comment" enctype="multipart/form-data" hidden="">
 				{% csrf_token %}
+                <div class="format-toolbar">
+                    <button type="button" class="format-btn" title="Цитата" data-format="quote">&gt;</button>
+                    <button type="button" class="format-btn" title="Спойлер" data-format="spoiler">S</button>
+                    <button type="button" class="format-btn" title="Зачеркнутый" data-format="strike"><s>T</s></button>
+                    <button type="button" class="format-btn" title="Ссылка на тред" data-format="link">LINK</button>
+                </div>
 				<table>
 					{{form}}
 				</table>
@@ -79,6 +85,7 @@
 	{% load static %}
 	<script src="{% static 'js/draggable.js' %}"></script>
 	<script src="{% static 'js/dragNDrop.js' %}"></script>
+    <script src="{% static 'js/formatter.js' %}"></script>
 	{% if not passcode %}
 		{% include 'pow/pow_form.html' %}
 	{% endif %}

@@ -604,7 +604,6 @@ div:target {
 }
 
 .post-message {
-	white-space: pre-wrap;
 	word-wrap: break-word;
 	color: #800000;
 }
@@ -1283,10 +1282,6 @@ form table th,
 	color: #e67e22;
 }
 
-.dark-theme .post-message del {
-	color: #ff6b6b;
-}
-
 .dark-theme .post-message code {
 	background: #555;
 	color: #f39c12;
@@ -1654,4 +1649,77 @@ form table th,
 
 .dark-theme .dev-team h5 {
 	color: #333;
+}
+
+/* Цитаты (>текст) */
+.quote {
+    color: #789922;
+}
+
+.dark-theme .quote {
+    color: #b2d582;
+}
+
+.spoiler {
+    background-color: #800000;
+    color: #800000;
+    padding: 0 2px;
+    transition: color 0.15s ease-in-out;
+}
+
+.spoiler:hover {
+    color: #f0e0d6; 
+}
+
+.dark-theme .spoiler {
+    background-color: #e0e0e0;
+    color: #e0e0e0;
+}
+
+.dark-theme .spoiler:hover {
+    color: #1a1a1a;
+}
+
+del {
+    text-decoration: line-through;
+}
+
+.format-toolbar {
+    margin-top: 5px; 
+    padding: 5px;
+    background: #e5d4c0;
+    border: 1px solid #d9bfb7;
+    border-radius: 3px;
+    display: flex;
+    gap: 5px;
+    box-sizing: border-box; 
+}
+
+.format-btn {
+    background: #f0e0d6;
+    border: 1px solid #d9bfb7;
+    padding: 3px 8px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #800000;
+    font-family: 'Arial', sans-serif;
+}
+
+.format-btn:hover {
+    background: #d9bfb7;
+}
+
+.dark-theme .format-toolbar {
+    background: #444;
+    border-color: #666;
+}
+
+.dark-theme .format-btn {
+    background: #555;
+    border-color: #666;
+    color: #e0e0e0;
+}
+
+.dark-theme .format-btn:hover {
+    background: #666;
 }
