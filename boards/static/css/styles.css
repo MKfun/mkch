@@ -1612,6 +1612,22 @@ form table th,
 	margin: 0 3mm;
 }
 
+.user-post {
+    border-left: 3px solid red !important;
+}
+
+.reply-to-user {
+    border-left: 3px dotted red !important;
+}
+
+.dark-theme .user-post {
+    border-left: 3px solid #fb9900 !important; 
+}
+
+.dark-theme .reply-to-user {
+    border-left: 3px dotted #fb9911 !important; 
+}
+
 .thread-meta {
 	display: flex;
 	flex-wrap: wrap-reverse;

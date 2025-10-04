@@ -97,6 +97,17 @@ class ThreadDetailView(KeyRequiredMixin, generic.DetailView):
         if not board.is_nsfw:
             form.fields['is_nsfw'].disabled = True
 
+        user_posts = self.request.session.get('user_posts', [])
+        replies_to_user = []
+        comments = context['thread'].comment_set.all()
+        for comment in comments:
+            for user_post_id in user_posts:
+                if f"#{user_post_id}" in comment.text:
+                    replies_to_user.append(comment.id)
+                    break
+        context['user_posts'] = user_posts
+        context['replies_to_user'] = replies_to_user
+
         context['passcode'] = passcode
         context['form'] = form
 
@@ -192,6 +203,10 @@ def add_comment_to_thread(request, pk, tpk):
 
             nc = Comment(thread=thread, text=data['text'], author=anon, author_code=hashlib.sha256((str(thread.id) + anon.ip).encode()).hexdigest()[:6])
             nc.save()
+
+            user_posts = request.session.get('user_posts', [])
+            user_posts.append(nc.id)
+            request.session['user_posts'] = user_posts
 
             thread.rating_pp()
             thread.save()

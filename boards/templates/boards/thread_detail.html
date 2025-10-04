@@ -35,7 +35,7 @@
                 <div id="posts" class="posts-container">
                 <div id="posts-inner" class="posts-inner-c">
                     {% for comment in thread.comment_set.all %}
-                        <div class="post" id="post-{{comment.id}}">
+                        <div class="post{% if comment.id in user_posts %} user-post{% elif comment.id in replies_to_user %} reply-to-user{% endif %}" id="post-{{comment.id}}">
                             <div class="post-header" id="comment_{{comment.id}}">
                                 <h4>{% if thread.author == comment.author %}(ОП){% endif %} {{comment.author_code}} #{{comment.id}} {{comment.creation | date}}</h4>
                                     {% for file in comment.commentfile_set.all %}
