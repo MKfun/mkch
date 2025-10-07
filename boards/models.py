@@ -100,7 +100,7 @@ class Comment(models.Model):
         t = re.sub(r'&gt;!(.*?)!&lt;', r'<span class="spoiler">\1</span>', t, re.DOTALL)
         t = re.sub(r'~~([\s\S]+?)~~', r'<del>\1</del>', t)
 
-        t = re.sub(r'#(\d+)', r'<h4 class="reply"><a class="replylnk" href="#comment_\1">#\1</a></h4>', t)
+        t = re.sub(r'#(\d+)', r'<div class="reply"><a class="replylnk" href="#comment_\1">#\1</a></div>', t)
 
         def mkchtlnk_replacer(match):
             try:
