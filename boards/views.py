@@ -26,6 +26,9 @@ from .tools import remove_exif
 
 from passcode.models import Passcode
 
+from datetime import timedelta
+from django.utils import timezone
+
 # Плохо реализована проверка пасскодов, в интернете DRY-решения не нашёл. Если кто знает - кидайте PR
 
 def handler404(request, _):
@@ -57,7 +60,15 @@ def index(request):
 
     boards = Board.objects.all()
 
-    return render(request, 'index.html', context={'boards': boards, 'passcode': code, 'passcode_entered': code_entered})
+    yesterday = timezone.now().date() - timedelta(days=1)
+
+    threads_yesterday = Thread.objects.filter(creation__date=yesterday).count()
+    posts_yesterday = Comment.objects.filter(creation__date=yesterday).count()
+
+    threads_total = Thread.objects.count()
+    posts_total = Comment.objects.count()
+    
+    return render(request, 'index.html', context={'boards': boards, 'passcode': code, 'passcode_entered': code_entered, 'threads_yesterday': threads_yesterday, 'posts_yesterday': posts_yesterday, 'threads_total': threads_total, 'posts_total': posts_total,})
 
 class ThreadListView(KeyRequiredMixin, generic.ListView):
     model = Thread

@@ -6,10 +6,13 @@
 	<div class="container">
 		<div class="motd-container">
 			<div class="motd">
-				Добро пожаловать на MKch, анонимный имиджборд MK.
+				Добро пожаловать на MKch - анонимный имиджборд MK.
+				<p>За вчерашний день выложено {{ threads_yesterday }} тредов и {{ posts_yesterday }} постов. За все время выложено {{ threads_total }} тредов и {{ posts_total }} постов.</p>
 			</div>	
 			<div class="button-group">
-				<a class="new-thread-button" href="/passcode">Купить пасскод</a>
+				{% if not passcode %}
+					<a class="new-thread-button" href="/passcode">Купить пасскод</a>
+				{% endif %}
 			</div>
 			<form class="search-form">
 				<input id="search" name="code" placeholder="Поиск..." type="text"></input>
