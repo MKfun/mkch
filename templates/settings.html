@@ -8,7 +8,6 @@
         <br />
         <button id="nsfw-toggle" class="settings-button" onclick="toggleNsfwBlur()">{% if nsfw %}Не блюрить NSFW{% else %}Блюрить NSFW{% endif %}</button>
         <br />
-        <button id="animations-toggle" class="settings-button" onclick="toggleAnimations()">{% if animations %}Выключить анимации{% else %}Включить анимации{% endif %}</button>
 	</div>
 
 	<div class="dev-team">
@@ -16,12 +15,11 @@
 		<a href="https://github.com/mkfun/mkch">
 			<img width="384" src="{% static "media/picture.png" %}">
 		</a>
-		<h5>Команда разработчиков не имеет отношения к команде админов</h5>
+		<h5>Команда разработчиков не имеет отношения к команде админов.</h5>
 	</div>
 
 	<script src="{% static 'js/nsfw.js' %}"></script>
 	<script src="{% static 'js/theme.js' %}"></script>
-	<script src="{% static 'js/animations.js' %}"></script>
 	<script src="{% static 'js/splashes.js' %}"></script>
 	<script>
 		window.addEventListener('load', () => {setDevSplash();});

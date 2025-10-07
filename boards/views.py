@@ -121,7 +121,7 @@ class ThreadDetailView(KeyRequiredMixin, generic.DetailView):
 
         context['passcode'] = passcode
         context['form'] = form
-
+        context['blur'] = True if self.request.COOKIES.get("blur-nsfw") == "1" else False
         return context
 
     def get_object(self):
@@ -205,14 +205,14 @@ def add_comment_to_thread(request, pk, tpk):
         anon = get_or_create_anon(request)
 
         if anon.banned:
-            return render(request, 'error.html', {'error': 'Ваш IP-адрес был заблокирован. Только попробуй впн включить сука.'})
+            return render(request, 'error.html', {'error': 'Ваш IP-адрес был заблокирован.'})
 
         form = ThreadCommentFormPoW(request.POST) if not passcode else ThreadCommentFormP(request.POST)
 
         if form.is_valid(request): # КОСТЫЫЫЫЛЬ (ДЖАНГО НЕ ПОДДЕРЖИВАЕТ МНОГО ФАЙЛОВ ПОЭТОМУ ДЕЛАЕМ ЧЕРЕЗ КОСТЫЫЫЫЫЫЫЫЫЫЛЬ, КАК СДЕЛАЮТ ПОДДЕРЖКУ 1+ ФАЙЛА (ПО ИДЕЕ В НЕКСТ ВЕРСИИ) СКАЖИТЕ МНЕ, Я ИСПРАВЛЮ КОСТЫЫЫЫЫЫЫЫЫЛЬ)
             data = form.cleaned_data
 
-            nc = Comment(thread=thread, text=data['text'], author=anon, author_code=hashlib.sha256((str(thread.id) + anon.ip).encode()).hexdigest()[:6])
+            nc = Comment(thread=thread, text=data['text'], author=anon, is_nsfw=data["is_nsfw"], author_code=hashlib.sha256((str(thread.id) + anon.ip).encode()).hexdigest()[:6])
             nc.save()
 
             user_posts = request.session.get('user_posts', [])
@@ -223,8 +223,8 @@ def add_comment_to_thread(request, pk, tpk):
             thread.save()
 
             if board.bump_limit > 0 and Comment.objects.filter(thread=thread).count() >= board.bump_limit:
-                thread.delete()
-                return HttpResponseRedirect(reverse("board", kwargs={"pk": board.code}))
+                thread.rating = 0
+                thread.save()
 
             furls = []
             if request.FILES is not None and len(request.FILES.getlist('files')) > 0:

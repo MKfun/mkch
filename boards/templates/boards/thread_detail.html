@@ -33,30 +33,33 @@
                 </div>
             </div>
                 <div id="posts" class="posts-container">
-                <div id="posts-inner" class="posts-inner-c">
                     {% for comment in thread.comment_set.all %}
                         <div class="post{% if comment.id in user_posts %} user-post{% elif comment.id in replies_to_user %} reply-to-user{% endif %}" id="post-{{comment.id}}">
                             <div class="post-header" id="comment_{{comment.id}}">
-                                <h4>{% if thread.author == comment.author %}(ОП){% endif %} {{comment.author_code}} <a href="javascript:void(0);" onclick="addReply('{{comment.id}}')" class="post-id-link">#{{comment.id}}</a> {{comment.creation | date}}</h4>
+				<h4 class="header-data">{% if thread.author == comment.author %}(ОП){% endif %} {{comment.author_code}} <a href="javascript:void(0);" onclick="addReply('{{comment.id}}')" class="post-id-link">#{{comment.id}}</a> {{comment.creation | date}}</h4>
+				{% if comment.commentfile_set.all.count > 0 %}
+				    <div class="comment-files">
                                     {% for file in comment.commentfile_set.all %}
                                                                 {% if file.fclass == "photo" %}
-                                                                    <img src="{{file.file.url}}" class="post-image{% if comment.is_nsfw and blur %}-nsfw{% endif %}" id="img_comment_{{comment.id}}_{{forloop.counter}}" onclick="createImageFloatingDiv('img_comment_{{comment.id}}_{{forloop.counter}}')"></img>
+							   	    <img src="{{file.file.url}}" class="post-image{% if comment.is_nsfw and blur %}-nsfw{% endif %}" id="img_comment_{{comment.id}}_{{forloop.counter}}" onclick="createImageFloatingDiv('img_comment_{{comment.id}}_{{forloop.counter}}')"></img>
                                                                 {% elif file.fclass == "video" %}
                                                                     <video class="video-post-{{comment.id}}" controls="" src="{{file.file.url}}"></video>
                                                                 {% else %}
                                                                     <a href="{{file.file.url}}">{{file.file.name}}</a>
                                                                 {% endif %}
-                                    {% endfor %}
-                                <div class="post-message"><h3>{{comment.formatted | safe}}</h3></div>
+                                        {% endfor %}
+				    </div>
+				{% endif %}
+
+				<div class="post-message"><h3>{{comment.formatted | safe}}</h3></div>
                             </div>
 
+			    <div class="reply-container"></div>
                             {% if comment.replies %}
                             <div class="replies">
-                                <h6 class="reply">
                                     {% for reply in comment.replies %}
-                                        <a href="#comment_{{reply.id}}">>> {{reply.id}}</a>
+				    	<h6 class="reply"><a class="replylnk" href="#comment_{{reply.id}}">>> {{reply.id}}</a></h6>
                                     {% endfor %}
-                                </h6>
                             </div>
                             {% endif %}
 
@@ -79,12 +82,13 @@
 				<input type="submit" value="SUBMIT!" />
 			</form>
 		{% endif %}
-        </div>
     </div>
 
 	{% load static %}
 	<script src="{% static 'js/draggable.js' %}"></script>
 	<script src="{% static 'js/dragNDrop.js' %}"></script>
+	<script src="{% static 'js/tooltip.js' %}"></script>
+
     <script src="{% static 'js/formatter.js' %}"></script>
 	{% if not passcode %}
 		{% include 'pow/pow_form.html' %}

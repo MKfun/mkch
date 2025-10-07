@@ -144,10 +144,6 @@ h1, h2, h3, h4, h5, h6 {
 	padding: 10px;	
 }
 
-.animated .board-item {
-	transition: background 0.2s;
-}
-
 .board-item:hover {
 	background: #e5d4c0;
 }
@@ -338,14 +334,9 @@ h1, h2, h3, h4, h5, h6 {
 	filter: blur(0rem);
 }
 
-.animated .mini-media-nsfw:hover {
-	transform: scale(1.5);
-}
-
 .thread-image-nsfw {
 	max-width: 200px;
 	max-height: 200px;
-	transition: transform .2s;
 	border: 1px solid #d9bfb7;
 	filter: blur(0.5rem);
 }
@@ -354,8 +345,15 @@ h1, h2, h3, h4, h5, h6 {
 	filter: blur(0rem);
 }
 
-.animated .thread-image-nsfw:hover {
-	transform: scale(1.5);
+.post-image-nsfw {
+	max-width: 200px;
+	max-height: 200px;
+	border: 1px solid #d9bfb7;
+	filter: blur(0.5rem);
+}
+
+.post-image-nsfw:hover {
+	filter: blur(0rem);
 }
 
 .captcha {
@@ -534,9 +532,32 @@ h1, h2, h3, h4, h5, h6 {
 	margin-bottom: 5px;
 }
 
-.posts-container {
-	max-height: 600px;
-	overflow-y: auto;
+.floating-thread {
+	background-color: #e5d4c0;
+	padding: 3px;
+	border-radius: 5px;
+	max-width: 50vw;
+	min-width: 20vw;
+	position: absolute;
+	z-index: 999;
+	border: 1px solid;
+}
+
+.dark-theme .floating-thread {
+	background-color: #444;
+}
+
+.floating-thread .replies {
+	border-radius: 1px;
+	padding: 1px;
+}
+
+.reply {
+	display: inline-block;
+}
+
+.reply-not-interactible {
+	display: inline-block;
 }
 
 .post {
