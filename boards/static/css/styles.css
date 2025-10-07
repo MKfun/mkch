@@ -44,6 +44,14 @@ h1, h2, h3, h4, h5, h6 {
 	background-color: #800000;
 }
 
+.header-data {
+	background-color: #e5d4cc;
+}
+
+.dark-theme .header-data {
+	background-color: #666;
+}
+
 .floating-image {
 	max-width: 100%;
 	max-height: 100%;

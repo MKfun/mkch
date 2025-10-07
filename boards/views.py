@@ -70,6 +70,18 @@ def index(request):
     
     return render(request, 'index.html', context={'boards': boards, 'passcode': code, 'passcode_entered': code_entered, 'threads_yesterday': threads_yesterday, 'posts_yesterday': posts_yesterday, 'threads_total': threads_total, 'posts_total': posts_total,})
 
+class BoardRedirectView(KeyRequiredMixin, generic.RedirectView):
+    permanent = True
+
+    def get_redirect_url(self, *args, **kwargs):
+        return f"/boards/board/{kwargs['pk']}"
+
+class ThreadRedirectView(KeyRequiredMixin, generic.RedirectView):
+    permanent = True
+
+    def get_redirect_url(self, *args, **kwargs):
+        return f"/boards/board/{kwargs['pk']}/thread/{kwargs['tpk']}"
+
 class ThreadListView(KeyRequiredMixin, generic.ListView):
     model = Thread
     paginate_by = 9

@@ -18,10 +18,11 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views.generic import RedirectView
 
 from .views import *
+from boards.views import BoardRedirectView, ThreadRedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,5 +34,7 @@ urlpatterns = [
     path('pow/', include('pow.urls')),
     path('settings/', settings_view, name="settings"),
     path('notify/', include('notify.urls')),
+    re_path(r'^(?P<pk>\w+)$', BoardRedirectView.as_view(), name="board_redirect"),
+    re_path(r'^(?P<pk>\w+)/(?P<tpk>[0-9]+)$', ThreadRedirectView.as_view(), name="thread_redirect"),
     path('', RedirectView.as_view(url='/boards/', permanent=True))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
