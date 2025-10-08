@@ -36,7 +36,7 @@
                     {% for comment in thread.comment_set.all %}
                         <div class="post{% if comment.id in user_posts %} user-post{% elif comment.id in replies_to_user %} reply-to-user{% endif %}" id="post-{{comment.id}}">
                             <div class="post-header" id="comment_{{comment.id}}">
-				    <h4 class="header-data">{% if thread.author == comment.author %}(ОП){% endif %} {{comment.author_code}} <a href="javascript:void(0);" onclick="addReply('{{comment.id}}')" class="post-id-link">#{{comment.id}}</a> {{comment.creation | date}}</h4>
+				    <h4 class="header-data">{% if thread.author == comment.author %}(ОП){% endif %} {{comment.author_code}} <a href="javascript:void(0);" onclick="addReply('{{comment.id}}')" class="post-id-link">#{{comment.id}}</a> <span class="post-date">{{comment.creation | date}} <div class="date-detail" hidden="">{{comment.creation | date:"d/m/Y H:i:s | U"}}</div></span></h4>
 				{% if comment.commentfile_set.all.count > 0 %}
 				    <div class="comment-files">
                                     {% for file in comment.commentfile_set.all %}
@@ -88,8 +88,9 @@
 	<script src="{% static 'js/draggable.js' %}"></script>
 	<script src="{% static 'js/dragNDrop.js' %}"></script>
 	<script src="{% static 'js/tooltip.js' %}"></script>
+	<script src="{% static 'js/date_tooltip.js' %}"></script>
+	<script src="{% static 'js/formatter.js' %}"></script>
 
-    <script src="{% static 'js/formatter.js' %}"></script>
 	{% if not passcode %}
 		{% include 'pow/pow_form.html' %}
 	{% endif %}

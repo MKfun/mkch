@@ -69,7 +69,7 @@
 								<h2 class="thread-stats list">
 									{{thread.comment_set.count}} СМС, 
 									{{thread.rating}}PP 
-									{{thread.creation | date}}
+									<span class="post-date">{{thread.creation | date}} <div class="date-detail" hidden="">{{thread.creation | date:"d/m/Y H:i:s | U"}}</div></span>
 								</h2>
 							</div>
 							<h1 class="thread-id list">#{{thread.id}}</h1>
@@ -114,6 +114,7 @@
 
 	{% load static %}
 	<script src="{% static 'js/draggable.js' %}"></script>
+	<script src="{% static 'js/date_tooltip.js' %}"></script>
 
 	<script>
 		async function pin(id) {

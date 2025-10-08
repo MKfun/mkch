@@ -44,6 +44,18 @@ h1, h2, h3, h4, h5, h6 {
 	background-color: #800000;
 }
 
+.date-detail {
+	position: absolute;
+	z-index: 999;
+	border: 1px solid;
+	border-radius: 3px;
+	background-color: #e5d5cc;
+}
+
+.dark-theme .date-detail {
+	background-color: #444;
+}
+
 .header-data {
 	background-color: #e5d4cc;
 }
