@@ -17,6 +17,8 @@ function createDateToolTipListeners() {
 	}
 }
 
-window.addEventListener("load", () => {
-	createDateToolTipListeners();
-});
+if(navigator.maxTouchPoints <= 1) {
+	window.addEventListener("load", () => {
+		createDateToolTipListeners();
+	});
+}
