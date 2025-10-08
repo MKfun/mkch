@@ -52,7 +52,8 @@ def get_challenge(request):
 @require_http_methods(["POST"])
 @csrf_exempt
 def validate_challenge(request):
-    client_ip = request.META.get('REMOTE_ADDR', 'unknown')
+    from boards.tools import get_client_ip
+    client_ip = get_client_ip(request)
     logger.info(f"PoW: Validation request from {client_ip}")
     
     if not check_rate_limit(request, 'pow_validate', limit=20, window=60):
