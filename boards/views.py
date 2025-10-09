@@ -164,7 +164,7 @@ def create_new_thread(request, pk):
         if form.is_valid(request): # КОСТЫЫЫЫЛЬ (ДЖАНГО НЕ ПОДДЕРЖИВАЕТ МНОГО ФАЙЛОВ ПОЭТОМУ ДЕЛАЕМ ЧЕРЕЗ КОСТЫЫЫЫЫЫЫЫЫЫЛЬ, КАК СДЕЛАЮТ ПОДДЕРЖКУ 1+ ФАЙЛА (ПО ИДЕЕ В НЕКСТ ВЕРСИИ) СКАЖИТЕ МНЕ, Я ИСПРАВЛЮ КОСТЫЫЫЫЫЫЫЫЫЛЬ)
             data = form.cleaned_data
 
-            nt = Thread(board=board, title=escape(data['title']), text=escape(data['text']), author=anon, is_nsfw=(data['is_nsfw']))
+            nt = Thread(board=board, title=data['title'], text=data['text'], author=anon, is_nsfw=(data['is_nsfw']))
             nt.save()
 
             threads = Thread.objects.filter(board__code=board.code)

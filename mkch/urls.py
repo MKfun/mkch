@@ -34,7 +34,7 @@ urlpatterns = [
     path('pow/', include('pow.urls')),
     path('settings/', settings_view, name="settings"),
     path('notify/', include('notify.urls')),
-    re_path(r'^(?P<pk>\w+)$', BoardRedirectView.as_view(), name="board_redirect"),
-    re_path(r'^(?P<pk>\w+)/(?P<tpk>[0-9]+)$', ThreadRedirectView.as_view(), name="thread_redirect"),
+    re_path(r'u/^(?P<pk>\w+)$', BoardRedirectView.as_view(), name="board_redirect"),
+    re_path(r'u/^(?P<pk>\w+)/(?P<tpk>[0-9]+)$', ThreadRedirectView.as_view(), name="thread_redirect"),
     path('', RedirectView.as_view(url='/boards/', permanent=True))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
