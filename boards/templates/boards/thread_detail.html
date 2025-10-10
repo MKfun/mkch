@@ -105,12 +105,12 @@
 
 					const posts = list.querySelectorAll(".post");
 					const posts_o = document.querySelectorAll(".post");
-					const container = document.querySelector(".posts-inner-c");
+					const container = document.querySelector(".posts-container");
 
 					if(posts.length <= posts_o.length) {return;}
 					const diff = posts.length - posts_o.length;
-                    for(let i = posts_o.length; i < posts.length; i++) {
-                        container.appendChild(posts[i]);
+                    			for(let i = posts_o.length; i < posts.length; i++) {
+			    			container.appendChild(posts[i]);
 					}
 
 					document.querySelector(".thread-header").innerHTML = list.querySelector(".thread-header").innerHTML;
