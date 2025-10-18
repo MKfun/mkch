@@ -8,6 +8,7 @@ from django.utils.html import escape
 from django.db import models
 
 from passcode.models import Passcode
+from .tools import anonymous_file_upload_to
 
 class Anon(models.Model):
     ip = models.GenericIPAddressField(unique=True)
@@ -134,7 +135,7 @@ class ThreadFile(models.Model):
     }
     allowed = ['png', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'gif']
 
-    file = models.FileField(help_text="Файл", null=True, validators=[FileExtensionValidator(allowed)])
+    file = models.FileField(help_text="Файл", null=True, validators=[FileExtensionValidator(allowed)], upload_to=anonymous_file_upload_to)
 
     def fclass(self):
         p = self.file.path.split('.')[-1]
@@ -155,7 +156,7 @@ class CommentFile(models.Model):
     }
     allowed = ['png', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'gif']
 
-    file = models.FileField(help_text="Файл", null=True, validators=[FileExtensionValidator(allowed)])
+    file = models.FileField(help_text="Файл", null=True, validators=[FileExtensionValidator(allowed)], upload_to=anonymous_file_upload_to)
 
     def fclass(self):
         p = self.file.path.split('.')[-1]
