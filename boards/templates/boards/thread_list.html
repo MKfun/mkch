@@ -83,7 +83,7 @@
 						</div>
 
 						<div class="thread-description" onclick="window.location.href='/boards/board/{{board.code}}/thread/{{thread.id}}'">
-							<h2>{{thread.text}}</h2>
+							<h2>{{thread.formatted | safe}}</h2>
 						</div>
 					</div>
 				</div>

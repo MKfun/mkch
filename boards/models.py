@@ -70,6 +70,10 @@ class Thread(models.Model):
 
     pinned = models.BooleanField(default=False, help_text="Если тред закреплён, он будет отображаться в самом начале списка тредов. Также можно задать из контектного меню треда если вы админ.")
 
+    def formatted(self):
+        t = escape(self.text)
+        return t.replace('\n', '<br>')
+                
     def rating_pp(self):
         l = [x.rating for x in Thread.objects.filter(board=self.board).exclude(id=self.id)]
         if len(l) == 0 and self.rating == 0:

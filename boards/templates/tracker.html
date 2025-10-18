@@ -28,7 +28,7 @@
 				<h1 class="tid" hidden="true">{{thread.id}}</h1>
 				<div class="board-name-div"><h3>{{thread.board.code}}</h3></div>
 				<h2>{{thread.title}}</h2>
-				<h3>{{thread.text}}</h3>
+				<h3>{{thread.formatted | safe}}</h3>
 
 				{% for file in thread.threadfile_set.all %}
 					{% if file.fclass == "photo" %}
