@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block body %}
-	<h5>Трекер находится в бета-тесте. Не всё ещё имелементировано в трекер, могут наблюдайться баги.</h5>
+	<h5>Трекер находится в бета-тесте. Не всё ещё имплементировано в трекер, могут наблюдаться баги.</h5>
 
 	<form class="change-thread-settings-form">
 		<!-- TODO
@@ -26,9 +26,11 @@
 		{% for thread in threads %}
 			<div class="mini-thread" id="thread-{{thread.id}}" onclick="window.location.href='/boards/board/{{thread.board.code}}/thread/{{thread.id}}'">
 				<h1 class="tid" hidden="true">{{thread.id}}</h1>
-				<div class="board-name-div"><h3>{{thread.board.code}}</h3></div>
-				<h2>{{thread.title}}</h2>
-				<h3>{{thread.formatted | safe}}</h3>
+				<div class="tracker-thread-header">
+					<h2 class="board-code">/{{thread.board.code}}/</h2>
+					<h2>{{thread.title}}</h2>
+				</div>
+				<h3>{{thread.text}}</h3>
 
 				{% for file in thread.threadfile_set.all %}
 					{% if file.fclass == "photo" %}

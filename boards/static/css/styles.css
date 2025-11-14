@@ -1778,3 +1778,17 @@ del {
 .dark-theme .post-id-link {
     color: #e0e0e0; 
 }
+
+.tracker-thread-header {
+	display: flex;
+	flex-direction: row;
+	margin: 5px;
+}
+
+.tracker-thread-header h2{
+	margin: 0;
+}
+
+.tracker-thread-header .board-code{
+	color: #7b7b7b;
+}
