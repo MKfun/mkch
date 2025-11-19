@@ -38,9 +38,35 @@ class Migration(migrations.Migration):
                 ('reason', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='boards.banreason')),
             ],
         ),
-        migrations.AlterField(
-            model_name='anon',
-            name='banned',
-            field=models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='boards.bancase'),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql="CREATE TABLE boards_anon_new (id INTEGER PRIMARY KEY AUTOINCREMENT, ip VARCHAR(39) NOT NULL UNIQUE, banned_id INTEGER NULL REFERENCES boards_bancase(id));",
+                    reverse_sql=migrations.RunSQL.noop,
+                ),
+                migrations.RunSQL(
+                    sql="INSERT INTO boards_anon_new (id, ip, banned_id) SELECT id, ip, NULL FROM boards_anon WHERE banned = 0;",
+                    reverse_sql=migrations.RunSQL.noop,
+                ),
+                migrations.RunSQL(
+                    sql="INSERT INTO boards_anon_new (id, ip, banned_id) SELECT id, ip, NULL FROM boards_anon WHERE banned = 1;",
+                    reverse_sql=migrations.RunSQL.noop,
+                ),
+                migrations.RunSQL(
+                    sql="DROP TABLE boards_anon;",
+                    reverse_sql=migrations.RunSQL.noop,
+                ),
+                migrations.RunSQL(
+                    sql="ALTER TABLE boards_anon_new RENAME TO boards_anon;",
+                    reverse_sql=migrations.RunSQL.noop,
+                ),
+            ],
+            state_operations=[
+                migrations.AlterField(
+                    model_name='anon',
+                    name='banned',
+                    field=models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='boards.bancase'),
+                ),
+            ],
         ),
     ]
