@@ -336,11 +336,22 @@ h1, h2, h3, h4, h5, h6 {
 
 .board-banner {
 	max-width: 70vw;
-	max-height: 40vh;
+	height: 40vh;
 	margin: auto;
 	margin-top: 10px;
+	margin-bottom: 10px;
 	display: flex;
 	justify-content: center;
+	align-items: center;
+}
+
+.banner-image {
+	max-width: 100%;
+	max-height: 100%;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	display: block;
 }
 
 .thread-image {
@@ -1492,8 +1503,11 @@ form table th,
 	}
 
 	.banner-image {
-		max-width: 90vw;
-		max-height: 30vh;
+		max-width: 100%;
+		max-height: 100%;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
 	}
 
 	.small-icon {
@@ -1524,6 +1538,8 @@ form table th,
 	}
 
 	.board-banner {
+		max-width: 90vw;
+		height: 30vh;
 		flex-direction: column;
 		align-items: center;
 	}
@@ -1804,4 +1820,18 @@ del {
 
 .dark-theme .post-id-link {
     color: #e0e0e0; 
+}
+
+.tracker-thread-header {
+	display: flex;
+	flex-direction: row;
+	margin: 5px;
+}
+
+.tracker-thread-header h2{
+	margin: 0;
+}
+
+.tracker-thread-header .board-code{
+	color: #7b7b7b;
 }
