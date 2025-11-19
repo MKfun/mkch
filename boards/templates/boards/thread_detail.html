@@ -3,6 +3,13 @@
 {% block title %}<title>mkch - #{{thread.id}}</title>{% endblock %}
 
 {% block body %}
+	{% load static %}
+	<script src="{% static 'js/draggable.js' %}"></script>
+	<script src="{% static 'js/dragNDrop.js' %}"></script>
+	<script src="{% static 'js/tooltip.js' %}"></script>
+	<script src="{% static 'js/date_tooltip.js' %}"></script>
+	<script src="{% static 'js/formatter.js' %}"></script>
+
     <div class="container" id="all-container">
 	<h1 class="js-autopop">Если вы это видите то у вас выключен JS. Пожалуйста, включите его, так как на нём держится куча функций, в частности функция отображения формы написания комментария при клике на кнопку.</h1>
 
@@ -21,7 +28,8 @@
                 </div>
 
                 <div class="thread-header detail">
-                    <h1 class="thread-title detail">{{thread.title}}</h1>
+                    {% load static %}
+                    <h1 class="thread-title detail">{% if thread.archived %}<img class="small-icon" src="{% static 'media/archive.svg' %}">{% endif %} {{thread.title}}</h1>
                     <span class="thread-meta detail">
                         <h1 class="thread-id detail">#{{thread.id}}</h1>
                         <h5 class="thread-stats detail">{{thread.creation | date}}, {{thread.comment_set.count}} СМС, {{thread.rating}}PP</h5>
@@ -66,7 +74,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                {% if not thread.board.lockdown and thread.board.enable_posting or user.is_admin %}
+                {% if not thread.board.lockdown and thread.board.enable_posting and not thread.archived or user.is_admin %}
 			<button class="show-comment-form-button">Написать комментарий</button>
 			<form class="comment-form" method="POST" action="/boards/board/{{thread.board.code}}/thread/{{thread.id}}/comment" enctype="multipart/form-data" hidden="">
 				{% csrf_token %}
@@ -81,19 +89,10 @@
 				</table>
 				<input type="submit" value="SUBMIT!" />
 			</form>
+
+            {% include 'pow/pow_form.html' %}
 		{% endif %}
     </div>
-
-	{% load static %}
-	<script src="{% static 'js/draggable.js' %}"></script>
-	<script src="{% static 'js/dragNDrop.js' %}"></script>
-	<script src="{% static 'js/tooltip.js' %}"></script>
-	<script src="{% static 'js/date_tooltip.js' %}"></script>
-	<script src="{% static 'js/formatter.js' %}"></script>
-
-	{% if not passcode %}
-		{% include 'pow/pow_form.html' %}
-	{% endif %}
 
 	<script>
 		function updateCommentList() {
@@ -147,7 +146,12 @@
         }
 
 		window.addEventListener("load", () => {
-			document.querySelector(".show-comment-form-button").addEventListener("click", showForm);
+			let d = document.querySelector(".show-comment-form-button");
+
+            if(d) {
+                d.addEventListener("click", showForm);
+            }
+
 			setInterval(updateCommentList, 10000);
 		});
 	</script>

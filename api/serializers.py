@@ -32,11 +32,19 @@ class ThreadSerializer(ReadOnlyModelSerializer):
 
 class ThreadDetailSerializer(ReadOnlyModelSerializer):
     files = serializers.SlugRelatedField(source="threadfile_set", slug_field="file.url", many=True, read_only=True)
+    comment_count = serializers.SerializerMethodField()
+    bump_limit = serializers.SerializerMethodField()
+
+    def get_comment_count(self, o):
+        return o.comment_set.count()
+
+    def get_bump_limit(self, o):
+        return o.board.bump_limit
 
     class Meta:
         model = Thread
         read_only = True
-        fields = ['id', 'creation', 'title', 'text', 'board', 'files']
+        fields = ['id', 'creation', 'title', 'text', 'pinned', 'comment_count', 'rating', 'board', 'bump_limit', 'files']
 
 class AllThreadsSerializer(ReadOnlyModelSerializer):
     files = serializers.SlugRelatedField(source="threadfile_set", slug_field="file.url", many=True, read_only=True)

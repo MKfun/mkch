@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}<title>mkch - {{board.code}}</title>{% endblock %}
+{% block title %}<title>mkch - архив </title>{% endblock %}
 
 {% block body %}
 	<div class="container">
@@ -9,26 +9,8 @@
 			<input type="submit" value="Искать" />
 		</form>
 		<div class="board-container">
-			{% if archive %}
-				{% load static %}
-				<img class="small-icon" src="{% static 'media/archive.svg' %}"></img>
-			{% endif %}
-
-			{% if board.banner %}
-				<div class="board-banner">
-					<img src="{{board.banner.url}}" class="banner-image"></img>
-				</div>
-			{% endif %}
-
-			{% if board.detail_description %}
-				<h3 class="description">{{board.detail_description}}</h3>
-			{% endif %}
-
-		<div class="new-thread-button">
-			{% if user.is_staff or not board.lockdown and board.enable_posting %}
-				<a href="/boards/board/{{board.code}}/new">> начать тред <</a>
-			{% endif %}
-		</div>
+			{% load static %}
+			<img class="small-icon" src="{% static 'media/archive.svg' %}"></img>
 
 		<div class="pagination top">
 			<span class="step-links">
@@ -55,15 +37,15 @@
 				<div class="thread-container">
 					<div class="thread-item">
 						<div class="thread-file" onclick="">
-						{% for file in thread.threadfile_set.all %}
-								{% if file.fclass == "photo" %}
-									<img src="{{file.file.url}}" id={{file.file.url}} class="thread-image{% if blur and thread.is_nsfw %}-nsfw{% endif %}" onclick="createImageFloatingDiv('{{file.file.url}}')"></img>
-								{% elif file.fclass == "video" %}
-									<video controls="" src="{{file.file.url}}"></video>
-								{% else %}
-									<a href="{{file.file.url}}">{{file.file.name}}</a>
-								{% endif %}
-						{% endfor %}
+                            {% for file in thread.threadfile_set.all %}
+                                    {% if file.fclass == "photo" %}
+                                        <img src="{{file.file.url}}" id={{file.file.url}} class="thread-image{% if blur and thread.is_nsfw %}-nsfw{% endif %}" onclick="createImageFloatingDiv('{{file.file.url}}')"></img>
+                                    {% elif file.fclass == "video" %}
+                                        <video controls="" src="{{file.file.url}}"></video>
+                                    {% else %}
+                                        <a href="{{file.file.url}}">{{file.file.name}}</a>
+                                    {% endif %}
+                            {% endfor %}
 						</div>
 
 						<div class="thread-header list">
@@ -73,7 +55,7 @@
 								</h1>
 								<h2 class="thread-stats list">
 									{{thread.comment_set.count}} СМС, 
-										{{thread.rating}}PP 
+									{{thread.rating}}PP 
 									<span class="post-date">{{thread.creation | date}} <div class="date-detail" hidden="">{{thread.creation | date:"d/m/Y H:i:s | U"}}</div></span>
 								</h2>
 							</div>
@@ -116,12 +98,6 @@
 			</span>
 		</div>
 	</div>
-
-	{% if not archive %}
-		<a class="threadlnk" href="?archive=1">Архив борды</a>
-	{% else %}
-		<a class="threadlnk" href="?archive=0">Плавающие треды</a>
-	{% endif %}
 
 	<script src=" https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js "></script>
 

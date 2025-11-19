@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Board, Thread, Comment, Anon, ThreadFile, CommentFile, Category
+from .models import BanReason, BanCase, Board, Thread, Comment, Anon, ThreadFile, CommentFile, Category
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -21,7 +21,15 @@ class CommentAdmin(admin.ModelAdmin):
 class AnonAdmin(admin.ModelAdmin):
     list_display = ('ip', 'banned')
 
-# raskommentiruyte esli hotite imet vozmoshnost cherez adminku dobavlat / udalyat fayli v tredi / commenti
+@admin.register(BanReason)
+class BanReasonAdmin(admin.ModelAdmin):
+    list_display = ('code', 'description')
+
+@admin.register(BanCase)
+class BanReasonAdmin(admin.ModelAdmin):
+    list_display = ('id', 'comment')
+
+# раскомментируйте если хотите иметь возможность добавлять / удалять файлы в тредах / комментах в админке (зачастую не нужно)
 
 # @admin.register(ThreadFile)
 # class ThreadFileAdmin(admin.ModelAdmin):

@@ -42,7 +42,7 @@ CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1']
 
 LOGIN_REDIRECT_URL = '/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "media/"
 
 # Application definition
@@ -79,7 +79,7 @@ ROOT_URLCONF = 'mkch.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [(BASE_DIR / 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -100,7 +100,7 @@ PUSH_NOTIFICATIONS_SETTINGS = {
         "APNS_TOPIC": "com.example.push_test",
         "WNS_PACKAGE_SECURITY_ID": "[your package security id, e.g: 'ms-app://e-3-4-6234...']",
         "WNS_SECRET_KEY": "BCp70uFVTIAKbHiIFt2RFzAnPCdT73HymDfij-j0ABtxj5C9Xrkj3122744xsfa3zaaTkBuqPGoFkedar4GF6so", # changealso notify/static/js/worker.js
-        "WP_PRIVATE_KEY": os.path.join(BASE_DIR, 'keys', 'private_key.pem'),
+        "WP_PRIVATE_KEY": BASE_DIR / 'keys' / 'private_key.pem',
         "WP_CLAIMS": {'sub': "mailto:timursennikov1@gmail.com"}, # заменить на mailto:<ваш е-мейл>
         "USER_MODEL": "boards.Anon"
 }

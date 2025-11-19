@@ -2,8 +2,12 @@
 
 {% block body %}
 	<div class="thread">
-		{% if error %}
-			<h1>{{error}}</h1>
+		{% if error and anon and anon.banned %}
+			<h2 style="text-align: center;">БАН!</h2>
+			<h3 style="text-align: center;">{{error}}</h3>
+			{% if anon.banned.ban_pic %}
+				<img style="display: block; margin: auto; max-width: 50vw; max-height: auto;" src="{{anon.banned.ban_pic.url}}"></img>
+			{% endif %}
 		{% else %}
 			<h1>Произошла ошибка!</h1>
 		{% endif %}

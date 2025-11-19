@@ -1,5 +1,4 @@
 import hashlib
-import numpy as np
 
 import requests
 import json
@@ -67,8 +66,8 @@ def index(request):
 
     threads_total = Thread.objects.count()
     posts_total = Comment.objects.count()
-    
-    return render(request, 'index.html', context={'boards': boards, 'passcode': code, 'passcode_entered': code_entered, 'threads_yesterday': threads_yesterday, 'posts_yesterday': posts_yesterday, 'threads_total': threads_total, 'posts_total': posts_total,})
+
+    return render(request, 'index.html', context={'anon': anon, 'boards': boards, 'passcode': code, 'passcode_entered': code_entered, 'threads_yesterday': threads_yesterday, 'posts_yesterday': posts_yesterday, 'threads_total': threads_total, 'posts_total': posts_total,})
 
 class BoardRedirectView(KeyRequiredMixin, generic.RedirectView):
     permanent = True
@@ -88,6 +87,12 @@ class ThreadListView(KeyRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         q = super().get_queryset().filter(board__code=self.kwargs['pk']).order_by("-pinned", "-rating")
+        archive = str(self.request.GET.get("archive", "0")) == "1"
+
+        if archive:
+            q = q.filter(archived=True)
+        else:
+            q = q.filter(archived=False)
 
         title = self.request.GET.get("title")
         if title:
@@ -99,6 +104,28 @@ class ThreadListView(KeyRequiredMixin, generic.ListView):
         context = super(ThreadListView, self).get_context_data(**kwargs)
         context["board"] = get_object_or_404(Board, code=self.kwargs['pk'])
         context["blur"] = True if self.request.COOKIES.get("blur-nsfw") == "1" else False
+        context["archive"] = str(self.request.GET.get("archive", "0")) == "1"
+
+        return context
+
+class ArchiveListView(KeyRequiredMixin, generic.ListView):
+    model = Thread
+    paginate_by = 30
+
+    def get_queryset(self):
+        q = super().get_queryset().order_by("-pinned", "-rating")
+
+        title = self.request.GET.get("title")
+        if title:
+            q = q.filter(title__icontains=title)
+
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super(ArchiveListView, self).get_context_data(**kwargs)
+        context["board"] = "all"
+        context["blur"] = True if self.request.COOKIES.get("blur-nsfw") == "1" else False
+        context["archive"] = "1"
 
         return context
 
@@ -154,7 +181,7 @@ def create_new_thread(request, pk):
     if request.method == 'POST':
         anon = get_or_create_anon(request)
         if anon.banned:
-            return render(request, 'error.html', {'error': 'Ваш IP-адрес был заблокирован. Только попробуй впн включить сука.'})
+            return render(request, 'error.html', {'anon': anon, 'error': f'Ваш IP-адрес был заблокирован. Код блокировки: {anon.banned.reason.code} ({anon.banned.reason.description}). {"Комментарий от администратора: " + anon.banned.comment if anon.banned.comment else ""}.'})
 
         if passcode:
             form = NewThreadFormP(request.POST)
@@ -201,10 +228,11 @@ def create_new_thread(request, pk):
 @require_pow
 def add_comment_to_thread(request, pk, tpk):
     board = get_object_or_404(Board, code=pk)
-    if (not board.enable_posting and (request.user.is_anonymous or not request.user.is_staff)) or board.lockdown:
+    thread = get_object_or_404(Thread, id=tpk)
+
+    if ((not board.enable_posting or thread.archived) and (request.user.is_anonymous or not request.user.is_staff)) or board.lockdown:
         return render(request, 'error.html', {'error': 'Борда назначена рид-онли.'})
 
-    thread = get_object_or_404(Thread, id=tpk)
     if not thread.board.code == board.code:
         return render(request, 'error.html', {'error': 'Тред не найден на борде.'})
 
@@ -217,7 +245,7 @@ def add_comment_to_thread(request, pk, tpk):
         anon = get_or_create_anon(request)
 
         if anon.banned:
-            return render(request, 'error.html', {'error': 'Ваш IP-адрес был заблокирован.'})
+            return render(request, 'error.html', {'anon': anon, 'error': f'Ваш IP-адрес был заблокирован. Код блокировки: {anon.banned.reason.code} ({anon.banned.reason.description}). {"Комментарий от администратора: " + anon.banned.comment if anon.banned.comment else ""}.'})
 
         form = ThreadCommentFormPoW(request.POST) if not passcode else ThreadCommentFormP(request.POST)
 
@@ -236,6 +264,7 @@ def add_comment_to_thread(request, pk, tpk):
 
             if board.bump_limit > 0 and Comment.objects.filter(thread=thread).count() >= board.bump_limit:
                 thread.rating = 0
+                thread.archived = True
                 thread.save()
 
             furls = []

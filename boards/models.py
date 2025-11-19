@@ -1,7 +1,6 @@
 import hashlib
 import re
 import statistics
-import numpy as np
 
 from django.core.validators import FileExtensionValidator
 from django.utils.html import escape
@@ -10,10 +9,26 @@ from django.db import models
 from passcode.models import Passcode
 from .tools import anonymous_file_upload_to
 
+class BanReason(models.Model):
+    code = models.IntegerField(primary_key=True)
+    description = models.TextField(help_text="Причина бана по этому коду. Желательно чтоб была понятной.")
+
+    def __str__(self):
+        return f"CODE: {self.code} ({self.description})"
+
+class BanCase(models.Model):
+    reason = models.ForeignKey(BanReason, null=True, on_delete=models.SET_NULL)
+    comment = models.TextField(help_text="Подробное описание конкретного случая бана. Можно не писать, тогда будет показано описание причины бана.")
+
+    ban_pic = models.ImageField(help_text="Сделано ради прикола. Если задана, будет высвечивтаься на странице бана.", blank=True, null=True, default=None)
+
+    def __str__(self):
+        return f"CODE: {self.reason.code} {('(' + self.comment + ')') if self.comment else ''}"
+
 class Anon(models.Model):
     ip = models.GenericIPAddressField(unique=True)
 
-    banned = models.BooleanField(default=False)
+    banned = models.ForeignKey(BanCase, blank=True, null=True, default=None, on_delete=models.DO_NOTHING)
 
     passcodes = models.ManyToManyField(Passcode, blank=True)
 
@@ -33,7 +48,7 @@ class Board(models.Model):
     banner = models.FileField(help_text="Приветственный баннер", null=True, default=None)
 
     thread_limit = models.IntegerField(help_text="Количество тредов, при котором старые начнут удаляться, давая место новым (0 для неограниченного количества)", default=1000)
-    bump_limit = models.IntegerField(help_text="Бамплимит. При достижении (бамплимит) комментариев в треде он 'утонет' (удалится) (0 для выключения бамплимита)", default=500)
+    bump_limit = models.IntegerField(help_text="Бамплимит. При достижении (бамплимит) комментариев в треде он 'утонет' (перейдёт в read-only архив) (0 для выключения бамплимита)", default=500)
     is_nsfw = models.BooleanField(help_text="Помечает борд как NSFW. Файлы с тредов в NSFW бордах отправляются МКБотом под спойлером, а сама категория помечается красным цветом.", default=False)
     enable_posting = models.BooleanField(help_text="Если False, разрешает постинг в борде только админам (борда всё ещё будет доступна для просмотра из списка)", default=True)
     lockdown = models.BooleanField(help_text="Карантин. В карантинных бордах НЕЛЬЗЯ создавать или бампать треды.", default=False)
@@ -70,6 +85,8 @@ class Thread(models.Model):
     is_nsfw = models.BooleanField(help_text="Является ли тред NSFW (всегда True для комментов на NSFW бордах)", default=False)
 
     pinned = models.BooleanField(default=False, help_text="Если тред закреплён, он будет отображаться в самом начале списка тредов. Также можно задать из контектного меню треда если вы админ.")
+
+    archived = models.BooleanField(default=False, help_text="Архивация треда")
 
     def formatted(self):
         t = escape(self.text)

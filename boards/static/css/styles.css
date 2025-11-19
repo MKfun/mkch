@@ -18,10 +18,37 @@ h1, h2, h3, h4, h5, h6 {
 	overflow-wrap: break-word;
 }
 
+.sub-data {
+	width: 30%;
+	max-width: 50%;
+	border: 1px solid;
+
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	
+	overflow-y: auto;
+	max-height: 30%;
+}
+
+.sub-container {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	padding-left: 15%;
+	margin-top: 5px;
+	border: 1px solid;
+	margin: 3px;
+	height: 4vh;
+}
+
 .boards-table {
 	display: grid;
 	padding: 10px;
 	border: 1px solid;
+}
+
+.warning {
+	color: red;
 }
 
 .container-centered {
