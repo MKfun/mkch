@@ -3,8 +3,9 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('lockdown', views.lockdown_all, name='lockdown'),    # ТОЛЬКО POST ЗАПРОСЫ
-    path('pin',  views.pin_toggle, name="pin_thread_view"),   # ТОЛЬКО POST ЗАПРОСЫ
+    path('lockdown', views.lockdown_all, name='lockdown'),             # ТОЛЬКО POST ЗАПРОСЫ
+    path('pin',  views.pin_toggle, name="pin_thread_view"),            # ТОЛЬКО POST ЗАПРОСЫ
+    path('persist', views.persistent_toggle, name="persist_thread_view"), # ТОЛЬКО POST ЗАПРОСЫ
     path('tracker', views.thread_tracker, name="threads_tracker"),
     path('archive', views.ArchiveListView.as_view(), name="boards_archive"),
     re_path(r'^board/(?P<pk>\w+)$', views.ThreadListView.as_view(), name="board"),

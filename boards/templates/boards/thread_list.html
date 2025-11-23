@@ -80,6 +80,7 @@
 							<h1 class="thread-id list">#{{thread.id}}</h1>
 							{% if user.is_staff %}
 								{% load static %}
+								<img class="small-icon" src="{% if thread.persistent %}{% static 'media/unpersist.png' %}{% else %}{% static 'media/persist.png' %}{% endif %}" onclick="persist({{thread.id}})"></img>
 								<img class="small-icon" src="{% if thread.pinned %}{% static 'media/unpin.png' %}{% else %}{% static 'media/pin.png' %}{% endif %}" onclick="pin({{thread.id}})"></img>
 							{% elif thread.pinned %}
 								{% load static %}
@@ -131,16 +132,29 @@
 
 	<script>
 		async function pin(id) {
-		await fetch("/boards/pin", {
-			method: "POST",
-			credentials: "include",
-			headers: {'X-CSRFToken': Cookies.get("csrftoken")},
-			body: JSON.stringify({
-			id: id,
-			next: window.location.href
-			})
-		});
-		window.location.reload();
+			await fetch("/boards/pin", {
+				method: "POST",
+				credentials: "include",
+				headers: {'X-CSRFToken': Cookies.get("csrftoken")},
+				body: JSON.stringify({
+				id: id,
+				next: window.location.href
+				})
+			});
+			window.location.reload();
+		}
+
+		async function persist(id) {
+			await fetch("/boards/persist", {
+				method: "POST",
+				credentials: "include",
+				headers: {'X-CSRFToken': Cookies.get("csrftoken")},
+				body: JSON.stringify({
+					id: id,
+					next: window.location.href
+				})
+			});
+			window.location.reload();
 		}
 	</script>
 {% endblock %}

@@ -87,6 +87,7 @@ class Thread(models.Model):
     pinned = models.BooleanField(default=False, help_text="Если тред закреплён, он будет отображаться в самом начале списка тредов. Также можно задать из контектного меню треда если вы админ.")
 
     archived = models.BooleanField(default=False, help_text="Архивация треда")
+    persistent = models.BooleanField(default=False, help_text="Тред с этим полем, выставленным в true, никогда не утонет и будет висеть в списке.")
 
     def formatted(self):
         t = escape(self.text)

@@ -262,7 +262,7 @@ def add_comment_to_thread(request, pk, tpk):
             thread.rating_pp()
             thread.save()
 
-            if board.bump_limit > 0 and Comment.objects.filter(thread=thread).count() >= board.bump_limit:
+            if board.bump_limit > 0 and Comment.objects.filter(thread=thread).count() >= board.bump_limit and not thread.persistent:
                 thread.rating = 0
                 thread.archived = True
                 thread.save()
@@ -304,6 +304,20 @@ def pin_toggle(request):
         thr = get_object_or_404(Thread, id=b['id'])
 
         thr.pinned = not thr.pinned
+        thr.save()
+
+        return HttpResponseRedirect(b['next'] if 'next' in b else reverse("board", kwargs={"pk": thr.board.code}))
+    else:
+        return HttpResponseRedirect('/')
+
+@staff_member_required
+def persistent_toggle(request):
+    if request.method == "POST": # использование нацистов и евреев для написания MKCH.
+        b = json.loads(request.body)
+
+        thr = get_object_or_404(Thread, id=b['id'])
+
+        thr.persistent = not thr.persistent
         thr.save()
 
         return HttpResponseRedirect(b['next'] if 'next' in b else reverse("board", kwargs={"pk": thr.board.code}))
