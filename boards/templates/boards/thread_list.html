@@ -35,7 +35,7 @@
 				{% if page_obj.has_previous %}
 					<a href="?page=1">&laquo;1</a>
 					{% if page_obj.previous_page_number != 1 %}
-						<a href="?page={{ page_obj.previous_page_number }}{% if archive %}?archive=1{% endif %}">&lsaquo;{{ page_obj.previous_page_number }}</a>
+						<a href="?page={{ page_obj.previous_page_number }}{% if archive %}&archive=1{% endif %}">&lsaquo;{{ page_obj.previous_page_number }}</a>
 					{% endif %}
 				{% endif %}
 
@@ -43,9 +43,9 @@
 
 				{% if page_obj.has_next %}
 					{% if page_obj.next_page_number != page_obj.paginator.num_pages %}
-						<a href="?page={{ page_obj.next_page_number }}{% if archive %}?archive=1{% endif %}">{{ page_obj.next_page_number }}&rsaquo;</a>
+						<a href="?page={{ page_obj.next_page_number }}{% if archive %}&archive=1{% endif %}">{{ page_obj.next_page_number }}&rsaquo;</a>
 					{% endif %}
-					<a href="?page={{ page_obj.paginator.num_pages }}{% if archive %}?archive=1{% endif %}">{{ page_obj.paginator.num_pages }}&raquo;</a>
+					<a href="?page={{ page_obj.paginator.num_pages }}{% if archive %}&archive=1{% endif %}">{{ page_obj.paginator.num_pages }}&raquo;</a>
 				{% endif %}
 			</span>
 		</div>
@@ -102,7 +102,7 @@
 				{% if page_obj.has_previous %}
 					<a href="?page=1">&laquo;1</a>
 					{% if page_obj.previous_page_number != 1 %}
-						<a href="?page={{ page_obj.previous_page_number }}{% if archive %}?archive=1{% endif %}">&lsaquo;{{ page_obj.previous_page_number }}</a>
+						<a href="?page={{ page_obj.previous_page_number }}{% if archive %}&archive=1{% endif %}">&lsaquo;{{ page_obj.previous_page_number }}</a>
 					{% endif %}
 				{% endif %}
 
@@ -110,9 +110,9 @@
 
 				{% if page_obj.has_next %}
 					{% if page_obj.next_page_number != page_obj.paginator.num_pages %}
-						<a href="?page={{ page_obj.next_page_number }}{% if archive %}?archive=1{% endif %}">{{ page_obj.next_page_number }}&rsaquo;</a>
+						<a href="?page={{ page_obj.next_page_number }}{% if archive %}&archive=1{% endif %}">{{ page_obj.next_page_number }}&rsaquo;</a>
 					{% endif %}
-					<a href="?page={{ page_obj.paginator.num_pages }}{% if archive %}?archive=1{% endif %}">{{ page_obj.paginator.num_pages }}&raquo;</a>
+					<a href="?page={{ page_obj.paginator.num_pages }}{% if archive %}&archive=1{% endif %}">{{ page_obj.paginator.num_pages }}&raquo;</a>
 				{% endif %}
 			</span>
 		</div>
