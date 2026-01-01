@@ -42,9 +42,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .boards-table {
-	display: grid;
-	padding: 10px;
-	border: 1px solid;
+    display: block; 
+    width: 100%;
+    margin-top: 20px;
+    overflow-x: auto; 
 }
 
 .warning {
@@ -822,6 +823,45 @@ div:target {
 	border: 1px solid #d3d3d3;
 	text-align: center;
 	max-width: 35vw; 
+	
+}
+
+.draggable.media-view {
+    max-width: 90vw;
+    width: fit-content; 
+    
+    display: flex;
+    flex-direction: column;
+    
+    background-color: #f1f1f1;
+    border: 1px solid #d3d3d3;
+    padding: 0;
+    
+    text-align: left;
+}
+
+.draggable.media-view .draggable-header {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 4px; 
+}
+
+.draggable.media-view .floating-image {
+    display: block; 
+    width: 100%;   
+    height: auto; 
+    object-fit: contain;
+    margin: 0;
+}
+
+.draggable.media-view img,
+.draggable.media-view video {
+    display: block; 
+    max-width: 90vw; 
+    max-height: 90vh;
+    height: auto;
 }
 
 .pagination {
@@ -1735,7 +1775,6 @@ form table th,
 	color: #333;
 }
 
-/* Цитаты (>текст) */
 .quote {
     color: #789922;
 }
@@ -1834,4 +1873,47 @@ del {
 
 .tracker-thread-header .board-code{
 	color: #7b7b7b;
+}
+
+.boards-table table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    background: #f0e0d6;
+}
+
+.boards-table th, 
+.boards-table td {
+    padding: 10px;
+    border: 1px solid #d9bfb7;
+    text-align: left;
+    vertical-align: top;
+   
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.boards-table th {
+    background: #d6daf0;
+    color: #800000;
+    font-weight: bold;
+}
+
+.col-code { width: 10%; }
+.col-name { width: 20%; }
+.col-desc { width: 55%; }
+.col-stats { width: 15%; }
+
+.dark-theme .boards-table table {
+    background: #333;
+}
+.dark-theme .boards-table th {
+    background: #444;
+    border-color: #666;
+    color: #f4d03f;
+}
+.dark-theme .boards-table td {
+    border-color: #666;
+    color: #e0e0e0; 
 }

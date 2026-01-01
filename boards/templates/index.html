@@ -33,27 +33,26 @@
 		</div>
 
 		<div class="boards-table">
-			<table>
-				<div class="entry">
-					<tr>
-						<th>Доска</th>
-						<th>Название</th>
-						<th>Описание</th>
-						<th>Постов</th>
-					</tr>
-				</div>
-
-				{% for board in boards %}
-					<div class="entry">
-						<tr>
-							<th><a href="/boards/board/{{board.code}}">/{{board.code}}/</a></th>
-							<th>{% if board.description %}{{board.description}}{% else %}Нет Данных{% endif %}</th>
-							<th>{% if board.detail_description %}{{board.detail_description}}{% else %}Нет Данных{% endif %}</th>
-							<th>{{board.thread_set.count}}</th>
-						</tr>
-					</div>
-				{% endfor %}
-			</table>
+		    <table>
+		        <thead>
+		            <tr>
+		                <th class="col-code">Доска</th>
+		                <th class="col-name">Название</th>
+		                <th class="col-desc">Описание</th>
+		                <th class="col-stats">Постов</th>
+		            </tr>
+		        </thead>
+		        <tbody>
+		            {% for board in boards %}
+		            <tr>
+		                <td><a href="/boards/board/{{board.code}}">/{{board.code}}/</a></td>
+		                <td>{{ board.description|default:"-" }}</td>
+		                <td>{{ board.detail_description|default:"-" }}</td>
+		                <td>{{ board.thread_set.count }}</td>
+		            </tr>
+		            {% endfor %}
+		        </tbody>
+		    </table>
 		</div>
 
 

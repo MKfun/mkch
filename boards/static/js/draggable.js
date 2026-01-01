@@ -78,7 +78,7 @@ function createImageFloatingDiv(imgId) {
 	    d.appendChild(h);
 
 	    d.id = `floatingdiv_${imgId}`;
-	    d.className = "draggable";
+	    d.className = "draggable media-view"; 
 	    const scrollTop = window.scrollY || document.documentElement.scrollTop;
         const topOffset = 50;
 	    d.style.left = "35%";
