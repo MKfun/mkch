@@ -828,8 +828,8 @@ div:target {
 
 .draggable.media-view {
     max-width: 90vw;
-    width: fit-content; 
-    
+    max-height: 90vh;
+    width: fit-content; 	
     display: flex;
     flex-direction: column;
     
@@ -841,7 +841,8 @@ div:target {
 }
 
 .draggable.media-view .draggable-header {
-    width: 100%;
+    width: 0;
+    min-width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -852,10 +853,11 @@ div:target {
     display: block; 
     width: auto;
     height: auto;
-    max-width: 60vw;
+    max-width: 70vw;
 	max-height: 60vh;
     object-fit: contain;
     margin: 0;
+    border: none;
 }
 
 .draggable.media-view img,
