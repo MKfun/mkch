@@ -850,8 +850,10 @@ div:target {
 
 .draggable.media-view .floating-image {
     display: block; 
-    width: 100%;   
-    height: auto; 
+    width: auto;
+    height: auto;
+    max-width: 60vw;
+	max-height: 60vh;
     object-fit: contain;
     margin: 0;
 }
