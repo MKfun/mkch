@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}<title>Каталог - {{board.code}}</title>{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="catalog-header">
+        <h1>Каталог /{{board.code}}/</h1>
+        <div class="catalog-controls">
+            <input type="text" id="catalog-search" placeholder="Фильтр (поиск)..." onkeyup="filterCatalog()">
+            <div class="catalog-links">
+                <a href="/boards/board/{{board.code}}?noredirect=1" class="button-link">← Вернуться к списку</a>
+                <a href="/boards/board/{{board.code}}/new" class="button-link">Создать тред</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="catalog-grid" id="catalog-grid">
+        {% for thread in threads %}
+        <div class="catalog-card" data-title="{{thread.title|lower}}" data-text="{{thread.text|lower}}" onclick="window.location.href='/boards/board/{{thread.board.code}}/thread/{{thread.id}}'">
+            
+            <div class="catalog-thumb-container">
+                {% with thread.threadfile_set.first as file %}
+                    {% if file %}
+                        {% if file.fclass == "photo" %}
+                            <img src="{{file.file.url}}" class="catalog-thumb {% if blur and thread.is_nsfw %}nsfw-blur{% endif %}" loading="lazy">
+                        {% elif file.fclass == "video" %}
+                            <video src="{{file.file.url}}" class="catalog-thumb" muted onmouseover="this.play()" onmouseout="this.pause()"></video>
+                        {% else %}
+                            <div class="catalog-placeholder file">FILE</div>
+                        {% endif %}
+                    {% else %}
+                        <div class="catalog-placeholder">TXT</div>
+                    {% endif %}
+                {% endwith %}
+                
+                {% if thread.pinned %}
+                    <span class="catalog-icon pin">📌</span>
+                {% endif %}
+                {% if thread.persistent %}
+                    <span class="catalog-icon anchor">⚓</span>
+                {% endif %}
+            </div>
+
+            <div class="catalog-info">
+                <h4 class="catalog-title">
+                    {% if thread.title and thread.title != "None" %}{{thread.title}}{% else %}Без темы{% endif %}
+                </h4>
+                <div class="catalog-stats">
+                    R: <b>{{thread.comment_set.count}}</b> / PP: <b>{{thread.rating}}</b>
+                </div>
+                <div class="catalog-teaser">
+                    {{thread.text|truncatechars:100}}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function filterCatalog() {
+        const input = document.getElementById('catalog-search');
+        const filter = input.value.toLowerCase();
+        const cards = document.getElementsByClassName('catalog-card');
+
+        for (let i = 0; i < cards.length; i++) {
+            const title = cards[i].getAttribute('data-title');
+            const text = cards[i].getAttribute('data-text');
+            
+            if (title.includes(filter) || text.includes(filter)) {
+                cards[i].classList.remove('hidden');
+            } else {
+                cards[i].classList.add('hidden');
+            }
+        }
+    }
+</script>
+{% endblock %}

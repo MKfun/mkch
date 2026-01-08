@@ -8,6 +8,8 @@
         <br />
         <button id="nsfw-toggle" class="settings-button" onclick="toggleNsfwBlur()">{% if nsfw %}Не блюрить NSFW{% else %}Блюрить NSFW{% endif %}</button>
         <br />
+        <button id="catalog-toggle" class="settings-button" onclick="toggleCatalogSetting()">Каталог по умолчанию</button>
+        <br />
 	</div>
 
 	<div class="dev-team">
@@ -22,6 +24,7 @@
 	<script src="{% static 'js/nsfw.js' %}"></script>
 	<script src="{% static 'js/theme.js' %}"></script>
 	<script src="{% static 'js/splashes.js' %}"></script>
+	<script src="{% static 'js/catalog.js' %}"></script>
 	<script>
 		window.addEventListener('load', () => {setDevSplash();});
 	</script>

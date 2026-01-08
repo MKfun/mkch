@@ -85,6 +85,12 @@ class ThreadListView(KeyRequiredMixin, generic.ListView):
     model = Thread
     paginate_by = 9
 
+    def get(self, request, *args, **kwargs):
+        if request.COOKIES.get("default-catalog") == "1" and request.GET.get("noredirect") != "1":
+             return HttpResponseRedirect(reverse("catalog", kwargs={"pk": self.kwargs['pk']}))
+        
+        return super().get(request, *args, **kwargs)
+        
     def get_queryset(self):
         q = super().get_queryset().filter(board__code=self.kwargs['pk']).order_by("-pinned", "-rating")
         archive = str(self.request.GET.get("archive", "0")) == "1"
@@ -294,7 +300,6 @@ def add_comment_to_thread(request, pk, tpk):
 
         return render(request, 'boards/add_comment_to_thread.html', {'form': e_form, 'passcode': passcode})
 
-# КРАСНАЯ ШАПОЧКА СОСИ МОЙ ЖИРНЫЙ ЧЛЕН
 
 @staff_member_required
 def pin_toggle(request):
@@ -312,7 +317,7 @@ def pin_toggle(request):
 
 @staff_member_required
 def persistent_toggle(request):
-    if request.method == "POST": # использование нацистов и евреев для написания MKCH.
+    if request.method == "POST": 
         b = json.loads(request.body)
 
         thr = get_object_or_404(Thread, id=b['id'])
@@ -333,3 +338,46 @@ def lockdown_all(request):
         return HttpResponseRedirect(b["next"] if "next" in b else '/')
     else:
         return HttpResponseRedirect('/')
+
+@staff_member_required
+def archive_toggle(request):
+    if request.method == "POST":
+        b = json.loads(request.body)
+        thr = get_object_or_404(Thread, id=b['id'])
+
+        thr.archived = not thr.archived
+        thr.save()
+
+        return HttpResponseRedirect(b['next'] if 'next' in b else reverse("board", kwargs={"pk": thr.board.code}))
+    else:
+        return HttpResponseRedirect('/')
+
+@staff_member_required
+def delete_thread_view(request):
+    if request.method == "POST":
+        b = json.loads(request.body)
+        thr = get_object_or_404(Thread, id=b['id'])
+        board_code = thr.board.code
+        
+        thr.delete()
+        
+        return HttpResponseRedirect(reverse("board", kwargs={"pk": board_code}))
+    else:
+        return HttpResponseRedirect('/')
+
+class CatalogView(KeyRequiredMixin, generic.ListView):
+    model = Thread
+    template_name = 'boards/catalog.html'
+    context_object_name = 'threads'
+
+    def get_queryset(self):
+        return Thread.objects.filter(
+            board__code=self.kwargs['pk'], 
+            archived=False
+        ).order_by("-pinned", "-rating")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["board"] = get_object_or_404(Board, code=self.kwargs['pk'])
+        context["blur"] = True if self.request.COOKIES.get("blur-nsfw") == "1" else False
+        return context

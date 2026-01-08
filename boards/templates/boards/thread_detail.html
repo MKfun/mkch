@@ -32,7 +32,25 @@
                     <h1 class="thread-title detail">{% if thread.archived %}<img class="small-icon" src="{% static 'media/archive.svg' %}">{% endif %} {{thread.title}}</h1>
                     <span class="thread-meta detail">
                         <h1 class="thread-id detail">#{{thread.id}}</h1>
-                        <h5 class="thread-stats detail">{{thread.creation | date}}, {{thread.comment_set.count}} СМС, {{thread.rating}}PP</h5>
+                        <h5 class="thread-stats detail" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <span>{{thread.creation | date}}, {{thread.comment_set.count}} СМС, {{thread.rating}}PP</span>
+                            
+                            {% if user.is_staff %}
+                                <div class="admin-menu-container">
+                                    <img class="small-icon admin-menu-trigger" src="{% static 'media/context-menu.svg' %}" onclick="toggleContextMenu(event, '{{thread.id}}')" title="Управление">
+                                    
+                                    <div id="admin-menu-{{thread.id}}" class="admin-context-menu hidden">
+                                        <ul>
+                                            <li onclick="pin({{thread.id}})">{% if thread.pinned %}Открепить{% else %}Закрепить{% endif %}</li>
+                                            <li onclick="persist({{thread.id}})">{% if thread.persistent %}Утопить{% else %}Плавающий{% endif %}</li>
+                                            <li onclick="archiveThread({{thread.id}})">{% if thread.archived %}Разархивировать{% else %}Архивировать{% endif %}</li>
+                                            <li><a href="/admin/boards/thread/{{thread.id}}/change/" target="_blank">В админ панель</a></li>
+                                            <li onclick="deleteThreadDetail({{thread.id}}, '{{thread.board.code}}')" class="text-danger">Удалить тред</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </h5>
                     </span>
                 </div>
 
@@ -95,6 +113,53 @@
     </div>
 
 	<script>
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.admin-menu-trigger') && !e.target.closest('.admin-context-menu')) {
+                document.querySelectorAll('.admin-context-menu').forEach(menu => {
+                    menu.classList.add('hidden');
+                });
+            }
+        });
+
+        function toggleContextMenu(e, id) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.querySelectorAll('.admin-context-menu').forEach(menu => {
+                if (menu.id !== 'admin-menu-' + id) menu.classList.add('hidden');
+            });
+            const menu = document.getElementById('admin-menu-' + id);
+            if(menu) menu.classList.toggle('hidden');
+        }
+
+        async function sendPostAction(url, id, nextUrl) {
+            await fetch(url, {
+                method: "POST",
+                credentials: "include",
+                headers: {'X-CSRFToken': Cookies.get("csrftoken")},
+                body: JSON.stringify({
+                    id: id,
+                    next: nextUrl || window.location.href
+                })
+            });
+            window.location.reload();
+        }
+
+        async function pin(id) { await sendPostAction("/boards/pin", id); }
+        async function persist(id) { await sendPostAction("/boards/persist", id); }
+        async function archiveThread(id) { await sendPostAction("/boards/archive", id); }
+
+        async function deleteThreadDetail(id, boardCode) {
+            if (confirm("Вы точно хотите удалить этот тред?")) {
+                await fetch("/boards/delete", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {'X-CSRFToken': Cookies.get("csrftoken")},
+                    body: JSON.stringify({ id: id })
+                });
+                window.location.href = "/boards/board/" + boardCode;
+            }
+        }
+
 		function updateCommentList() {
 			fetch(window.location.href)
 				.then(response => response.text())
@@ -107,9 +172,8 @@
 					const container = document.querySelector(".posts-container");
 
 					if(posts.length <= posts_o.length) {return;}
-					const diff = posts.length - posts_o.length;
-                    			for(let i = posts_o.length; i < posts.length; i++) {
-			    			container.appendChild(posts[i]);
+                    for(let i = posts_o.length; i < posts.length; i++) {
+                        container.appendChild(posts[i]);
 					}
 
 					document.querySelector(".thread-header").innerHTML = list.querySelector(".thread-header").innerHTML;
@@ -117,8 +181,6 @@
 		}
 
 		function showForm(e) {
-			console.log("sex");
-
 			e.target.hidden = true;
 			let formo = document.querySelector(".comment-form");
 			formo.hidden = null;
@@ -141,17 +203,12 @@
             }
 
             textarea.value += replyText;
-
             textarea.focus();
         }
 
 		window.addEventListener("load", () => {
 			let d = document.querySelector(".show-comment-form-button");
-
-            if(d) {
-                d.addEventListener("click", showForm);
-            }
-
+            if(d) d.addEventListener("click", showForm);
 			setInterval(updateCommentList, 10000);
 		});
 	</script>
